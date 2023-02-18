@@ -52,5 +52,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: 'npbee-waveformr'
-          entrypoint: './web/server/entry.mjs'
+          entrypoint: 'server/entry.mjs'
           root: ./web/dist
