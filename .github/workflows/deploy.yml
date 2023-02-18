@@ -43,6 +43,12 @@ jobs:
         working-directory: ./web
         run: pnpm i
 
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo ANALYZE_URL=${{ $ANALYZE_URL }} >> .env
+          cat .env
+
       # TODO: add a build step here
       - name: Build Astro
         working-directory: ./web
