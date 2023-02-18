@@ -1,73 +1,58 @@
-import { Application, oakCors, Router } from "./deps.ts";
-import { analyzeFile, help } from "./service.ts";
+import { Hono, serve } from "./deps.ts";
+import { extname } from "./dev_deps.ts";
+import { analyzeFile, ValidExt } from "./service.ts";
 
-const port = 8000;
-const app = new Application();
+export let app = new Hono();
 
-const router = new Router();
+app.post("/", async (c) => {
+  let formData = await c.req.formData();
+  let file = formData.get("file");
 
-router.post("/", async (ctx) => {
-  const { request } = ctx;
+  if (!file || !(file instanceof File)) {
+    c.status(400);
 
-  if (!request.hasBody) {
-    ctx.response.status = 400;
-    ctx.response.headers.set("Content-Type", "application/json");
-    ctx.response.body = { error: "No body" };
+    return c.json({
+      status: "error",
+      message: "Expected a file",
+    });
+  }
+
+  let ext = formData.get("ext") ?? extname(file.name).slice(1);
+
+  if (!isValidExt(ext)) {
+    console.log(c);
+    c.status(400);
+
+    return c.json({
+      status: "error",
+      message: "Expected a valid extension. Received: " + ext,
+    });
+  }
+
+  let samples = parseSamples(formData.get("samples"));
+  let result = await analyzeFile(file, ext, samples);
+
+  return c.json(result);
+});
+
+if (import.meta.main) {
+  serve(app.fetch);
+}
+
+function isValidExt(ext: unknown): ext is ValidExt {
+  let res = ext === "mp3" || ext === "wav";
+
+  return res;
+}
+
+function parseSamples(samples: unknown) {
+  if (typeof samples !== "string") {
     return;
   }
 
-  let body = ctx.request.body({ type: "form-data" });
+  let parsed = parseInt(samples);
 
-  try {
-    let formData = await body.value.read();
+  if (Number.isNaN(parsed)) return;
 
-    // TODO GET ENCODING
-    let file = formData.files?.find((file) => file.name === "file");
-    let samples = parseInt(formData.fields.samples ?? 200);
-
-    if (Number.isNaN(samples)) {
-      samples = 200;
-    }
-
-    if (file) {
-      let { filename } = file;
-
-      if (filename) {
-        let result = await analyzeFile(filename, "mp3", samples);
-
-        await Deno.remove(filename);
-
-        ctx.response.status = 200;
-        ctx.response.headers.set("Content-Type", "application/json");
-        ctx.response.body = result;
-      }
-    }
-  } catch (_err) {
-    console.log(_err);
-    ctx.response.status = 400;
-    ctx.response.headers.set("Content-Type", "application/json");
-    ctx.response.body = {
-      status: "error",
-    };
-  }
-});
-
-router.get("/help", async (ctx) => {
-  const output = await help();
-
-  ctx.response.status = 200;
-  ctx.response.body = output;
-});
-
-app.use(
-  oakCors({
-    origin: [/^.+localhost:3000$/, /^.+waveformr.deno.dev$/],
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  }),
-);
-app.use(router.allowedMethods());
-app.use(router.routes());
-
-console.log(`Server running on port http://localhost:${port}`);
-
-await app.listen({ port });
+  return parsed;
+}

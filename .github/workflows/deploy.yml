@@ -48,7 +48,7 @@ jobs:
         # References vars from the repo
         run: |
           touch .env
-          echo PUBLIC_ANALYSIS_URL=${{ vars.ANALYZE_URL }} >> .env
+          echo ANALYSIS_URL=${{ vars.ANALYSIS_URL }} >> .env
           cat .env
 
       # TODO: add a build step here

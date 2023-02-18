@@ -9,10 +9,6 @@ import { RadioGroup } from "./RadioGroup";
 import { SvgWavform } from "./SvgWaveform";
 import { CopyButton } from "./CopyButton";
 
-interface BuilderProps {
-  analysisUrl: string;
-}
-
 interface BuilderIdleState {
   status: "idle";
 }
@@ -46,8 +42,7 @@ type BuilderState =
   | BuilderAnalyzedState
   | BuilderResamplingState;
 
-export function Builder(props: BuilderProps) {
-  let { analysisUrl } = props;
+export function Builder() {
   let [state, setState] = useState<BuilderState>({
     status: "idle",
   });
@@ -55,7 +50,7 @@ export function Builder(props: BuilderProps) {
   function onFile(file: File) {
     if (state.status === "idle") {
       setState({ status: "pending", file });
-      analyzeAudio(analysisUrl, file, 200).then((data) => {
+      analyzeAudio(file, 200).then((data) => {
         setState({
           status: "analyzed",
           file,
@@ -78,7 +73,7 @@ export function Builder(props: BuilderProps) {
       let s = { ...state };
       let { file } = state;
       setState({ ...state, status: "resampling" });
-      analyzeAudio(analysisUrl, file, samples).then((data) => {
+      analyzeAudio(file, samples).then((data) => {
         setState({ ...s, status: "analyzed", file, data, samples });
       });
     }
@@ -292,13 +287,13 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   );
 }
 
-function analyzeAudio(analysisUrl: string, file: File, samples: number) {
+function analyzeAudio(file: File, samples: number) {
   let formData = new FormData();
 
   formData.set("file", file);
   formData.set("samples", String(samples));
 
-  return fetch(analysisUrl, { method: "POST", body: formData }).then((res) =>
-    res.json()
+  return fetch("/api/analysis", { method: "POST", body: formData }).then(
+    (res) => res.json()
   );
 }
