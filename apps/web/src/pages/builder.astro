@@ -2,12 +2,12 @@
 import Layout from "../layouts/Layout.astro";
 import { Builder } from "../components/Builder";
 
-let ANALYZE_URL = import.meta.env.ANALYZE_URL;
+let PUBLIC_ANALYSIS_URL = import.meta.env.PUBLIC_ANALYSIS_URL;
 ---
 
 <Layout title="Builder | Waveformr">
   <div class="flex w-full flex-col items-center p-8">
     <h1>Waveformr Builder</h1>
-    <Builder client:load analyzeUrl={ANALYZE_URL} />
+    <Builder client:load analysisUrl={PUBLIC_ANALYSIS_URL} />
   </div>
 </Layout>

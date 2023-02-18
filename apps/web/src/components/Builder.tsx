@@ -10,7 +10,7 @@ import { SvgWavform } from "./SvgWaveform";
 import { CopyButton } from "./CopyButton";
 
 interface BuilderProps {
-  analyzeUrl: string;
+  analysisUrl: string;
 }
 
 interface BuilderIdleState {
@@ -47,7 +47,7 @@ type BuilderState =
   | BuilderResamplingState;
 
 export function Builder(props: BuilderProps) {
-  let { analyzeUrl } = props;
+  let { analysisUrl } = props;
   let [state, setState] = useState<BuilderState>({
     status: "idle",
   });
@@ -55,7 +55,7 @@ export function Builder(props: BuilderProps) {
   function onFile(file: File) {
     if (state.status === "idle") {
       setState({ status: "pending", file });
-      analyzeAudio(analyzeUrl, file, 200).then((data) => {
+      analyzeAudio(analysisUrl, file, 200).then((data) => {
         setState({
           status: "analyzed",
           file,
@@ -78,7 +78,7 @@ export function Builder(props: BuilderProps) {
       let s = { ...state };
       let { file } = state;
       setState({ ...state, status: "resampling" });
-      analyzeAudio(analyzeUrl, file, samples).then((data) => {
+      analyzeAudio(analysisUrl, file, samples).then((data) => {
         setState({ ...s, status: "analyzed", file, data, samples });
       });
     }
