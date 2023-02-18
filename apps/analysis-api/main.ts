@@ -1,5 +1,4 @@
-import { Hono, serve } from "./deps.ts";
-import { extname } from "./dev_deps.ts";
+import { extname, Hono, serve } from "./deps.ts";
 import { analyzeFile, ValidExt } from "./service.ts";
 
 export let app = new Hono();
