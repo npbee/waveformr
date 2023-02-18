@@ -44,6 +44,7 @@ jobs:
         run: pnpm i
 
       - name: 'Create env file'
+        working-directory: ./apps/web
         # References vars from the repo
         run: |
           touch .env
