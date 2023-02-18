@@ -44,6 +44,7 @@ jobs:
         run: pnpm i
 
       - name: 'Create env file'
+        # References vars from the repo
         run: |
           touch .env
           echo ANALYZE_URL=${{ vars.ANALYZE_URL }} >> .env
