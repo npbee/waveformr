@@ -50,8 +50,7 @@ jobs:
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
-        working-directory: ./web
         with:
           project: 'npbee-waveformr'
-          entrypoint: 'server/entry.mjs'
-          root: dist
+          entrypoint: './web/server/entry.mjs'
+          root: ./web/dist
