@@ -40,14 +40,17 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
+        working-directory: ./web
         run: pnpm i
 
       # TODO: add a build step here
       - name: Build Astro
+        working-directory: ./web
         run: pnpm build
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
+        working-directory: ./web
         with:
           project: 'npbee-waveformr'
           entrypoint: 'server/entry.mjs'
