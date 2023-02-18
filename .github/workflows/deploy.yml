@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        working-directory: ./web
+        working-directory: ./apps/web
         run: pnpm i
 
       - name: 'Create env file'
@@ -52,7 +52,7 @@ jobs:
 
       # TODO: add a build step here
       - name: Build Astro
-        working-directory: ./web
+        working-directory: ./apps/web
         run: pnpm build
 
       - name: Upload to Deno Deploy
@@ -60,4 +60,4 @@ jobs:
         with:
           project: 'npbee-waveformr'
           entrypoint: 'server/entry.mjs'
-          root: ./web/dist
+          root: ./apps/web/dist

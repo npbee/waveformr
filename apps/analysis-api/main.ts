@@ -6,7 +6,7 @@ const app = new Application();
 
 const router = new Router();
 
-router.post("/analyze", async (ctx) => {
+router.post("/", async (ctx) => {
   const { request } = ctx;
 
   if (!request.hasBody) {

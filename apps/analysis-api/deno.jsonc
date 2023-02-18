@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run -A --watch main.ts",
-    "prod": "docker build -t waveformr-api --build-arg GIT_REVISION=$GIT_REVISION . && docker run -p 8080:8080 --name wapi waveformr-api",
+    "prod": "docker build -t waveformr-analysis-api --build-arg GIT_REVISION=$GIT_REVISION . && docker run -p 8080:8080 --name wapi waveformr-analysis-api",
     "deploy": "GIT_REVISION=$(git rev-parse HEAD); fly deploy --build-arg GIT_REVISION=$GIT_REVISION"
   },
   "lint": {
