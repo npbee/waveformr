@@ -18,5 +18,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "npbee-waveformr"
-          entrypoint: "./main.ts" # TODO: update entrypoint
+          project: 'npbee-waveformr'
+          entrypoint: 'server/entry.mjs'
+          root: dist
