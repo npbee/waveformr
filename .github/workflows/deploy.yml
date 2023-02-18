@@ -13,7 +13,12 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: pnpm i
+
       # TODO: add a build step here
+      - name: Build Astro
+        run: pnpm build
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
