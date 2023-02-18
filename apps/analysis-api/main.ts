@@ -23,12 +23,17 @@ router.post("/", async (ctx) => {
 
     // TODO GET ENCODING
     let file = formData.files?.find((file) => file.name === "file");
+    let samples = parseInt(formData.fields.samples ?? 200);
+
+    if (Number.isNaN(samples)) {
+      samples = 200;
+    }
 
     if (file) {
       let { filename } = file;
 
       if (filename) {
-        let result = await analyzeFile(filename, "mp3");
+        let result = await analyzeFile(filename, "mp3", samples);
 
         await Deno.remove(filename);
 
