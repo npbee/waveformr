@@ -13,5 +13,7 @@ import deno from "@astrojs/deno";
 export default defineConfig({
   integrations: [react(), tailwind()],
   output: "server",
-  adapter: deno()
+  adapter: deno({
+    port: 3000,
+  }),
 });

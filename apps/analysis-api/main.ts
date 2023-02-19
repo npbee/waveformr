@@ -3,6 +3,11 @@ import { analyzeFile, ValidExt } from "./service.ts";
 
 export let app = new Hono();
 
+app.use("*", (c, next) => {
+  console.log(c.req);
+  return next();
+});
+
 app.use("*", bearerAuth({ token: getApiKey() }));
 
 app.post("/", async (c) => {

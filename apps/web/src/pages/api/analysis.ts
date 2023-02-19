@@ -4,9 +4,11 @@ let ANALYSIS_URL = import.meta.env.ANALYSIS_URL;
 let API_KEY = import.meta.env.API_KEY;
 
 export const post: APIRoute = async function post({ request }) {
-  request.headers.set(`Authorization`, `Bearer ${API_KEY}`);
+  let analysisReq = new Request(request);
 
-  let resp = await fetch(ANALYSIS_URL, request);
+  analysisReq.headers.set(`Authorization`, `Bearer ${API_KEY}`);
+
+  let resp = await fetch(ANALYSIS_URL, analysisReq);
 
   if (resp.ok) {
     let json = await resp.json();

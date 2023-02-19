@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "run-p dev:*",
     "dev:analysis-api": "deno task --cwd ./apps/analysis-api dev",
-    "dev:web": "pnpm --filter @waveformr/web dev"
+    "dev:web": "pnpm --filter @waveformr/web dev",
+    "preview": "run-p preview:*",
+    "preview:analysis-api": "deno task --cwd ./apps/analysis-api dev",
+    "preview:web": "pnpm --filter @waveformr/web preview"
   },
   "keywords": [],
   "author": "",
