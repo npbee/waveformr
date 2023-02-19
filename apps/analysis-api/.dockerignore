@@ -2,5 +2,5 @@ fly.toml
 REAMDE.md
 main_bench.ts
 main_test.ts
-# fixtures
 dev_deps.ts
+token_generator.ts

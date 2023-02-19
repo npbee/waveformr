@@ -1,7 +1,9 @@
-import { extname, Hono, serve } from "./deps.ts";
+import { bearerAuth, extname, Hono, loadSync, serve } from "./deps.ts";
 import { analyzeFile, ValidExt } from "./service.ts";
 
 export let app = new Hono();
+
+app.use("*", bearerAuth({ token: getApiKey() }));
 
 app.post("/", async (c) => {
   let formData = await c.req.formData();
@@ -19,7 +21,6 @@ app.post("/", async (c) => {
   let ext = formData.get("ext") ?? extname(file.name).slice(1);
 
   if (!isValidExt(ext)) {
-    console.log(c);
     c.status(400);
 
     return c.json({
@@ -34,8 +35,12 @@ app.post("/", async (c) => {
   return c.json(result);
 });
 
-if (import.meta.main) {
+export function run() {
   serve(app.fetch);
+}
+
+if (import.meta.main) {
+  run();
 }
 
 function isValidExt(ext: unknown): ext is ValidExt {
@@ -54,4 +59,13 @@ function parseSamples(samples: unknown) {
   if (Number.isNaN(parsed)) return;
 
   return parsed;
+}
+
+function getApiKey(): string {
+  let dotenv = loadSync();
+  let secret = Deno.env.get("API_KEY") ?? dotenv.API_KEY;
+  if (!secret) {
+    throw new Error("Could not find secret");
+  }
+  return secret;
 }
