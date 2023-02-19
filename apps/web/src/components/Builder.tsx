@@ -18,6 +18,11 @@ interface BuilderPendingState {
   file: File;
 }
 
+interface BuilderErrorState {
+  status: "error";
+  code: number;
+}
+
 interface BuilderAnalyzedState {
   status: "analyzed";
   file: File;
@@ -39,6 +44,7 @@ interface BuilderResamplingState extends Omit<BuilderAnalyzedState, "status"> {
 type BuilderState =
   | BuilderIdleState
   | BuilderPendingState
+  | BuilderErrorState
   | BuilderAnalyzedState
   | BuilderResamplingState;
 
@@ -48,22 +54,26 @@ export function Builder() {
   });
 
   function onFile(file: File) {
-    if (state.status === "idle") {
+    if (state.status === "idle" || state.status === "error") {
       setState({ status: "pending", file });
-      analyzeAudio(file, 200).then((data) => {
-        setState({
-          status: "analyzed",
-          file,
-          data,
-          samples: 200,
-          stroke: "red",
-          fill: "red",
-          strokeWidth: 2,
-          width: 1200,
-          height: 100,
-          strokeLinecap: "round",
-          pathConfig: { type: "mirror" },
-        });
+      analyzeAudio(file, 200).then((resp) => {
+        if (resp.status === "error") {
+          setState({ status: "error", code: resp.code });
+        } else {
+          setState({
+            status: "analyzed",
+            file,
+            data: resp.data,
+            samples: 200,
+            stroke: "red",
+            fill: "red",
+            strokeWidth: 2,
+            width: 1200,
+            height: 100,
+            strokeLinecap: "round",
+            pathConfig: { type: "mirror" },
+          });
+        }
       });
     }
   }
@@ -73,8 +83,8 @@ export function Builder() {
       let s = { ...state };
       let { file } = state;
       setState({ ...state, status: "resampling" });
-      analyzeAudio(file, samples).then((data) => {
-        setState({ ...s, status: "analyzed", file, data, samples });
+      analyzeAudio(file, samples).then((resp) => {
+        setState({ ...s, status: "analyzed", file, data: resp.data, samples });
       });
     }
   }
@@ -114,6 +124,7 @@ export function Builder() {
 
   return (
     <div className="w-full space-y-8">
+      {state.status === "error" ? <div>{state.code} - Try again</div> : null}
       <DropZone onDrop={onFile} />
     </div>
   );

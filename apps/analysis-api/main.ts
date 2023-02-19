@@ -3,10 +3,7 @@ import { analyzeFile, ValidExt } from "./service.ts";
 
 export let app = new Hono();
 
-app.use("*", (c, next) => {
-  console.log(c.req);
-  return next();
-});
+const LIMIT = 8000000;
 
 app.use("*", bearerAuth({ token: getApiKey() }));
 
@@ -20,6 +17,15 @@ app.post("/", async (c) => {
     return c.json({
       status: "error",
       message: "Expected a file",
+    });
+  }
+
+  if (file.size > LIMIT) {
+    c.status(413);
+
+    return c.json({
+      status: "error",
+      message: "File size to big",
     });
   }
 

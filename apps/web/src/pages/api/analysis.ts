@@ -13,7 +13,7 @@ export const post: APIRoute = async function post({ request }) {
   if (resp.ok) {
     let json = await resp.json();
 
-    return new Response(JSON.stringify(json), {
+    return new Response(JSON.stringify({ status: "success", data: json }), {
       status: 200,
     });
   } else if (resp.status === 401) {
@@ -23,11 +23,22 @@ export const post: APIRoute = async function post({ request }) {
         status: 401,
       }
     );
+  } else if (resp.status === 413) {
+    return new Response(
+      JSON.stringify({
+        status: "error",
+        message: "File size is too big",
+        code: 413,
+      }),
+      {
+        status: 413,
+      }
+    );
   } else {
     return new Response(
       JSON.stringify({ status: "error", message: "Unknown error" }),
       {
-        status: 401,
+        status: 400,
       }
     );
   }
