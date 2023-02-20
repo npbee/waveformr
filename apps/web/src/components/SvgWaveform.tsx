@@ -1,4 +1,4 @@
-import { linearPath as linearPath, LinearPathOptions } from "../core";
+import { linearPath as linearPath, LinearPathOptions } from "@waveformr/core";
 
 export type SvgWaveformProps = LinearPathOptions & {
   id?: string;

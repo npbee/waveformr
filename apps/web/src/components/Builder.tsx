@@ -1,13 +1,12 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, useMemo } from "react";
 import { HexColorPicker } from "react-colorful";
 import copy from "clipboard-copy";
 import filesize from "file-size";
-import type { WaveformDataJson } from "../../../analysis-api/waveform_data";
-import type { LinearPathOptions } from "../core";
 import { DropZone } from "./DropZone";
 import { RadioGroup } from "./RadioGroup";
 import { SvgWavform } from "./SvgWaveform";
 import { CopyButton } from "./CopyButton";
+import { WaveformData, LinearPathOptions } from "@waveformr/core";
 
 interface BuilderIdleState {
   status: "idle";
@@ -26,7 +25,7 @@ interface BuilderErrorState {
 interface BuilderAnalyzedState {
   status: "analyzed";
   file: File;
-  data: WaveformDataJson;
+  waveformData: WaveformData;
   samples: number;
   stroke: string;
   fill: string;
@@ -56,24 +55,20 @@ export function Builder() {
   function onFile(file: File) {
     if (state.status === "idle" || state.status === "error") {
       setState({ status: "pending", file });
-      analyzeAudio(file, 200).then((resp) => {
-        if (resp.status === "error") {
-          setState({ status: "error", code: resp.code });
-        } else {
-          setState({
-            status: "analyzed",
-            file,
-            data: resp.data,
-            samples: 200,
-            stroke: "red",
-            fill: "red",
-            strokeWidth: 2,
-            width: 1200,
-            height: 100,
-            strokeLinecap: "round",
-            pathConfig: { type: "mirror" },
-          });
-        }
+      analyzeAudio(file).then((waveformData) => {
+        setState({
+          status: "analyzed",
+          file,
+          waveformData,
+          samples: 200,
+          stroke: "red",
+          fill: "red",
+          strokeWidth: 2,
+          width: 1200,
+          height: 100,
+          strokeLinecap: "round",
+          pathConfig: { type: "mirror" },
+        });
       });
     }
   }
@@ -83,8 +78,8 @@ export function Builder() {
       let s = { ...state };
       let { file } = state;
       setState({ ...state, status: "resampling" });
-      analyzeAudio(file, samples).then((resp) => {
-        setState({ ...s, status: "analyzed", file, data: resp.data, samples });
+      analyzeAudio(file).then((waveformData) => {
+        setState({ ...s, status: "analyzed", file, waveformData, samples });
       });
     }
   }
@@ -93,7 +88,7 @@ export function Builder() {
     let s = { ...state };
     return (
       <InitializedBuilder
-        data={state.data}
+        waveformData={state.waveformData}
         file={state.file}
         onRemoveFile={() => setState({ status: "idle" })}
         samples={state.samples}
@@ -131,7 +126,7 @@ export function Builder() {
 }
 
 interface InitializedBuilderProps {
-  data: WaveformDataJson;
+  waveformData: WaveformData;
   file: File;
   onRemoveFile: () => void;
   samples: number;
@@ -152,7 +147,7 @@ interface InitializedBuilderProps {
 
 function InitializedBuilder(props: InitializedBuilderProps) {
   let {
-    data,
+    waveformData,
     file,
     samples,
     onRemoveFile,
@@ -172,6 +167,11 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   } = props;
   let [fileSize, setFileSize] = useState<string | null>(null);
   let id = useId();
+
+  let data = useMemo(
+    () => waveformData.toJSON(samples),
+    [waveformData, samples]
+  );
 
   useEffect(() => {
     let el = document.getElementById(id);
@@ -298,13 +298,8 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   );
 }
 
-function analyzeAudio(file: File, samples: number) {
-  let formData = new FormData();
+async function analyzeAudio(file: File) {
+  let wf = await WaveformData.fromFile(file, new window.AudioContext());
 
-  formData.set("file", file);
-  formData.set("samples", String(samples));
-
-  return fetch("/api/analysis", { method: "POST", body: formData }).then(
-    (res) => res.json()
-  );
+  return wf;
 }

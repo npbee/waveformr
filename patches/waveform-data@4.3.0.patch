@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index cd50d8daa8425eb5b9c4ba20f888df4baeadb5cb..6a9f908e5074f97c02f7166cc6b54fcc619a8585 100644
+--- a/package.json
++++ b/package.json
+@@ -2,8 +2,9 @@
+   "name": "waveform-data",
+   "version": "4.3.0",
+   "description": "Audio Waveform Data Manipulation API – resample, offset and segment waveform data in JavaScript",
+-  "main": "./dist/waveform-data.cjs.js",
++  "main": "./dist/waveform-data.esm.js",
+   "browser": "./dist/waveform-data.esm.js",
++  "type": "module",
+   "types": "waveform-data.d.ts",
+   "files": [
+     "dist/waveform-data.cjs.js",

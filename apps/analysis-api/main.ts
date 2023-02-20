@@ -43,7 +43,8 @@ app.post("/", async (c) => {
   let samples = parseSamples(formData.get("samples"));
   let result = await analyzeFile(file, ext, samples);
 
-  return c.json(result);
+  // TODO: binary response
+  return c.text(result);
 });
 
 export function run() {

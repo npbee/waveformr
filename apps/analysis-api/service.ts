@@ -1,5 +1,3 @@
-import { WaveformData } from "./waveform_data.ts";
-
 export type ValidExt = "mp3" | "wav";
 
 /**
@@ -21,9 +19,6 @@ export async function analyzeFile(file: File, ext: ValidExt, samples = 500) {
   let data = await Deno.readFile(outFile);
   Deno.remove(outFile);
   Deno.remove(inFile);
-  return toJson(data.buffer, samples);
+  return data;
 }
 
-function toJson(buffer: ArrayBuffer, samples: number) {
-  return WaveformData.create(buffer).toJSON(samples);
-}

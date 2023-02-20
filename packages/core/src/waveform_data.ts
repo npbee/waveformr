@@ -1,4 +1,7 @@
-import { WaveformData as BBCWaveformData } from "./deps.ts";
+import BBCWaveformData, {
+  WaveformDataAudioBufferOptions,
+  WaveformDataAudioContextOptions,
+} from 'waveform-data';
 
 export interface WaveformDataJson {
   duration: number;
@@ -17,6 +20,44 @@ export class WaveformData {
   static create(buffer: ArrayBuffer) {
     const wf = BBCWaveformData.create(buffer);
     return new WaveformData(wf);
+  }
+
+  static createFromAudio(
+    options: WaveformDataAudioBufferOptions | WaveformDataAudioContextOptions
+  ): Promise<WaveformData> {
+    return new Promise((res, rej) => {
+      BBCWaveformData.createFromAudio(options, (err, wf) => {
+        if (err) {
+          rej(err);
+        } else {
+          res(new WaveformData(wf));
+        }
+      });
+    });
+  }
+
+  static fromFile(file: File, audioCtx: AudioContext): Promise<WaveformData> {
+    return new Promise((resolve, reject) => {
+      let reader = new FileReader();
+
+      reader.onload = async () => {
+        let result = reader.result;
+        if (result instanceof ArrayBuffer) {
+          try {
+            resolve(
+              await WaveformData.createFromAudio({
+                array_buffer: result,
+                audio_context: audioCtx,
+              })
+            );
+          } catch (err) {
+            reject(err);
+          }
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    });
   }
 
   getNormalizedData(samples = this.#waveformData.length) {
