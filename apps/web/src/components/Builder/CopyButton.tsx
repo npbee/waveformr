@@ -11,6 +11,7 @@ export function CopyButton(props: CopyButtonProps) {
     "idle"
   );
   let copy = useMemo(() => {
+    console.log(state);
     if (state === "copied") {
       return "Copied!";
     } else if (state === "error") {
@@ -22,9 +23,10 @@ export function CopyButton(props: CopyButtonProps) {
 
   useEffect(() => {
     let timeout: number;
+    console.log(state);
     if (state === "copied" || state === "error") {
       timeout = setTimeout(() => {
-        state = "idle";
+        setState("idle");
       }, 2000);
     }
 
