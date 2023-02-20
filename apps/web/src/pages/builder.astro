@@ -1,11 +1,19 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { BuilderApp } from "../components/Builder";
+import {WaveformData} from "@waveformr/core";
+
+let data= await fetch('http://localhost:3000/Good Sport.dat').then(response => response.arrayBuffer())
+
+let waveformData = WaveformData.create(data).toJSON()
+
+let sample = {
+  name: "Good Sport",
+  data: waveformData
+} as const
+
 ---
 
 <Layout title="Builder | Waveformr">
-  <div class="flex w-full flex-col items-center p-8">
-    <h1>Waveformr Builder</h1>
-    <BuilderApp client:load />
-  </div>
+  <BuilderApp client:load sample={sample} />
 </Layout>

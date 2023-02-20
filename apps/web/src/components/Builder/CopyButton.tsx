@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
+import { Button } from "./Button";
+import { Copy } from "./Icons";
 
 interface CopyButtonProps {
   children: React.ReactNode;
@@ -11,7 +13,6 @@ export function CopyButton(props: CopyButtonProps) {
     "idle"
   );
   let copy = useMemo(() => {
-    console.log(state);
     if (state === "copied") {
       return "Copied!";
     } else if (state === "error") {
@@ -23,7 +24,6 @@ export function CopyButton(props: CopyButtonProps) {
 
   useEffect(() => {
     let timeout: number;
-    console.log(state);
     if (state === "copied" || state === "error") {
       timeout = setTimeout(() => {
         setState("idle");
@@ -37,7 +37,8 @@ export function CopyButton(props: CopyButtonProps) {
     };
   });
   return (
-    <button
+    <Button
+      icon={<Copy />}
       onClick={async () => {
         try {
           setState("copying");
@@ -49,6 +50,6 @@ export function CopyButton(props: CopyButtonProps) {
       }}
     >
       {copy}
-    </button>
+    </Button>
   );
 }

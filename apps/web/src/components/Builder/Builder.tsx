@@ -1,57 +1,85 @@
-import invariant from "tiny-invariant";
-import {
-  memo,
-  useEffect,
-  useState,
-  useMemo,
-  useLayoutEffect,
-  useRef,
-} from "react";
-import { HexColorPicker } from "react-colorful";
+import { memo, useEffect, useState, useMemo, useRef } from "react";
 import copy from "clipboard-copy";
 import filesize from "file-size";
 import { DropZone } from "./DropZone";
 import { RadioGroup } from "./RadioGroup";
 import { CopyButton } from "./CopyButton";
-import { WaveformData, LinearPathOptions, linearPath } from "@waveformr/core";
+import { ColorPicker } from "./ColorPicker";
+import { Slider } from "./Slider";
+import { GitHub } from "./Icons";
+import {
+  WaveformData,
+  LinearPathOptions,
+  linearPath,
+  JsonWaveformData,
+} from "@waveformr/core";
 import { useMutation } from "@tanstack/react-query";
+import { ScrollArea } from "./ScrollArea";
 
-export function Builder() {
+interface RawAudio {
+  name: string;
+  data: JsonWaveformData;
+}
+
+interface Audio {
+  name: string;
+  waveformData: WaveformData;
+}
+
+// Pass in sample JSON and
+interface BuilderProps {
+  sample: RawAudio;
+}
+
+type BuilderState =
+  | { status: "uninitialized" }
+  | { status: "analyzing" }
+  | { status: "initialized"; audio: Audio };
+
+export function Builder(props: BuilderProps) {
+  let { sample } = props;
+  let analyzedSample = useMemo(
+    () => ({
+      name: sample.name,
+      waveformData: WaveformData.create(sample.data),
+    }),
+    [sample]
+  );
+
+  let [state, setState] = useState<BuilderState>({
+    status: "initialized",
+    audio: analyzedSample,
+  });
+
   let analyzeAudio = useMutation({
-    mutationFn: (file: File) => {
-      return WaveformData.fromFile(file, new window.AudioContext());
+    mutationFn: (fileOrDat: File | { name: string; dat: ArrayBuffer }) => {
+      if (fileOrDat instanceof File) {
+        return WaveformData.fromFile(fileOrDat, new window.AudioContext());
+      } else {
+        return Promise.resolve(WaveformData.create(fileOrDat.dat));
+      }
+    },
+    onMutate: () => {
+      setState({ status: "analyzing" });
+    },
+    onSuccess: (waveformData, vars) => {
+      setState({
+        status: "initialized",
+        audio: { name: vars.name, waveformData },
+      });
     },
   });
 
-  let sampleAudio = useMutation({
-    mutationFn: async () => {
-      let data = await fetch("/Good Sport.mp3");
-      let arrayBuffer = await data.arrayBuffer();
-      let file = new File([arrayBuffer], "Good Sport.mp3");
-      analyzeAudio.mutate(file);
-    },
-  });
-
-  // Temporary
-  useLayoutEffect(() => {
-    sampleAudio.mutate();
-  }, []);
-
-  if (analyzeAudio.status === "success") {
-    let file = analyzeAudio.variables;
-    let waveformData = analyzeAudio.data;
-    invariant(file instanceof File, `Expected a file`);
-
+  if (state.status === "initialized") {
     return (
       <InitializedBuilder
-        waveformData={waveformData}
-        file={file}
-        onRemoveFile={() => analyzeAudio.reset()}
+        waveformData={state.audio.waveformData}
+        name={state.audio.name}
       />
     );
   }
 
-  if (analyzeAudio.status === "loading") {
+  if (state.status === "analyzing") {
     return <div>Analyzing...</div>;
   }
 
@@ -64,12 +92,11 @@ export function Builder() {
 
 interface InitializedBuilderProps {
   waveformData: WaveformData;
-  file: File;
-  onRemoveFile: () => void;
+  name: string;
 }
 
 function InitializedBuilder(props: InitializedBuilderProps) {
-  let { waveformData, file, onRemoveFile } = props;
+  let { waveformData, name } = props;
 
   let [stroke, setStroke] = useState("red");
   let [fill, setFill] = useState("red");
@@ -81,122 +108,116 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   let [pathConfig, setPathConfig] = useState<
     Omit<LinearPathOptions, "width" | "height">
   >({ type: "mirror" });
-  let [width] = useState(1200);
-  let [height] = useState(100);
+  let [width, setWidth] = useState(1200);
+  let [height, setHeight] = useState(100);
   let [svgHtmlString, setSvgHtmlString] = useState("");
 
   function changePathConfigType(newType: LinearPathOptions["type"]) {
     setPathConfig((config) => ({ ...config, type: newType }));
   }
 
-  let data = useMemo(
-    () => waveformData.toJSON(samples),
+  let normalizedData = useMemo(
+    () => waveformData.getNormalizedData(samples),
     [waveformData, samples]
   );
 
   return (
-    <div className="w-full space-y-10">
-      <div className="flex gap-4">
-        <button onClick={onRemoveFile}>Remove</button>
-        <SvgFileSize svgHtml={svgHtmlString} />
-        <CopySvgButton svgHtml={svgHtmlString} />
-      </div>
-      <SvgWavform
-        type={pathConfig.type}
-        width={width}
-        height={height}
-        data={data.normalized_data}
-        stroke={stroke}
-        fill={fill}
-        strokeWidth={strokeWidth}
-        strokeLinecap={strokeLinecap}
-        onHtmlStringChange={setSvgHtmlString}
-      />
-      <div className="flex justify-between">
-        <FileInfo file={file} duration={data.duration} />
+    <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col md:flex-row">
+        <div className="relative flex w-full flex-col justify-center gap-8 p-8 dark:bg-grayDark2 md:h-full">
+          <header className="top-0 left-0 z-10 flex w-full items-center justify-between md:absolute md:px-8 md:py-6">
+            <a
+              href="/"
+              className="text-sm font-semibold lowercase tracking-wider"
+            >
+              Waveformr
+            </a>
 
-        <div className="flex items-center gap-3">
-          <label className="text-sm font-medium" htmlFor="Samples">
-            Samples
-          </label>
-          <select
-            id="Samples"
-            value={samples}
-            onChange={(evt) => {
-              let el = evt.target as HTMLSelectElement;
-              let samples = parseInt(el.value as string);
-              if (!Number.isNaN(samples)) {
-                setSamples(samples);
-              }
-            }}
-          >
-            <option value="100">100</option>
-            <option value="200">200</option>
-            <option value="300">300</option>
-            <option value="400">400</option>
-            <option value="500">500</option>
-          </select>
-        </div>
-      </div>
-      <div className="mx-auto max-w-xl space-y-4">
-        <form>
-          <RadioGroup
-            value={pathConfig.type}
-            items={
-              [
-                { label: "Mirror", value: "mirror" },
-                { label: "Steps", value: "steps" },
-                { label: "Bars", value: "bars" },
-              ] as const
-            }
-            onChange={(newValue) => {
-              changePathConfigType(newValue);
-            }}
+            <CopySvgButton svgHtml={svgHtmlString} />
+          </header>
+          <SvgWavform
+            type={pathConfig.type}
+            width={width}
+            height={height}
+            data={normalizedData}
+            stroke={stroke}
+            fill={fill}
+            strokeWidth={strokeWidth}
+            strokeLinecap={strokeLinecap}
+            onHtmlStringChange={setSvgHtmlString}
           />
-        </form>
-        <form>
-          <RadioGroup
-            value={strokeLinecap}
-            items={
-              [
-                { label: "Square", value: "square" },
-                { label: "Round", value: "round" },
-                { label: "Butt", value: "butt" },
-              ] as const
-            }
-            onChange={(newValue) => {
-              setStrokeLinecap(newValue);
-            }}
-          />
-        </form>
-        <div className="w-full space-y-5">
-          <p className="text-lg">Stroke Width</p>
-          <input
-            type="range"
-            step="1"
-            min="1"
-            max="10"
-            value={strokeWidth}
-            className="w-full"
-            onChange={(evt) => {
-              let el = evt.target as HTMLInputElement;
-              let strokeWidth = parseInt(el.value);
-              if (!Number.isNaN(strokeWidth)) {
-                setStrokeWidth(strokeWidth);
-              }
-            }}
-          />
-        </div>
-        <div className="flex justify-between gap-4">
-          <div className="space-y-5">
-            <p className="text-lg">Stroke</p>
-            <HexColorPicker color={stroke} onChange={setStroke} />
-          </div>
-          <div className="space-y-5">
-            <p className="text-lg">Fill</p>
-            <HexColorPicker color={fill} onChange={setFill} />
+          <div className="bottom-4 left-0 flex w-full items-center justify-between md:absolute md:px-8">
+            <FileInfo name={name} duration={waveformData.duration} />
+            <a href="https://github.com/npbee/waveformr" className="flex w-4">
+              <GitHub aria-hidden="true" />
+              <span className="sr-only">GitHub</span>
+            </a>
+            <SvgFileSize svgHtml={svgHtmlString} />
           </div>
         </div>
+        <aside className="flex h-full min-h-0 flex-col gap-4 border-gray6 bg-gray1 py-6 dark:border-grayDark8 dark:bg-grayDark4 md:w-[500px] md:border-l">
+          <ScrollArea>
+            <div className="flex flex-col gap-6 px-8 pb-8">
+              <h2 className="text-md font-semibold tracking-wide">Settings</h2>
+              <div className="space-y-10">
+                <RadioGroup
+                  label="Style"
+                  value={pathConfig.type}
+                  items={
+                    [
+                      { label: "Mirror", value: "mirror" },
+                      { label: "Steps", value: "steps" },
+                      { label: "Bars", value: "bars" },
+                    ] as const
+                  }
+                  onChange={(newValue) => {
+                    changePathConfigType(newValue);
+                  }}
+                />
+                <Slider
+                  label="Samples"
+                  value={[samples]}
+                  step={10}
+                  min={50}
+                  max={500}
+                  onValueChange={(val) => {
+                    setSamples(val[0]);
+                  }}
+                />
+                <RadioGroup
+                  label="Stroke Linecap"
+                  value={strokeLinecap}
+                  items={
+                    [
+                      { label: "Square", value: "square" },
+                      { label: "Round", value: "round" },
+                      { label: "Butt", value: "butt" },
+                    ] as const
+                  }
+                  onChange={(newValue) => {
+                    setStrokeLinecap(newValue);
+                  }}
+                />
+                <Slider
+                  label="Stroke width"
+                  value={[strokeWidth]}
+                  step={1}
+                  min={1}
+                  max={10}
+                  onValueChange={(val) => {
+                    setStrokeWidth(val[0]);
+                  }}
+                />
+                <ColorPicker
+                  label="Stroke"
+                  value={stroke}
+                  onChange={setStroke}
+                />
+                <ColorPicker label="Fill" value={fill} onChange={setFill} />
+              </div>
+            </div>
+          </ScrollArea>
+        </aside>
       </div>
     </div>
   );
@@ -274,15 +295,15 @@ function useObserveHTMLString(
   }, [cb]);
 }
 
-let FileInfo = memo(function FileInfo(props: { file: File; duration: number }) {
-  let { file, duration } = props;
-  let fileSize = useMemo(() => filesize(file.size).human(), [file]);
+let FileInfo = memo(function FileInfo(props: {
+  name: string;
+  duration: number;
+}) {
+  let { name, duration } = props;
   let formattedDuration = useMemo(() => formatTime(duration), [duration]);
   return (
-    <p className="flex items-center gap-1 text-sm text-gray-700">
-      <span>{file.name}</span>
-      <span>&bull;</span>
-      <span>{fileSize}</span>
+    <p className="flex items-center gap-1 text-xs text-gray11">
+      <span>{name}</span>
       <span>&bull;</span>
       <span>{formattedDuration}</span>
     </p>
@@ -299,7 +320,11 @@ function SvgFileSize(props: { svgHtml: string }) {
     let blob = new Blob([svgHtml]).size;
     return filesize(blob).human();
   }, [svgHtml]);
-  return <div>{fileSize}</div>;
+  return (
+    <p className="text-xs font-semibold text-gray11 dark:text-grayDark11">
+      {fileSize}
+    </p>
+  );
 }
 
 function formatTime(seconds: number) {

@@ -1,4 +1,6 @@
 import * as RadixRadioGroup from "@radix-ui/react-radio-group";
+import { Label } from "./Label";
+import { useId } from "react";
 
 interface Item {
   label: string;
@@ -9,39 +11,45 @@ interface RadioGroupProps<I extends Item> {
   items: ReadonlyArray<I>;
   onChange: (val: I["value"]) => void;
   value: I["value"];
+  label: React.ReactNode;
 }
 
 export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
-  let { items, onChange, value } = props;
+  let { items, onChange, value, label } = props;
+  let labelId = useId();
 
   return (
     <RadixRadioGroup.Root
-      className="flex flex-col gap-2.5"
+      className={`flex flex-col gap-2`}
       value={value}
       onValueChange={onChange}
-      aria-label="View density"
+      aria-labelledby={labelId}
     >
-      {items.map((item) => {
-        const checked = item.value === value;
-        return (
-          <div className="flex items-center" key={item.value}>
-            <RadixRadioGroup.Item
-              checked={checked}
-              className="shadow-blackA7 hover:bg-violet3 h-[25px] w-[25px] cursor-default rounded-full bg-white shadow-[0_2px_10px] outline-none focus:shadow-[0_0_0_2px] focus:shadow-black"
-              value={item.value}
-              id={item.value}
-            >
-              <RadixRadioGroup.Indicator className="after:bg-violet11 relative flex h-full w-full items-center justify-center after:block after:h-[11px] after:w-[11px] after:rounded-[50%] after:content-['']" />
-            </RadixRadioGroup.Item>
-            <label
-              className="pl-[15px] text-[15px] leading-none text-white"
-              htmlFor="r1"
-            >
-              {item.label}
-            </label>
-          </div>
-        );
-      })}
+      <Label id={labelId}>{label}</Label>
+      <div
+        className={`grid gap-2`}
+        style={{ gridTemplateColumns: `repeat(auto-fit, minmax(0, 1fr))` }}
+      >
+        {items.map((item) => {
+          const checked = item.value === value;
+          return (
+            <div className="grid" key={item.value}>
+              <RadixRadioGroup.Item
+                checked={checked}
+                className={`cursor-pointer rounded border-2 px-4 py-2 text-sm outline-none hover:bg-gray3 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-grayDark3 ${
+                  checked
+                    ? "border-violet9 bg-violet3 text-violet12 dark:border-violetDark9 dark:bg-violetDark3 dark:text-violetDark12"
+                    : "border-gray8 bg-gray2 dark:border-grayDark8 dark:bg-grayDark2"
+                }`}
+                value={item.value}
+                id={item.value}
+              >
+                {item.label}
+              </RadixRadioGroup.Item>
+            </div>
+          );
+        })}
+      </div>
     </RadixRadioGroup.Root>
   );
 }

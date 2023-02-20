@@ -1,14 +1,10 @@
 import BBCWaveformData, {
+  JsonWaveformData,
   WaveformDataAudioBufferOptions,
   WaveformDataAudioContextOptions,
 } from 'waveform-data';
 
-export interface WaveformDataJson {
-  duration: number;
-  sample_rate: number;
-  bits: number;
-  normalized_data: Array<number>;
-}
+export type { JsonWaveformData };
 
 export class WaveformData {
   #waveformData: BBCWaveformData;
@@ -17,7 +13,7 @@ export class WaveformData {
     this.#waveformData = waveformData;
   }
 
-  static create(buffer: ArrayBuffer) {
+  static create(buffer: ArrayBuffer | JsonWaveformData) {
     const wf = BBCWaveformData.create(buffer);
     return new WaveformData(wf);
   }
@@ -60,6 +56,10 @@ export class WaveformData {
     });
   }
 
+  get duration() {
+    return this.#waveformData.duration;
+  }
+
   getNormalizedData(samples = this.#waveformData.length) {
     const channel = this.#waveformData.channel(0);
     const blockSize = Math.floor(this.#waveformData.length / samples); // the number of samples in each subdivision
@@ -76,17 +76,8 @@ export class WaveformData {
     return normalize(filteredData);
   }
 
-  toJSON(samples = this.#waveformData.length): WaveformDataJson {
-    let duration = this.#waveformData.duration;
-    let sample_rate = this.#waveformData.sample_rate;
-    let bits = this.#waveformData.bits;
-    let normalized_data = this.getNormalizedData(samples);
-    return {
-      duration,
-      sample_rate,
-      bits,
-      normalized_data,
-    };
+  toJSON(): JsonWaveformData {
+    return this.#waveformData.toJSON();
   }
 }
 
