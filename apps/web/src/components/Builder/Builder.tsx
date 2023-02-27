@@ -26,29 +26,14 @@ interface Audio {
   waveformData: WaveformData;
 }
 
-// Pass in sample JSON and
-interface BuilderProps {
-  sample: RawAudio;
-}
-
 type BuilderState =
   | { status: "uninitialized" }
   | { status: "analyzing" }
   | { status: "initialized"; audio: Audio };
 
-export function Builder(props: BuilderProps) {
-  let { sample } = props;
-  let analyzedSample = useMemo(
-    () => ({
-      name: sample.name,
-      waveformData: WaveformData.create(sample.data),
-    }),
-    [sample]
-  );
-
+export function Builder() {
   let [state, setState] = useState<BuilderState>({
-    status: "initialized",
-    audio: analyzedSample,
+    status: "uninitialized",
   });
 
   let analyzeAudio = useMutation({
