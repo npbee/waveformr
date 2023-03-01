@@ -1,4 +1,5 @@
-import { Path } from "./path";
+// Inspired by: https://github.com/jerosoler/waveform-path
+import { Path } from './path';
 
 interface BaseLinearPathOptions {
   width: number;
@@ -6,7 +7,7 @@ interface BaseLinearPathOptions {
 }
 
 interface MirrorPathConfig extends BaseLinearPathOptions {
-  type: "mirror";
+  type: 'mirror';
   bars?: Array<{
     height?: number;
     offset?: number;
@@ -14,7 +15,7 @@ interface MirrorPathConfig extends BaseLinearPathOptions {
 }
 
 interface StepsPathConfig extends BaseLinearPathOptions {
-  type: "steps";
+  type: 'steps';
   steps?: Array<{
     height?: number;
     offset?: number;
@@ -23,7 +24,7 @@ interface StepsPathConfig extends BaseLinearPathOptions {
 }
 
 interface BarsPathConfig extends BaseLinearPathOptions {
-  type: "bars";
+  type: 'bars';
   invert?: boolean;
   bars?: Array<{
     height?: number;
@@ -37,7 +38,7 @@ export type LinearPathOptions =
   | BarsPathConfig;
 
 const defaultOptions: LinearPathOptions = {
-  type: "mirror",
+  type: 'mirror',
   bars: [{ height: 100, offset: 0 }],
   width: 800,
   height: 100,
@@ -45,14 +46,14 @@ const defaultOptions: LinearPathOptions = {
 
 export function linearPath(
   data: Array<number>,
-  options: LinearPathOptions = defaultOptions
+  options: LinearPathOptions = defaultOptions,
 ) {
   const { type, height } = options;
   const sampleLength = data.length;
   const width = options.width / sampleLength;
   let path = Path.create();
 
-  if (type === "mirror") {
+  if (type === 'mirror') {
     const { bars = [{ height: 100 }] } = options;
     const halfHeight = height / 2;
     const barsLength = bars.length;
@@ -108,7 +109,7 @@ export function linearPath(
     }
 
     return path.end();
-  } else if (type === "steps") {
+  } else if (type === 'steps') {
     let { steps = [{ height: 100 }] } = options;
     const halfHeight = height / 2;
     const stepsLength = steps.length;
@@ -143,7 +144,7 @@ export function linearPath(
       }
     }
     return path.end();
-  } else if (type === "bars") {
+  } else if (type === 'bars') {
     let { bars = [{ height: 100 }], invert } = options;
     const barsLength = bars.length;
 
@@ -171,6 +172,6 @@ export function linearPath(
     }
     return path.end();
   } else {
-    throw new Error("UNKNOWN TYPE");
+    throw new Error('UNKNOWN TYPE');
   }
 }

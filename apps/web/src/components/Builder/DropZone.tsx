@@ -1,15 +1,17 @@
-import { useId, useState } from "react";
+import { DragEvent, useId, useState } from "react";
 import { clsx } from "clsx";
+import { Button } from "./Button";
 
 interface DropZoneProps {
   onDrop: (file: File) => void;
+  onSample: () => void;
 }
 
 // Hidden label
 // https://polaris.shopify.com/components/selection-and-input/drop-zone
 
 export function DropZone(props: DropZoneProps) {
-  let { onDrop } = props;
+  let { onDrop, onSample } = props;
   let id = useId();
   let [focused, setFocused] = useState(false);
   let [dragging, setDragging] = useState(false);
@@ -21,13 +23,13 @@ export function DropZone(props: DropZoneProps) {
     }
   }
 
-  function onDragEnter(evt: DragEvent) {
+  function onDragEnter(evt: DragEvent<HTMLDivElement>) {
     evt.preventDefault();
     evt.stopPropagation();
     setDragging(true);
   }
 
-  function onDragOver(evt: DragEvent) {
+  function onDragOver(evt: DragEvent<HTMLDivElement>) {
     evt.preventDefault();
     evt.stopPropagation();
   }
@@ -65,6 +67,15 @@ export function DropZone(props: DropZoneProps) {
       )}
     >
       {dragging ? <div>Drop it</div> : <div>Add file</div>}
+      <Button
+        onClick={(evt) => {
+          evt.stopPropagation();
+          evt.preventDefault();
+          onSample();
+        }}
+      >
+        Or use a sample
+      </Button>
       <HiddenFileInput
         id={id}
         onFocus={() => {

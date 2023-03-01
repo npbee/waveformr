@@ -7,19 +7,9 @@ import { CopyButton } from "./CopyButton";
 import { ColorPicker } from "./ColorPicker";
 import { Slider } from "./Slider";
 import { GitHub } from "./Icons";
-import {
-  WaveformData,
-  LinearPathOptions,
-  linearPath,
-  JsonWaveformData,
-} from "@waveformr/core";
+import { WaveformData, LinearPathOptions, linearPath } from "@waveformr/core";
 import { useMutation } from "@tanstack/react-query";
 import { ScrollArea } from "./ScrollArea";
-
-interface RawAudio {
-  name: string;
-  data: JsonWaveformData;
-}
 
 interface Audio {
   name: string;
@@ -55,6 +45,19 @@ export function Builder() {
     },
   });
 
+  let analyzeSampleAudio = useMutation({
+    mutationFn: async () => {
+      return fetch("/Good Sport.dat")
+        .then((resp) => resp.arrayBuffer())
+        .then((buffer) =>
+          analyzeAudio.mutate({ dat: buffer, name: "Good Sport" })
+        );
+    },
+    onMutate: () => {
+      setState({ status: "analyzing" });
+    },
+  });
+
   if (state.status === "initialized") {
     return (
       <InitializedBuilder
@@ -70,7 +73,12 @@ export function Builder() {
 
   return (
     <div className="w-full space-y-8">
-      <DropZone onDrop={analyzeAudio.mutate} />
+      <DropZone
+        onDrop={analyzeAudio.mutate}
+        onSample={() => {
+          analyzeSampleAudio.mutate();
+        }}
+      />
     </div>
   );
 }
