@@ -1,7 +1,13 @@
-import { Trash, Copy as _Copy, LucideIcon } from "lucide-react";
+import {
+  Trash,
+  Copy as _Copy,
+  LucideIcon,
+  Check as _Check,
+} from "lucide-react";
 
 export let Del: LucideIcon = (props) => <Trash {...props} size="0.9em" />;
 export let Copy: LucideIcon = (props) => <_Copy {...props} size="0.9em" />;
+export let Check: LucideIcon = (props) => <_Check size="0.9em" {...props} />;
 
 export let GitHub = (props: React.HTMLAttributes<SVGSVGElement>) => (
   <>

@@ -28,7 +28,7 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
       <Label id={labelId}>{label}</Label>
       <div
         className={`grid gap-2`}
-        style={{ gridTemplateColumns: `repeat(auto-fit, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(auto-fit, minmax(50px, 1fr))` }}
       >
         {items.map((item) => {
           const checked = item.value === value;
@@ -36,10 +36,10 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
             <div className="grid" key={item.value}>
               <RadixRadioGroup.Item
                 checked={checked}
-                className={`cursor-pointer rounded border-2 px-4 py-2 text-sm outline-none hover:bg-gray3 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-grayDark3 ${
+                className={`cursor-pointer rounded border px-3 py-1.5 text-sm outline-none hover:bg-gray3 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-grayDark3 ${
                   checked
                     ? "border-violet9 bg-violet3 text-violet12 dark:border-violetDark9 dark:bg-violetDark3 dark:text-violetDark12"
-                    : "border-gray8 bg-gray2 dark:border-grayDark8 dark:bg-grayDark2"
+                    : "border-gray12 dark:border-grayDark8 dark:bg-grayDark2"
                 }`}
                 value={item.value}
                 id={item.value}

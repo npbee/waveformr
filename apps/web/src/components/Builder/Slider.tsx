@@ -9,7 +9,7 @@ export function Slider(
   let labelId = useId();
   return (
     <div className="space-y-2">
-      <div className="flex justify-between text-sm">
+      <div className="flex justify-between text-xs">
         <Label id={labelId}>{label}</Label>
         <div>{value}</div>
       </div>
@@ -22,7 +22,7 @@ export function Slider(
         <RadixSlider.Track className="relative h-[3px] grow rounded-full bg-gray7 dark:bg-grayDark8">
           <RadixSlider.Range className="absolute h-full rounded-full bg-violet10 dark:bg-violetDark10" />
         </RadixSlider.Track>
-        <RadixSlider.Thumb className="block aspect-square w-4 rounded-full border border-gray8 bg-white shadow-sm hover:bg-gray4 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:border-grayDark8 dark:bg-grayDark12 dark:hover:bg-grayDark11" />
+        <RadixSlider.Thumb className="block aspect-square w-4 rounded-full border-violet10 bg-violet10 shadow-sm hover:bg-violet9 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet10 focus-visible:ring-offset-2 dark:border-grayDark8 dark:bg-grayDark12 dark:hover:bg-grayDark11" />
       </RadixSlider.Root>
     </div>
   );

@@ -3,7 +3,7 @@ import { clsx } from "clsx";
 import { VariantProps, cva } from "class-variance-authority";
 
 let buttonVariants = cva(
-  "active:scale-95 inline-flex text-sm items-center gap-2 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2",
+  "active:scale-95 inline-flex text-sm items-center gap-2 rounded-md font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
   {
     variants: {
       variant: {

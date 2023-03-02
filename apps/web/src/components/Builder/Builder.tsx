@@ -1,10 +1,10 @@
-import { memo, useState, useMemo } from "react";
+import { memo, useState, useMemo, useLayoutEffect } from "react";
 import copy from "clipboard-copy";
 import filesize from "file-size";
 import { DropZone } from "./DropZone";
 import { RadioGroup } from "./RadioGroup";
 import { CopyButton } from "./CopyButton";
-import { ColorPicker } from "./ColorPicker";
+import { ColorPicker, colors } from "./ColorPicker";
 import { Slider } from "./Slider";
 import { GitHub } from "./Icons";
 import { SvgWavform } from "./SvgWaveform";
@@ -59,6 +59,10 @@ export function Builder() {
     },
   });
 
+  useLayoutEffect(() => {
+    analyzeSampleAudio.mutate();
+  }, []);
+
   if (state.status === "initialized") {
     return (
       <InitializedBuilder
@@ -92,8 +96,8 @@ interface InitializedBuilderProps {
 function InitializedBuilder(props: InitializedBuilderProps) {
   let { waveformData, name } = props;
 
-  let [stroke, setStroke] = useState("red");
-  let [fill, setFill] = useState("red");
+  let [stroke, setStroke] = useState(colors[0].value);
+  let [fill, setFill] = useState(colors[0].value);
   let [strokeWidth, setStrokeWidth] = useState(2);
   let [strokeLinecap, setStrokeLinecap] = useState<"round" | "butt" | "square">(
     "round"
@@ -118,7 +122,7 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-full flex-col md:flex-row">
-        <div className="relative flex w-full flex-col justify-center gap-8 p-8 dark:bg-grayDark2 md:h-full">
+        <div className="relative flex w-full flex-col justify-center gap-8 bg-gray1 p-8 dark:bg-grayDark2 md:h-full">
           <header className="top-0 left-0 z-10 flex w-full items-center justify-between md:absolute md:px-8 md:py-6">
             <a
               href="/"
@@ -149,10 +153,10 @@ function InitializedBuilder(props: InitializedBuilderProps) {
             <SvgFileSize svgHtml={svgHtmlString} />
           </div>
         </div>
-        <aside className="flex h-full min-h-0 flex-col gap-4 border-gray6 bg-gray1 py-6 dark:border-grayDark8 dark:bg-grayDark4 md:w-[500px] md:border-l">
+        <aside className="z-10 flex h-full min-h-0 flex-col gap-4 border-gray6 py-6 shadow-lg dark:border-grayDark8 dark:bg-grayDark4 md:w-[400px] md:border-l">
           <ScrollArea>
             <div className="flex flex-col gap-6 px-8 pb-8">
-              <h2 className="text-md font-semibold tracking-wide">Settings</h2>
+              <h2 className="text-base font-medium">Settings</h2>
               <div className="space-y-10">
                 <RadioGroup
                   label="Style"
