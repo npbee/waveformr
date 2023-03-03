@@ -25,6 +25,6 @@ export class Path {
   }
 }
 
-function round(value: number, decimals: number = 2) {
-  return Number(Math.round(Number(value + 'e' + decimals)) + 'e-' + decimals);
+function round(value: number) {
+  return Math.round(value * 100) / 100;
 }
