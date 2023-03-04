@@ -1,6 +1,7 @@
 import { DragEvent, useId, useState } from "react";
 import { clsx } from "clsx";
 import { Button } from "./Button";
+import { HiddenFileInput } from "./HiddenFileInput";
 
 interface DropZoneProps {
   onDrop: (file: File) => void;
@@ -89,34 +90,6 @@ export function DropZone(props: DropZoneProps) {
         }}
       />
     </div>
-  );
-}
-
-interface HiddenFileInputProps {
-  id: string;
-  accept?: string;
-  onFocus: () => void;
-  onBlur: () => void;
-  onFile: (file: File) => void;
-}
-
-function HiddenFileInput(props: HiddenFileInputProps) {
-  let { onBlur, onFocus, id, onFile } = props;
-  return (
-    <input
-      className="sr-only"
-      id={id}
-      type="file"
-      onBlur={onBlur}
-      onFocus={onFocus}
-      onChange={(evt) => {
-        let el = evt.target as HTMLInputElement;
-        if (el.files) {
-          let file = el.files[0];
-          onFile(file);
-        }
-      }}
-    />
   );
 }
 

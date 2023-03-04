@@ -9,6 +9,8 @@ let buttonVariants = cva(
       variant: {
         default:
           "bg-white dark:bg-grayDark4 text-gray12 dark:text-grayDark12 border border-gray11 dark:border-grayDark11",
+        subtle:
+          "text-gray11 hover:underline underline-offset-2 hover:text-gray12 trans-all",
       },
       size: {
         default: "h-8 py-1 px-2",

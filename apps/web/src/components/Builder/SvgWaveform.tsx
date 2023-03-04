@@ -1,13 +1,18 @@
-import { type LinearPathOptions, linearPath } from "@waveformr/core";
-import { useEffect, useRef } from "react";
+import {
+  type LinearPathOptions,
+  linearPath,
+  WaveformData,
+} from "@waveformr/core";
+import { useEffect, useMemo, useRef } from "react";
+import { useEvents } from "./state";
 
 export type SvgWaveformProps = LinearPathOptions & {
-  data: Array<number>;
+  waveformData: WaveformData;
   fill?: string;
   stroke?: string;
   strokeWidth?: number;
   strokeLinecap?: "butt" | "round" | "square";
-  onHtmlStringChange: (htmlString: string) => void;
+  samples: number;
 };
 
 export function SvgWavform(props: SvgWaveformProps) {
@@ -17,20 +22,25 @@ export function SvgWavform(props: SvgWaveformProps) {
     stroke,
     strokeWidth = 2,
     strokeLinecap = "round",
-    data,
+    waveformData,
     width,
     height,
-    onHtmlStringChange,
+    samples,
     ...rest
   } = props;
 
-  let path = linearPath(data, {
+  let normalizedData = useMemo(
+    () => waveformData.getNormalizedData(samples),
+    [waveformData, samples]
+  );
+
+  let path = linearPath(normalizedData, {
     ...rest,
     width,
     height,
   });
 
-  useObserveHTMLString(ref, onHtmlStringChange);
+  useObserveHTMLString(ref);
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width="100%" ref={ref}>
@@ -45,20 +55,20 @@ export function SvgWavform(props: SvgWaveformProps) {
   );
 }
 
-function useObserveHTMLString(
-  ref: React.RefObject<SVGElement>,
-  cb: (htmlString: string) => void
-) {
+function useObserveHTMLString(ref: React.RefObject<SVGElement>) {
+  let events = useEvents();
   useEffect(() => {
     let el = ref.current;
     if (!el) return;
 
+    let timeout: number;
+
     // Set initially
-    cb(el.outerHTML);
+    events.svgHtmlChanged(el.outerHTML);
 
     let observer = new MutationObserver(() => {
       if (el) {
-        cb(el.outerHTML);
+        events.svgHtmlChanged(el.outerHTML);
       }
     });
 
@@ -68,7 +78,8 @@ function useObserveHTMLString(
     });
 
     return () => {
+      clearTimeout(timeout);
       observer.disconnect();
     };
-  }, [cb]);
+  }, []);
 }

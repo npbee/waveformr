@@ -1,123 +1,53 @@
-import { memo, useState, useMemo, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
+import invariant from "tiny-invariant";
 import copy from "clipboard-copy";
-import filesize from "file-size";
 import { DropZone } from "./DropZone";
 import { RadioGroup } from "./RadioGroup";
 import { CopyButton } from "./CopyButton";
-import { ColorPicker, colors } from "./ColorPicker";
+import { ColorPicker } from "./ColorPicker";
 import { Slider } from "./Slider";
 import { GitHub } from "./Icons";
 import { SvgWavform } from "./SvgWaveform";
-import { WaveformData, LinearPathOptions } from "@waveformr/core";
-import { useMutation } from "@tanstack/react-query";
+import type { LinearPathOptions } from "@waveformr/core";
 import { ScrollArea } from "./ScrollArea";
-
-interface Audio {
-  name: string;
-  waveformData: WaveformData;
-}
-
-type BuilderState =
-  | { status: "uninitialized" }
-  | { status: "analyzing" }
-  | { status: "initialized"; audio: Audio };
+import { HiddenFileInputButton } from "./HiddenFileInput";
+import { useAnalysis, useEvents, useSettings, useSvgHtml } from "./state";
+import { FileSize } from "./FileSize";
+import { FileInfo } from "./FileInfo";
 
 export function Builder() {
-  let [state, setState] = useState<BuilderState>({
-    status: "uninitialized",
-  });
+  let events = useEvents();
+  let analysis = useAnalysis();
+  let {
+    stroke,
+    fill,
+    strokeWidth,
+    strokeLinecap,
+    samples,
+    pathConfig,
+    width,
+    height,
+  } = useSettings();
 
-  let analyzeAudio = useMutation({
-    mutationFn: (fileOrDat: File | { name: string; dat: ArrayBuffer }) => {
-      if (fileOrDat instanceof File) {
-        return WaveformData.fromFile(fileOrDat, new window.AudioContext());
-      } else {
-        return Promise.resolve(WaveformData.create(fileOrDat.dat));
-      }
-    },
-    onMutate: () => {
-      setState({ status: "analyzing" });
-    },
-    onSuccess: (waveformData, vars) => {
-      setState({
-        status: "initialized",
-        audio: { name: vars.name, waveformData },
-      });
-    },
-  });
-
-  let analyzeSampleAudio = useMutation({
-    mutationFn: async () => {
-      return fetch("/Good Sport.dat")
-        .then((resp) => resp.arrayBuffer())
-        .then((buffer) =>
-          analyzeAudio.mutate({ dat: buffer, name: "Good Sport" })
-        );
-    },
-    onMutate: () => {
-      setState({ status: "analyzing" });
-    },
-  });
+  function changePathConfigType(newType: LinearPathOptions["type"]) {
+    events.settingsChanged({ pathConfig: { ...pathConfig, type: newType } });
+  }
 
   useLayoutEffect(() => {
-    analyzeSampleAudio.mutate();
-  }, []);
+    events.sampleChosen();
+  }, [events]);
 
-  if (state.status === "initialized") {
+  if (analysis.status === "uninitialized") {
     return (
-      <InitializedBuilder
-        waveformData={state.audio.waveformData}
-        name={state.audio.name}
-      />
+      <div className="w-full space-y-8">
+        <DropZone onDrop={events.fileUploaded} onSample={events.sampleChosen} />
+      </div>
     );
   }
 
-  if (state.status === "analyzing") {
+  if (analysis.status === "analyzing") {
     return <div>Analyzing...</div>;
   }
-
-  return (
-    <div className="w-full space-y-8">
-      <DropZone
-        onDrop={analyzeAudio.mutate}
-        onSample={() => {
-          analyzeSampleAudio.mutate();
-        }}
-      />
-    </div>
-  );
-}
-
-interface InitializedBuilderProps {
-  waveformData: WaveformData;
-  name: string;
-}
-
-function InitializedBuilder(props: InitializedBuilderProps) {
-  let { waveformData, name } = props;
-
-  let [stroke, setStroke] = useState(colors[0].value);
-  let [fill, setFill] = useState(colors[0].value);
-  let [strokeWidth, setStrokeWidth] = useState(2);
-  let [strokeLinecap, setStrokeLinecap] = useState<"round" | "butt" | "square">(
-    "round"
-  );
-  let [samples, setSamples] = useState(200);
-  let [pathConfig, setPathConfig] = useState<
-    Omit<LinearPathOptions, "width" | "height">
-  >({ type: "mirror" });
-  let [width, setWidth] = useState(1200);
-  let [height, setHeight] = useState(100);
-  let [svgHtmlString, setSvgHtmlString] = useState("");
-
-  function changePathConfigType(newType: LinearPathOptions["type"]) {
-    setPathConfig((config) => ({ ...config, type: newType }));
-  }
-
-  let normalizedData = useMemo(
-    () => waveformData.getNormalizedData(samples),
-    [waveformData, samples]
-  );
 
   return (
     <div className="flex h-full flex-col">
@@ -131,27 +61,49 @@ function InitializedBuilder(props: InitializedBuilderProps) {
               Waveformr
             </a>
 
-            <CopySvgButton svgHtml={svgHtmlString} />
+            <div className="flex items-center gap-2">
+              <HiddenFileInputButton
+                variant="subtle"
+                onFile={events.fileUploaded}
+              >
+                Upload
+              </HiddenFileInputButton>
+              <CopySvgButton />
+            </div>
           </header>
-          <SvgWavform
-            type={pathConfig.type}
-            width={width}
-            height={height}
-            data={normalizedData}
-            stroke={stroke}
-            fill={fill}
-            strokeWidth={strokeWidth}
-            strokeLinecap={strokeLinecap}
-            onHtmlStringChange={setSvgHtmlString}
-          />
-          <div className="bottom-4 left-0 flex w-full items-center justify-between md:absolute md:px-8">
-            <FileInfo name={name} duration={waveformData.duration} />
-            <a href="https://github.com/npbee/waveformr" className="flex w-4">
-              <GitHub aria-hidden="true" />
-              <span className="sr-only">GitHub</span>
-            </a>
-            <SvgFileSize svgHtml={svgHtmlString} />
-          </div>
+          {analysis.status === "analyzed" ? (
+            <>
+              <SvgWavform
+                type={pathConfig.type}
+                width={width}
+                height={height}
+                samples={samples}
+                waveformData={analysis.analysis.waveformData}
+                stroke={stroke}
+                fill={fill}
+                strokeWidth={strokeWidth}
+                strokeLinecap={strokeLinecap}
+              />
+              <div className="bottom-4 left-0 flex w-full items-center justify-between md:absolute md:px-8">
+                <FileInfo
+                  name={analysis.analysis.name}
+                  duration={analysis.analysis.waveformData.duration}
+                />
+                <a
+                  href="https://github.com/npbee/waveformr"
+                  className="flex w-4"
+                >
+                  <GitHub aria-hidden="true" />
+                  <span className="sr-only">GitHub</span>
+                </a>
+                <FileSize />
+              </div>
+            </>
+          ) : (
+            <div className="text-sm text-gray11 dark:text-grayDark11">
+              Reanalyzing...
+            </div>
+          )}
         </div>
         <aside className="z-10 flex h-full min-h-0 flex-col gap-4 border-gray6 py-6 shadow-lg dark:border-grayDark8 dark:bg-grayDark4 md:w-[400px] md:border-l">
           <ScrollArea>
@@ -179,7 +131,7 @@ function InitializedBuilder(props: InitializedBuilderProps) {
                   min={50}
                   max={500}
                   onValueChange={(val) => {
-                    setSamples(val[0]);
+                    events.settingsChanged({ samples: val[0] });
                   }}
                 />
                 <RadioGroup
@@ -192,8 +144,8 @@ function InitializedBuilder(props: InitializedBuilderProps) {
                       { label: "Butt", value: "butt" },
                     ] as const
                   }
-                  onChange={(newValue) => {
-                    setStrokeLinecap(newValue);
+                  onChange={(strokeLinecap) => {
+                    events.settingsChanged({ strokeLinecap });
                   }}
                 />
                 <Slider
@@ -203,15 +155,19 @@ function InitializedBuilder(props: InitializedBuilderProps) {
                   min={1}
                   max={10}
                   onValueChange={(val) => {
-                    setStrokeWidth(val[0]);
+                    events.settingsChanged({ strokeWidth: val[0] });
                   }}
                 />
                 <ColorPicker
                   label="Stroke"
                   value={stroke}
-                  onChange={setStroke}
+                  onChange={(stroke) => events.settingsChanged({ stroke })}
                 />
-                <ColorPicker label="Fill" value={fill} onChange={setFill} />
+                <ColorPicker
+                  label="Fill"
+                  value={fill}
+                  onChange={(fill) => events.settingsChanged({ fill })}
+                />
               </div>
             </div>
           </ScrollArea>
@@ -221,41 +177,16 @@ function InitializedBuilder(props: InitializedBuilderProps) {
   );
 }
 
-let FileInfo = memo(function FileInfo(props: {
-  name: string;
-  duration: number;
-}) {
-  let { name, duration } = props;
-  let formattedDuration = useMemo(() => formatTime(duration), [duration]);
+function CopySvgButton() {
+  let svgHtml = useSvgHtml();
   return (
-    <p className="flex items-center gap-1 text-xs text-gray11">
-      <span>{name}</span>
-      <span>&bull;</span>
-      <span>{formattedDuration}</span>
-    </p>
+    <CopyButton
+      onCopy={() => {
+        invariant(typeof svgHtml === "string");
+        return copy(svgHtml);
+      }}
+    >
+      Copy SVG
+    </CopyButton>
   );
-});
-
-function CopySvgButton(props: { svgHtml: string }) {
-  return <CopyButton onCopy={() => copy(props.svgHtml)}>Copy SVG</CopyButton>;
-}
-
-function SvgFileSize(props: { svgHtml: string }) {
-  let { svgHtml } = props;
-  let fileSize = useMemo(() => {
-    let blob = new Blob([svgHtml]).size;
-    return filesize(blob).human();
-  }, [svgHtml]);
-  return (
-    <p className="text-xs font-semibold text-gray11 dark:text-grayDark11">
-      {fileSize}
-    </p>
-  );
-}
-
-function formatTime(seconds: number) {
-  const min = Math.floor(seconds / 60);
-  const sec = `${Math.floor(seconds % 60)}`.padStart(2, "0");
-
-  return `${min}:${sec}`;
 }
