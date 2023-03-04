@@ -3,15 +3,15 @@ import filesize from "file-size";
 import { create } from "zustand";
 import { colors } from "./ColorPicker";
 
-interface Analysis {
-  name: string;
-  waveformData: WaveformData;
-}
-
 type AnalysisState =
   | { status: "uninitialized" }
   | { status: "analyzing" }
-  | { status: "analyzed"; analysis: Analysis; svgHtml: string | null }
+  | {
+      status: "analyzed";
+      name: string;
+      waveformData: WaveformData;
+      svgHtml: string | null;
+    }
   // A distinct state to represent when we've already uploaded a file and
   // started working, but then upload another file. Most existing state
   // should be preserved in this case.
@@ -68,10 +68,8 @@ export let useBuilder = create<BuilderState>()((set, get) => ({
         analysis: {
           status: "analyzed",
           svgHtml: null,
-          analysis: {
-            name: "Good Sport",
-            waveformData,
-          },
+          name: "Good Sport",
+          waveformData,
         },
       });
     },
@@ -89,10 +87,9 @@ export let useBuilder = create<BuilderState>()((set, get) => ({
         set({
           analysis: {
             status: "analyzed",
-            analysis: {
-              name: file.name,
-              waveformData,
-            },
+            svgHtml: null,
+            name: file.name,
+            waveformData,
           },
         });
       }

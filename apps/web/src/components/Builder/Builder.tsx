@@ -1,4 +1,3 @@
-import { useLayoutEffect } from "react";
 import invariant from "tiny-invariant";
 import copy from "clipboard-copy";
 import { DropZone } from "./DropZone";
@@ -6,14 +5,14 @@ import { RadioGroup } from "./RadioGroup";
 import { CopyButton } from "./CopyButton";
 import { ColorPicker } from "./ColorPicker";
 import { Slider } from "./Slider";
-import { GitHub } from "./Icons";
 import { SvgWavform } from "./SvgWaveform";
 import type { LinearPathOptions } from "@waveformr/core";
 import { ScrollArea } from "./ScrollArea";
 import { HiddenFileInputButton } from "./HiddenFileInput";
 import { useAnalysis, useEvents, useSettings, useSvgHtml } from "./state";
 import { FileSize } from "./FileSize";
-import { FileInfo } from "./FileInfo";
+import { WaveformStats } from "./WaveformStats";
+import { Layout } from "./Layout";
 
 export function Builder() {
   let events = useEvents();
@@ -33,15 +32,16 @@ export function Builder() {
     events.settingsChanged({ pathConfig: { ...pathConfig, type: newType } });
   }
 
-  useLayoutEffect(() => {
-    events.sampleChosen();
-  }, [events]);
-
   if (analysis.status === "uninitialized") {
     return (
-      <div className="w-full space-y-8">
-        <DropZone onDrop={events.fileUploaded} onSample={events.sampleChosen} />
-      </div>
+      <Layout>
+        <div className="h-full flex-1 px-8 pt-8">
+          <DropZone
+            onDrop={events.fileUploaded}
+            onSample={events.sampleChosen}
+          />
+        </div>
+      </Layout>
     );
   }
 
@@ -50,66 +50,61 @@ export function Builder() {
   }
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex h-full flex-col md:flex-row">
-        <div className="relative flex w-full flex-col justify-center gap-8 bg-gray1 p-8 dark:bg-grayDark2 md:h-full">
-          <header className="top-0 left-0 z-10 flex w-full items-center justify-between md:absolute md:px-8 md:py-6">
-            <a
-              href="/"
-              className="text-sm font-semibold lowercase tracking-wider"
-            >
-              Waveformr
-            </a>
-
-            <div className="flex items-center gap-2">
+    <Layout
+      title={
+        analysis.status === "analyzed" ? (
+          <div>
+            {analysis.name}{" "}
+            <WaveformStats
+              duration={analysis.waveformData.duration}
+              sampleRate={analysis.waveformData.sample_rate}
+            />
+          </div>
+        ) : (
+          "..."
+        )
+      }
+      rightSlot={
+        <div className="flex items-center gap-2">
+          <FileSize />
+          <CopySvgButton />
+        </div>
+      }
+    >
+      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray6 bg-gray1 px-8 py-6 dark:border-grayDark8 dark:bg-grayDark2 md:h-auto md:flex-1">
+        {analysis.status === "analyzed" ? (
+          <>
+            <SvgWavform
+              type={pathConfig.type}
+              width={width}
+              height={height}
+              samples={samples}
+              waveformData={analysis.waveformData}
+              stroke={stroke}
+              fill={fill}
+              strokeWidth={strokeWidth}
+              strokeLinecap={strokeLinecap}
+            />
+            <div className="absolute top-0 right-0 px-8 py-1 md:py-2">
               <HiddenFileInputButton
                 variant="subtle"
                 onFile={events.fileUploaded}
               >
                 Upload
               </HiddenFileInputButton>
-              <CopySvgButton />
             </div>
-          </header>
-          {analysis.status === "analyzed" ? (
-            <>
-              <SvgWavform
-                type={pathConfig.type}
-                width={width}
-                height={height}
-                samples={samples}
-                waveformData={analysis.analysis.waveformData}
-                stroke={stroke}
-                fill={fill}
-                strokeWidth={strokeWidth}
-                strokeLinecap={strokeLinecap}
-              />
-              <div className="bottom-4 left-0 flex w-full items-center justify-between md:absolute md:px-8">
-                <FileInfo
-                  name={analysis.analysis.name}
-                  duration={analysis.analysis.waveformData.duration}
-                />
-                <a
-                  href="https://github.com/npbee/waveformr"
-                  className="flex w-4"
-                >
-                  <GitHub aria-hidden="true" />
-                  <span className="sr-only">GitHub</span>
-                </a>
-                <FileSize />
-              </div>
-            </>
-          ) : (
-            <div className="text-sm text-gray11 dark:text-grayDark11">
-              Reanalyzing...
-            </div>
-          )}
-        </div>
-        <aside className="z-10 flex h-full min-h-0 flex-col gap-4 border-gray6 py-6 shadow-lg dark:border-grayDark8 dark:bg-grayDark4 md:w-[400px] md:border-l">
-          <ScrollArea>
-            <div className="flex flex-col gap-6 px-8 pb-8">
-              <h2 className="text-base font-medium">Settings</h2>
-              <div className="space-y-10">
+          </>
+        ) : (
+          <div className="text-sm text-gray11 dark:text-grayDark11">
+            Reanalyzing...
+          </div>
+        )}
+      </div>
+      <aside className="z-10 flex min-h-0 flex-col gap-4 py-6">
+        <ScrollArea>
+          <div className="flex flex-col gap-6 px-8 pb-8">
+            <div className="grid gap-10 md:grid-cols-4">
+              <div className="flex flex-col gap-8">
                 <RadioGroup
                   label="Style"
                   value={pathConfig.type}
@@ -134,6 +129,8 @@ export function Builder() {
                     events.settingsChanged({ samples: val[0] });
                   }}
                 />
+              </div>
+              <div className="flex flex-col gap-8">
                 <RadioGroup
                   label="Stroke Linecap"
                   value={strokeLinecap}
@@ -158,11 +155,15 @@ export function Builder() {
                     events.settingsChanged({ strokeWidth: val[0] });
                   }}
                 />
+              </div>
+              <div>
                 <ColorPicker
                   label="Stroke"
                   value={stroke}
                   onChange={(stroke) => events.settingsChanged({ stroke })}
                 />
+              </div>
+              <div>
                 <ColorPicker
                   label="Fill"
                   value={fill}
@@ -170,10 +171,10 @@ export function Builder() {
                 />
               </div>
             </div>
-          </ScrollArea>
-        </aside>
-      </div>
-    </div>
+          </div>
+        </ScrollArea>
+      </aside>
+    </Layout>
   );
 }
 

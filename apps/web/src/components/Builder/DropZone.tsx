@@ -39,8 +39,6 @@ export function DropZone(props: DropZoneProps) {
     setDragging(false);
   }
 
-  // TODO Could be nice to do the whole page
-  // https://github.com/Shopify/polaris/blob/main/polaris-react/src/components/DropZone/DropZone.tsx#L288
   function handleDrop(evt: DragEvent) {
     evt.preventDefault();
     evt.stopPropagation();
@@ -57,26 +55,50 @@ export function DropZone(props: DropZoneProps) {
       onClick={onClick}
       onDragEnter={onDragEnter}
       onDragOver={onDragOver}
-      onDragExit={onDragLeave}
+      onDragLeave={onDragLeave}
       onDrop={handleDrop}
       className={clsx(
         "border-2",
+        "cursor-pointer",
         "p-5",
         "rounded",
         "border-dashed",
+        "h-full",
+        "flex",
+        "flex-col",
+        "items-center",
+        "justify-center",
+        "hover:bg-gray1",
+        "transition",
+        "hover:border-sky-700",
+        "gap-4",
         focused && "border-sky-900"
       )}
     >
-      {dragging ? <div>Drop it</div> : <div>Add file</div>}
-      <Button
-        onClick={(evt) => {
-          evt.stopPropagation();
-          evt.preventDefault();
-          onSample();
-        }}
-      >
-        Or use a sample
-      </Button>
+      {dragging ? (
+        <p className="text-sm font-semibold text-sky-700">
+          Drop file to analyze
+        </p>
+      ) : (
+        <div className="flex items-center gap-3">
+          <Button>Analyze audio file</Button>
+          <div className="text-sm font-semibold uppercase text-gray11">Or</div>
+          <Button
+            onClick={(evt) => {
+              evt.stopPropagation();
+              evt.preventDefault();
+              onSample();
+            }}
+          >
+            Use a sample
+          </Button>
+        </div>
+      )}
+      {dragging ? null : (
+        <p className="max-w-prose text-sm font-semibold text-gray11">
+          All processing is done on your computer.
+        </p>
+      )}
       <HiddenFileInput
         id={id}
         onFocus={() => {

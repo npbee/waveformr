@@ -3,7 +3,7 @@ import { clsx } from "clsx";
 import { VariantProps, cva } from "class-variance-authority";
 
 let buttonVariants = cva(
-  "active:scale-95 inline-flex text-sm items-center gap-2 rounded-md font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2",
+  "active:scale-95 inline-flex items-center rounded-md font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 transition-all",
   {
     variants: {
       variant: {
@@ -13,7 +13,8 @@ let buttonVariants = cva(
           "text-gray11 hover:underline underline-offset-2 hover:text-gray12 trans-all",
       },
       size: {
-        default: "h-8 py-1 px-2",
+        default: "h-8 py-1 px-2 text-sm gap-2",
+        small: "h-6 text-xs gap-1",
       },
     },
     defaultVariants: {
@@ -39,6 +40,7 @@ export let Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
       {...rest}
       ref={ref}
       className={clsx(buttonVariants({ variant, size }))}
+      style={{ transitionProperty: "opacity, transform" }}
     >
       {icon}
       <span>{children}</span>

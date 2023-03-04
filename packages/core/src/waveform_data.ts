@@ -19,7 +19,7 @@ export class WaveformData {
   }
 
   static createFromAudio(
-    options: WaveformDataAudioBufferOptions | WaveformDataAudioContextOptions
+    options: WaveformDataAudioBufferOptions | WaveformDataAudioContextOptions,
   ): Promise<WaveformData> {
     return new Promise((res, rej) => {
       BBCWaveformData.createFromAudio(options, (err, wf) => {
@@ -44,7 +44,7 @@ export class WaveformData {
               await WaveformData.createFromAudio({
                 array_buffer: result,
                 audio_context: audioCtx,
-              })
+              }),
             );
           } catch (err) {
             reject(err);
@@ -60,7 +60,16 @@ export class WaveformData {
     return this.#waveformData.duration;
   }
 
+  get channels() {
+    return this.#waveformData.channels;
+  }
+
+  get sample_rate() {
+    return this.#waveformData.sample_rate;
+  }
+
   getNormalizedData(samples = this.#waveformData.length) {
+    console.log(this.#waveformData.length);
     const channel = this.#waveformData.channel(0);
     const blockSize = Math.floor(this.#waveformData.length / samples); // the number of samples in each subdivision
     const filteredData = [];
@@ -78,6 +87,10 @@ export class WaveformData {
 
   toJSON(): JsonWaveformData {
     return this.#waveformData.toJSON();
+  }
+
+  length(): number {
+    return this.#waveformData.length;
   }
 }
 

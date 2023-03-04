@@ -1,5 +1,6 @@
 import { forwardRef, useRef } from "react";
 import { Button } from "./Button";
+import { Edit } from "./Icons";
 
 interface HiddenFileInputProps {
   id?: string;
@@ -41,6 +42,8 @@ export function HiddenFileInputButton(
   return (
     <Button
       {...rest}
+      size="small"
+      icon={<Edit />}
       onClick={() => {
         inputRef.current?.click();
       }}

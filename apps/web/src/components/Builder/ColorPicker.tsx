@@ -49,8 +49,11 @@ export function ColorPicker(props: ColorPickerProps) {
                 key={color.value}
                 aria-label={color.name}
                 value={color.value}
-                style={{ backgroundColor: color.value }}
-                className={`flex aspect-square w-full items-center justify-center rounded`}
+                style={{
+                  backgroundColor: color.value,
+                  transitionProperty: "opacity, transform",
+                }}
+                className={`flex aspect-square w-full items-center justify-center rounded-full transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95`}
               >
                 <RadioGroup.Indicator className="text-white">
                   <Check size="1.3em" />

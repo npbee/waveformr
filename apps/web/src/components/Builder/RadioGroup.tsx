@@ -28,7 +28,7 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
       <Label id={labelId}>{label}</Label>
       <div
         className={`grid gap-2`}
-        style={{ gridTemplateColumns: `repeat(auto-fit, minmax(50px, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(auto-fit, minmax(65px, 1fr))` }}
       >
         {items.map((item) => {
           const checked = item.value === value;
