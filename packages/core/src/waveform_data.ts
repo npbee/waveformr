@@ -69,7 +69,6 @@ export class WaveformData {
   }
 
   getNormalizedData(samples = this.#waveformData.length) {
-    console.log(this.#waveformData.length);
     const channel = this.#waveformData.channel(0);
     const blockSize = Math.floor(this.#waveformData.length / samples); // the number of samples in each subdivision
     const filteredData = [];

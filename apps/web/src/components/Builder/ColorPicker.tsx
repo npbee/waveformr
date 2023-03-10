@@ -53,7 +53,7 @@ export function ColorPicker(props: ColorPickerProps) {
                   backgroundColor: color.value,
                   transitionProperty: "opacity, transform",
                 }}
-                className={`flex aspect-square w-full items-center justify-center rounded-full transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95`}
+                className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95`}
               >
                 <RadioGroup.Indicator className="text-white">
                   <Check size="1.3em" />

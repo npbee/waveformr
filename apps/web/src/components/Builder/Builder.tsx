@@ -9,10 +9,18 @@ import { SvgWavform } from "./SvgWaveform";
 import type { LinearPathOptions } from "@waveformr/core";
 import { ScrollArea } from "./ScrollArea";
 import { HiddenFileInputButton } from "./HiddenFileInput";
-import { useAnalysis, useEvents, useSettings, useSvgHtml } from "./state";
+import {
+  AnalysisState,
+  useAnalysis,
+  useEvents,
+  useSettings,
+  useSvgHtml,
+} from "./state";
 import { FileSize } from "./FileSize";
 import { WaveformStats } from "./WaveformStats";
 import { Layout } from "./Layout";
+import { useEffect, useState } from "react";
+import { Copy, Settings, Upload } from "./Icons";
 
 export function Builder() {
   let events = useEvents();
@@ -35,43 +43,48 @@ export function Builder() {
   if (analysis.status === "uninitialized") {
     return (
       <Layout>
-        <div className="h-full flex-1 px-8 pt-8">
+        <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-24 p-8">
           <DropZone
             onDrop={events.fileUploaded}
             onSample={events.sampleChosen}
           />
+
+          <ol className="flex flex-col justify-between gap-24 md:flex-row">
+            <ListItem title="Upload" icon={<Upload />}>
+              Upload your audio or try using a{" "}
+              <button
+                className="font-semibold text-cyan-600 underline underline-offset-2"
+                onClick={(evt) => {
+                  evt.stopPropagation();
+                  evt.preventDefault();
+                  events.sampleChosen();
+                }}
+              >
+                sample
+              </button>
+              . Everything stays on your computer.
+            </ListItem>
+            <ListItem title="Configure" icon={<Settings />}>
+              Change colors, style, and tweak settings until the design looks
+              just right.
+            </ListItem>
+            <ListItem title="Copy and Paste" icon={<Copy />}>
+              Copy the resulting SVG code and paste it directly into your site.
+            </ListItem>
+          </ol>
         </div>
       </Layout>
     );
   }
 
   if (analysis.status === "analyzing") {
-    return <div>Analyzing...</div>;
+    return <Loading />;
   }
 
   return (
-    <Layout
-      title={
-        analysis.status === "analyzed" ? (
-          <div>
-            {analysis.name}{" "}
-            <WaveformStats
-              duration={analysis.waveformData.duration}
-              sampleRate={analysis.waveformData.sample_rate}
-            />
-          </div>
-        ) : (
-          "..."
-        )
-      }
-      rightSlot={
-        <div className="flex items-center gap-2">
-          <FileSize />
-          <CopySvgButton />
-        </div>
-      }
-    >
-      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray6 bg-gray1 px-8 py-6 dark:border-grayDark8 dark:bg-grayDark2 md:h-auto md:flex-1">
+    <Layout>
+      <Subheader analysis={analysis} />
+      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray-200 bg-gray-50 px-8 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1">
         {analysis.status === "analyzed" ? (
           <>
             <SvgWavform
@@ -90,7 +103,7 @@ export function Builder() {
                 variant="subtle"
                 onFile={events.fileUploaded}
               >
-                Upload
+                Edit
               </HiddenFileInputButton>
             </div>
           </>
@@ -102,7 +115,7 @@ export function Builder() {
       </div>
       <aside className="z-10 flex min-h-0 flex-col gap-4 py-6">
         <ScrollArea>
-          <div className="flex flex-col gap-6 px-8 pb-8">
+          <div className="flex flex-col gap-6 px-8 py-4">
             <div className="grid gap-10 md:grid-cols-4">
               <div className="flex flex-col gap-8">
                 <RadioGroup
@@ -189,5 +202,87 @@ function CopySvgButton() {
     >
       Copy SVG
     </CopyButton>
+  );
+}
+
+function useLazyLoader(delay = 300) {
+  let [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      setLoading(true);
+    });
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [delay]);
+
+  return loading;
+}
+
+function Loading() {
+  let isLoading = useLazyLoader();
+
+  return isLoading ? <div>Loading...</div> : null;
+}
+
+function Subheader(props: {
+  analysis: Extract<
+    AnalysisState,
+    { status: "analyzed" } | { status: "reanalyzing" }
+  >;
+}) {
+  const { analysis } = props;
+
+  let title =
+    analysis.status === "reanalyzing" ? (
+      "..."
+    ) : (
+      <div>
+        {analysis.name}
+        <WaveformStats
+          duration={analysis.waveformData.duration}
+          sampleRate={analysis.waveformData.sample_rate}
+        />
+      </div>
+    );
+
+  return (
+    <header className="flex w-full items-center justify-between bg-white px-8 py-2 dark:bg-gray-800 md:py-4">
+      <div className="flex items-center gap-2">
+        <h1 className="text-lg">{title}</h1>
+      </div>
+      <div className="flex items-center gap-2">
+        <FileSize />
+        <CopySvgButton />
+      </div>
+    </header>
+  );
+}
+
+interface ListItemProps {
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  title: string;
+}
+
+function ListItem(props: ListItemProps) {
+  const { icon, title, children } = props;
+
+  return (
+    <li className="flex flex-1 flex-col gap-2 text-base leading-normal">
+      <div className="flex flex-col items-start gap-4">
+        <span className="inline-flex w-fit rounded-full text-cyan-800 dark:text-cyan-700">
+          {icon}
+        </span>
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+          {title}
+        </h3>
+      </div>
+      <p className="leading-normal text-gray-600 dark:text-gray-400">
+        {children}
+      </p>
+    </li>
   );
 }

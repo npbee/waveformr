@@ -60,10 +60,10 @@ export function DropZone(props: DropZoneProps) {
       className={clsx(
         "border-2",
         "cursor-pointer",
-        "p-5",
+        "p-6",
         "rounded",
+        "border-gray-700",
         "border-dashed",
-        "h-full",
         "flex",
         "flex-col",
         "items-center",
@@ -72,6 +72,7 @@ export function DropZone(props: DropZoneProps) {
         "transition",
         "hover:border-sky-700",
         "gap-4",
+        "h-48",
         focused && "border-sky-900"
       )}
     >
@@ -80,24 +81,7 @@ export function DropZone(props: DropZoneProps) {
           Drop file to analyze
         </p>
       ) : (
-        <div className="flex items-center gap-3">
-          <Button>Analyze audio file</Button>
-          <div className="text-sm font-semibold uppercase text-gray11">Or</div>
-          <Button
-            onClick={(evt) => {
-              evt.stopPropagation();
-              evt.preventDefault();
-              onSample();
-            }}
-          >
-            Use a sample
-          </Button>
-        </div>
-      )}
-      {dragging ? null : (
-        <p className="max-w-prose text-sm font-semibold text-gray11">
-          All processing is done on your computer.
-        </p>
+        <Button>Upload</Button>
       )}
       <HiddenFileInput
         id={id}

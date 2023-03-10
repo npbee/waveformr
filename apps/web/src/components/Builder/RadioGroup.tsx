@@ -38,8 +38,8 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
                 checked={checked}
                 className={`cursor-pointer rounded border px-3 py-1.5 text-sm outline-none hover:bg-gray3 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-grayDark3 ${
                   checked
-                    ? "border-violet9 bg-violet3 text-violet12 dark:border-violetDark9 dark:bg-violetDark3 dark:text-violetDark12"
-                    : "border-gray12 dark:border-grayDark8 dark:bg-grayDark2"
+                    ? "border-cyan-800 bg-cyan-900 text-cyan-50 dark:border-cyan-800 dark:bg-cyan-900 dark:text-cyan-50"
+                    : "border-gray-800 dark:bg-gray-800"
                 }`}
                 value={item.value}
                 id={item.value}

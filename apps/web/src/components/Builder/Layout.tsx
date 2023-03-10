@@ -1,32 +1,31 @@
-import { Back } from "./Icons";
-
-interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {
-  rightSlot?: React.ReactNode;
-  title?: string;
-}
+interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export function Layout(props: LayoutProps) {
-  let { children, rightSlot, title } = props;
+  let { children } = props;
   return (
-    <div className="flex h-full flex-col">
-      {title ? (
-        <header className="flex w-full items-center justify-between px-8 py-6">
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg text-gray12">{title}</h1>
-          </div>
-
-          {rightSlot}
-        </header>
-      ) : null}
-      {children}
-      <footer className="flex justify-center px-8 py-3">
+    <div className="flex h-full flex-col dark:bg-gray-900">
+      <header className="flex justify-between border-b border-gray-200 px-8 py-3 dark:border-gray-700">
         <a
-          className="text-xs font-semibold lowercase tracking-wide text-gray11"
           href="/"
+          className="flex w-20 text-gray-800 hover:text-cyan-800 dark:text-gray-50 dark:hover:text-cyan-700"
         >
-          Waveformr
+          <svg viewBox="0 0 86 20">
+            <use href="#wordmark"></use>
+          </svg>
         </a>
-      </footer>
+        <a
+          href="https://github.com/npbee/waveformr"
+          className="flex w-5 text-gray-800"
+        >
+          <svg
+            className="w-5 text-[#24292f] dark:text-white"
+            viewBox="0 0 98 96"
+          >
+            <use href="#github"></use>
+          </svg>
+        </a>
+      </header>
+      {children}
     </div>
   );
 }

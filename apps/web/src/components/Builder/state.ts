@@ -3,7 +3,7 @@ import filesize from "file-size";
 import { create } from "zustand";
 import { colors } from "./ColorPicker";
 
-type AnalysisState =
+export type AnalysisState =
   | { status: "uninitialized" }
   | { status: "analyzing" }
   | {

@@ -3,17 +3,16 @@ import { clsx } from "clsx";
 import { VariantProps, cva } from "class-variance-authority";
 
 let buttonVariants = cva(
-  "active:scale-95 inline-flex items-center rounded-md font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 transition-all",
+  "active:scale-95 inline-flex items-center rounded-full font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 transition-all",
   {
     variants: {
       variant: {
-        default:
-          "bg-white dark:bg-grayDark4 text-gray12 dark:text-grayDark12 border border-gray11 dark:border-grayDark11",
+        default: "bg-cyan-900 text-cyan-50",
         subtle:
-          "text-gray11 hover:underline underline-offset-2 hover:text-gray12 trans-all",
+          "text-gray-600 dark:text-gray-400 hover:underline underline-offset-2 hover:text-gray12 trans-all",
       },
       size: {
-        default: "h-8 py-1 px-2 text-sm gap-2",
+        default: "h-9 px-4 text-sm gap-2",
         small: "h-6 text-xs gap-1",
       },
     },

@@ -7,7 +7,7 @@ export function FileSize() {
   let isStale = fileSize !== deferredFileSize;
   return (
     <p
-      className={`text-xs font-semibold text-gray11 dark:text-grayDark11 ${
+      className={`text-xs font-semibold text-gray-600 dark:text-gray-400 ${
         isStale ? "opacity-50" : "opacity-100"
       }`}
     >

@@ -19,10 +19,10 @@ export function Slider(
         aria-labelledby={labelId}
         className="relative flex h-5 w-full touch-none select-none items-center"
       >
-        <RadixSlider.Track className="relative h-[3px] grow rounded-full bg-gray7 dark:bg-grayDark8">
-          <RadixSlider.Range className="absolute h-full rounded-full bg-violet10 dark:bg-violetDark10" />
+        <RadixSlider.Track className="relative h-[3px] grow rounded-full bg-gray-200 dark:bg-gray-700">
+          <RadixSlider.Range className="absolute h-full rounded-full bg-cyan-900 dark:bg-cyan-600" />
         </RadixSlider.Track>
-        <RadixSlider.Thumb className="block aspect-square w-4 rounded-full border-violet10 bg-violet10 shadow-sm hover:bg-violet9 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet10 focus-visible:ring-offset-2 dark:border-grayDark8 dark:bg-grayDark12 dark:hover:bg-grayDark11" />
+        <RadixSlider.Thumb className="trans block aspect-square w-4 rounded-full border border-gray-700 bg-white shadow-sm hover:bg-cyan-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-900 focus-visible:ring-offset-2 dark:bg-gray-200 dark:hover:bg-gray-300" />
       </RadixSlider.Root>
     </div>
   );
