@@ -62,7 +62,7 @@ export function DropZone(props: DropZoneProps) {
         "cursor-pointer",
         "p-6",
         "rounded",
-        "border-gray-700",
+        "border-gray-400",
         "border-dashed",
         "flex",
         "flex-col",
@@ -73,7 +73,7 @@ export function DropZone(props: DropZoneProps) {
         "hover:border-sky-700",
         "gap-4",
         "h-48",
-        focused && "border-sky-900"
+        focused && "border-cyan-900"
       )}
     >
       {dragging ? (
@@ -81,7 +81,7 @@ export function DropZone(props: DropZoneProps) {
           Drop file to analyze
         </p>
       ) : (
-        <Button>Upload</Button>
+        <Button size="small">Select file</Button>
       )}
       <HiddenFileInput
         id={id}

@@ -13,7 +13,7 @@ let buttonVariants = cva(
       },
       size: {
         default: "h-9 px-4 text-sm gap-2",
-        small: "h-6 text-xs gap-1",
+        small: "h-6 px-3 text-xs gap-1",
       },
     },
     defaultVariants: {

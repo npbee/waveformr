@@ -1,33 +1,34 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import ExampleWaveform from "../components/ExampleWaveform.astro";
-import Glyph from "../components/Glyph.astro";
 ---
 
 <Layout title="Waveformr">
   <main
-    class="mx-auto flex h-full flex-col items-center overflow-x-hidden p-8 dark:bg-gray-900 md:overflow-x-visible"
+    class="mx-auto flex h-full flex-col items-center p-8 md:overflow-x-hidden"
   >
-    <div class="flex max-w-2xl flex-1 flex-col gap-8 py-24">
-      <div class="w-8 text-gray-700 dark:text-gray-50">
-        <Glyph />
-      </div>
+    <div
+      class="flex max-w-2xl flex-1 flex-col gap-4 py-24 text-gray-700 dark:text-gray-50"
+    >
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 87 20"
+        class="xtext-transparent bg-gradient-to-br from-gray-700 to-gray-600 bg-clip-text text-5xl font-black lowercase dark:from-gray-200 dark:to-gray-400 md:text-4xl"
+      >
+        <use href="#lockup"></use>
+      </svg>
       <div class="flex flex-col gap-4">
-        <h1
-          class="bg-gradient-to-br from-gray-700 to-gray-600 bg-clip-text text-5xl font-medium lowercase text-transparent dark:from-gray-200 dark:to-gray-400 md:text-4xl"
-        >
-          Waveformr
-        </h1>
+        <h1 class="sr-only">Waveformr</h1>
         <p
-          class="text-xl font-medium leading-normal text-gray-600 dark:text-gray-300 md:text-xl"
+          class="text-xl font-medium leading-normal text-gray-500 dark:text-gray-300 md:text-2xl"
         >
           Analyze, design, and build responsive audio waveform visualizations
           that you can copy and paste to your site.
         </p>
-        <div class="-mx-48 md:-mx-48">
+        <div class="md:-mx-48">
           <ExampleWaveform />
         </div>
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-2">
           <h2
             class="text-2xl font-semibold text-gray-700 dark:text-gray-400 md:text-xl"
           >

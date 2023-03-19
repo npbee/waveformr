@@ -7,10 +7,10 @@ export function Layout(props: LayoutProps) {
       <header className="flex justify-between border-b border-gray-200 px-8 py-3 dark:border-gray-700">
         <a
           href="/"
-          className="flex w-20 text-gray-800 hover:text-cyan-800 dark:text-gray-50 dark:hover:text-cyan-700"
+          className="flex w-24 text-gray-800 hover:text-cyan-800 dark:text-gray-50 dark:hover:text-cyan-700"
         >
           <svg viewBox="0 0 86 20">
-            <use href="#wordmark"></use>
+            <use href="#lockup"></use>
           </svg>
         </a>
         <a
