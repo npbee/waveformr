@@ -1,56 +1,85 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
-import { colord, extend } from "colord";
-import namesPlugins from "colord/plugins/names";
-import { useId, useMemo } from "react";
+import { useId } from "react";
+import invariant from "tiny-invariant";
 import { Check } from "./Icons";
 import { Label } from "./Label";
 
-extend([namesPlugins]);
-
 interface ColorPickerProps {
   value: string;
-  onChange: (color: string) => void;
+  onChange: (colorName: string) => void;
   label: React.ReactNode;
 }
 
-export let colors = [
-  { name: "rich-black", value: "#001219ff", check: "#001219" },
-  { name: "midnight-green", value: "#005f73" },
-  { name: "dark-cyan", value: "#0a9396" },
-  { name: "tiffany-blue", value: "#94d2bd" },
-  { name: "vanilla", value: "#e9d8a6" },
-  { name: "gamboge", value: "#ee9b00" },
-  { name: "alloy-orange", value: "#ca6702" },
-  { name: "rust", value: "#bb3e03" },
-  { name: "rufous", value: "#ae2012" },
-  { name: "auburn", value: "#9b2226" },
+export interface ColorStop {
+  color: string;
+  offset: number;
+}
+
+export type Color =
+  | { type: "hex"; name: string; value: string; check?: string }
+  | { type: "gradient"; name: string; values: ColorStop[] };
+
+export let colors: Color[] = [
+  { type: "hex", name: "rich-black", value: "#001219ff", check: "#001219" },
+  { type: "hex", name: "midnight-green", value: "#005f73" },
+  { type: "hex", name: "dark-cyan", value: "#0a9396" },
+  { type: "hex", name: "tiffany-blue", value: "#94d2bd" },
+  { type: "hex", name: "vanilla", value: "#e9d8a6" },
+  { type: "hex", name: "gamboge", value: "#ee9b00" },
+  { type: "hex", name: "alloy-orange", value: "#ca6702" },
+  { type: "hex", name: "rust", value: "#bb3e03" },
+  { type: "hex", name: "rufous", value: "#ae2012" },
+  { type: "hex", name: "auburn", value: "#9b2226" },
+  {
+    name: "gradient1",
+    type: "gradient",
+    values: [
+      { offset: 0, color: "#0a9396" },
+      { offset: 25, color: "#005f73" },
+      { offset: 50, color: "#ee9b00" },
+      { offset: 75, color: "#ca6702" },
+      { offset: 100, color: "#9b2226" },
+    ],
+  },
+  {
+    name: "gradient2",
+    type: "gradient",
+    values: [
+      { offset: 0, color: "#94d2bd" },
+      { offset: 50, color: "#ae2012" },
+
+      { offset: 100, color: "#005f73" },
+    ],
+  },
 ];
+
+export function getColor(colorName: string): Color {
+  let color = colors.find((col) => col.name === colorName);
+  invariant(color);
+  return color;
+}
 
 export function ColorPicker(props: ColorPickerProps) {
   let { value, onChange, label } = props;
   let labelId = useId();
-  let hexValue = useMemo(
-    () => (value.startsWith("#") ? value : colord(value).toHex()),
-    [value]
-  );
 
   return (
     <div className="flex flex-col gap-2">
       <Label id={labelId}>{label}</Label>
       <RadioGroup.Root
-        value={hexValue}
+        value={value}
         aria-labelledby={labelId}
         onValueChange={onChange}
       >
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-6 gap-3">
           {colors.map((color) => {
             return (
               <RadioGroup.Item
-                key={color.value}
+                key={color.name}
                 aria-label={color.name}
-                value={color.value}
+                value={color.name}
                 style={{
-                  backgroundColor: color.value,
+                  background: colorToString(color),
                   transitionProperty: "opacity, transform",
                 }}
                 className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95`}
@@ -65,4 +94,16 @@ export function ColorPicker(props: ColorPickerProps) {
       </RadioGroup.Root>
     </div>
   );
+}
+
+function colorToString(color: Color) {
+  if (color.type === "hex") {
+    return color.value;
+  }
+
+  let stops = color.values.map(
+    (colorStop) => `${colorStop.color} ${colorStop.offset}%`
+  );
+
+  return `linear-gradient(0deg, ${stops.join(", ")})`;
 }

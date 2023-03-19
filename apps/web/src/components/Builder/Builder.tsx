@@ -36,6 +36,10 @@ export function Builder() {
     height,
   } = useSettings();
 
+  useEffect(() => {
+    events.sampleChosen();
+  }, []);
+
   function changePathConfigType(newType: LinearPathOptions["type"]) {
     events.settingsChanged({ pathConfig: { ...pathConfig, type: newType } });
   }

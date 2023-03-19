@@ -1,7 +1,7 @@
 import { LinearPathOptions, WaveformData } from "@waveformr/core";
 import filesize from "file-size";
 import { create } from "zustand";
-import { colors } from "./ColorPicker";
+import { Color, colors } from "./ColorPicker";
 
 export type AnalysisState =
   | { status: "uninitialized" }
@@ -42,8 +42,8 @@ interface BuilderState {
 export let useBuilder = create<BuilderState>()((set, get) => ({
   analysis: { status: "uninitialized" },
   settings: {
-    stroke: colors[0].value,
-    fill: colors[0].value,
+    stroke: colors[0].name,
+    fill: colors[0].name,
     strokeWidth: 2,
     strokeLinecap: "round",
     samples: 200,

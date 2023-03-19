@@ -30,7 +30,6 @@ importers:
       class-variance-authority: ^0.4.0
       clipboard-copy: ^4.0.1
       clsx: ^1.2.1
-      colord: ^2.9.3
       file-size: ^1.0.0
       lucide-react: ^0.115.0
       motion: ^10.15.5
@@ -59,7 +58,6 @@ importers:
       class-variance-authority: 0.4.0_typescript@4.9.5
       clipboard-copy: 4.0.1
       clsx: 1.2.1
-      colord: 2.9.3
       file-size: 1.0.0
       lucide-react: 0.115.0_react@18.2.0
       motion: 10.15.5
@@ -1740,10 +1738,6 @@ packages:
 
   /color-name/1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
-    dev: false
-
-  /colord/2.9.3:
-    resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
     dev: false
 
   /comma-separated-tokens/2.0.3:
