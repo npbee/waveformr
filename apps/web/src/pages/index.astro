@@ -56,28 +56,30 @@ import ExampleWaveform from "../components/ExampleWaveform.astro";
           </p>
         </div>
       </div>
-      <a
-        class="inline-flex h-10 w-fit items-center gap-3 rounded-full border border-cyan-900 bg-cyan-900 pl-6 pr-4 text-sm font-semibold text-cyan-50 ring-cyan-800 ring-offset-2 focus:outline-none focus-visible:ring-2"
-        href="/builder"
-        >Try the Builder
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          ><circle cx="12" cy="12" r="10"></circle><polyline
-            points="12 16 16 12 12 8"></polyline><line
-            x1="8"
-            y1="12"
-            x2="16"
-            y2="12"></line></svg
-        >
-      </a>
+      <div class="flex items-center gap-4">
+        <a
+          class="inline-flex h-10 w-fit items-center gap-3 rounded-full border border-cyan-900 bg-cyan-900 pl-6 pr-4 text-sm font-semibold text-cyan-50 ring-cyan-800 ring-offset-2 transition-all hover:bg-cyan-800 focus:outline-none focus-visible:ring-2 active:scale-95"
+          href="/builder"
+          >Try the Builder
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><circle cx="12" cy="12" r="10"></circle><polyline
+              points="12 16 16 12 12 8"></polyline><line
+              x1="8"
+              y1="12"
+              x2="16"
+              y2="12"></line></svg
+          >
+        </a>
+      </div>
     </div>
     <footer class="flex w-full max-w-2xl items-start">
       <a href="https://github.com/npbee/waveformr">
