@@ -53,7 +53,7 @@ export function Builder() {
             <ListItem title="Upload" icon={<Upload />}>
               Upload your audio or try using a{" "}
               <button
-                className="font-semibold text-cyan-600 underline underline-offset-2"
+                className="trans font-semibold text-cyan-800 underline underline-offset-2 hover:text-cyan-600 dark:text-cyan-50 dark:hover:text-cyan-700"
                 onClick={(evt) => {
                   evt.stopPropagation();
                   evt.preventDefault();
@@ -108,7 +108,7 @@ export function Builder() {
             </div>
           </>
         ) : (
-          <div className="text-sm text-gray11 dark:text-grayDark11">
+          <div className="text-sm text-gray-700 dark:text-gray-400">
             Reanalyzing...
           </div>
         )}
@@ -273,14 +273,14 @@ function ListItem(props: ListItemProps) {
   return (
     <li className="flex flex-1 flex-col gap-2 text-base leading-normal">
       <div className="flex flex-col items-start gap-4">
-        <span className="inline-flex w-fit rounded-full text-cyan-800 dark:text-cyan-700">
+        <span className="inline-flex w-fit rounded-full text-lg text-cyan-800 dark:text-cyan-600">
           {icon}
         </span>
-        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
           {title}
         </h3>
       </div>
-      <p className="leading-normal text-gray-600 dark:text-gray-400">
+      <p className="leading-normal text-gray-600 dark:text-gray-300">
         {children}
       </p>
     </li>

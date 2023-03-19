@@ -9,7 +9,7 @@ let buttonVariants = cva(
       variant: {
         default: "bg-cyan-900 text-cyan-50",
         subtle:
-          "text-gray-600 dark:text-gray-400 hover:underline underline-offset-2 hover:text-gray12 trans-all",
+          "text-gray-600 dark:text-gray-400 hover:underline underline-offset-2 hover:text-gray-500 trans-all",
       },
       size: {
         default: "h-9 px-4 text-sm gap-2",

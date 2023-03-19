@@ -36,7 +36,7 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
             <div className="grid" key={item.value}>
               <RadixRadioGroup.Item
                 checked={checked}
-                className={`cursor-pointer rounded border px-3 py-1.5 text-sm outline-none hover:bg-gray3 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-grayDark3 ${
+                className={`cursor-pointer rounded border px-3 py-1.5 text-sm outline-none hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 dark:hover:bg-gray-600 ${
                   checked
                     ? "border-cyan-800 bg-cyan-900 text-cyan-50 dark:border-cyan-800 dark:bg-cyan-900 dark:text-cyan-50"
                     : "border-gray-800 dark:bg-gray-800"
