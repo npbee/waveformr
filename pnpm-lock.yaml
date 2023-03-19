@@ -18,11 +18,9 @@ importers:
       '@astrojs/deno': ^4.0.2
       '@astrojs/react': ^2.0.2
       '@astrojs/tailwind': ^3.0.1
-      '@radix-ui/colors': ^0.1.8
       '@radix-ui/react-popover': ^1.0.3
       '@radix-ui/react-radio-group': ^1.1.1
       '@radix-ui/react-scroll-area': ^1.0.2
-      '@radix-ui/react-select': ^1.2.0
       '@radix-ui/react-slider': ^1.1.0
       '@types/file-size': ^1.0.1
       '@types/react': ^18.0.28
@@ -50,11 +48,9 @@ importers:
       '@astrojs/deno': 4.0.2_astro@2.0.14
       '@astrojs/react': 2.0.2_3xleytyzprlgycb2ded54tx72i
       '@astrojs/tailwind': 3.0.1_hf2kjfio2dr6w52rh4mpociq2u
-      '@radix-ui/colors': 0.1.8
       '@radix-ui/react-popover': 1.0.3_zula6vjvt3wdocc4mwcxqa6nzi
       '@radix-ui/react-radio-group': 1.1.1_biqbaboplfbrettd7655fr4n2y
       '@radix-ui/react-scroll-area': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-select': 1.2.0_zula6vjvt3wdocc4mwcxqa6nzi
       '@radix-ui/react-slider': 1.1.0_biqbaboplfbrettd7655fr4n2y
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
@@ -855,10 +851,6 @@ packages:
       escalade: 3.1.1
     dev: false
 
-  /@radix-ui/colors/0.1.8:
-    resolution: {integrity: sha512-jwRMXYwC0hUo0mv6wGpuw254Pd9p/R6Td5xsRpOmaWkUHlooNWqVcadgyzlRumMq3xfOTXwJReU0Jv+EIy4Jbw==}
-    dev: false
-
   /@radix-ui/number/1.0.0:
     resolution: {integrity: sha512-Ofwh/1HX69ZfJRiRBMTy7rgjAzHmwe4kW9C9Y99HTRUcYLUuVT0KESFj15rPjRgKJs20GPq8Bm5aEDJ8DuA3vA==}
     dependencies:
@@ -1123,40 +1115,6 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@radix-ui/react-select/1.2.0_zula6vjvt3wdocc4mwcxqa6nzi:
-    resolution: {integrity: sha512-MmXKsIBrG9GKxt8JKIn75LEPiX/zejBmj/Z36Hxtm9cdmCFzTo78QJ0Q3buLGzr0c3lzXdfgeKntmgCzaGxgkw==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-    dependencies:
-      '@babel/runtime': 7.20.13
-      '@radix-ui/number': 1.0.0
-      '@radix-ui/primitive': 1.0.0
-      '@radix-ui/react-collection': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-compose-refs': 1.0.0_react@18.2.0
-      '@radix-ui/react-context': 1.0.0_react@18.2.0
-      '@radix-ui/react-direction': 1.0.0_react@18.2.0
-      '@radix-ui/react-dismissable-layer': 1.0.2_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-focus-guards': 1.0.0_react@18.2.0
-      '@radix-ui/react-focus-scope': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-id': 1.0.0_react@18.2.0
-      '@radix-ui/react-popper': 1.1.0_zula6vjvt3wdocc4mwcxqa6nzi
-      '@radix-ui/react-portal': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-primitive': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      '@radix-ui/react-slot': 1.0.1_react@18.2.0
-      '@radix-ui/react-use-callback-ref': 1.0.0_react@18.2.0
-      '@radix-ui/react-use-controllable-state': 1.0.0_react@18.2.0
-      '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
-      '@radix-ui/react-use-previous': 1.0.0_react@18.2.0
-      '@radix-ui/react-visually-hidden': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      aria-hidden: 1.2.2_pmekkgnqduwlme35zpnqhenc34
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
-      react-remove-scroll: 2.5.5_pmekkgnqduwlme35zpnqhenc34
-    transitivePeerDependencies:
-      - '@types/react'
-    dev: false
-
   /@radix-ui/react-slider/1.1.0_biqbaboplfbrettd7655fr4n2y:
     resolution: {integrity: sha512-5H/QB4xD3GF9UfoSCVLBx2JjlXamMcmTyL6gr4kkd/MiAGaYB0W7Exi4MQa0tJApBFJe+KmS5InKCI56p2kmjA==}
     peerDependencies:
@@ -1254,18 +1212,6 @@ packages:
       '@babel/runtime': 7.20.13
       '@radix-ui/react-use-layout-effect': 1.0.0_react@18.2.0
       react: 18.2.0
-    dev: false
-
-  /@radix-ui/react-visually-hidden/1.0.1_biqbaboplfbrettd7655fr4n2y:
-    resolution: {integrity: sha512-K1hJcCMfWfiYUibRqf3V8r5Drpyf7rh44jnrwAbdvI5iCCijilBBeyQv9SKidYNZIopMdCyR9FnIjkHxHN0FcQ==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0
-      react-dom: ^16.8 || ^17.0 || ^18.0
-    dependencies:
-      '@babel/runtime': 7.20.13
-      '@radix-ui/react-primitive': 1.0.1_biqbaboplfbrettd7655fr4n2y
-      react: 18.2.0
-      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /@radix-ui/rect/1.0.0:
