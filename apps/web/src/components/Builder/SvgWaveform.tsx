@@ -58,9 +58,17 @@ export function SvgWavform(props: SvgWaveformProps) {
     ) : null;
 
   let fillValue =
-    fillColor.type === "hex" ? fillColor.value : `url(#${fillId})`;
+    fillColor.type === "hex"
+      ? fillColor.value
+      : fillColor.type === "none"
+      ? "none"
+      : `url(#${fillId})`;
   let strokeValue =
-    strokeColor.type === "hex" ? strokeColor.value : `url(#${strokeId})`;
+    strokeColor.type === "hex"
+      ? strokeColor.value
+      : strokeColor.type === "none"
+      ? "none"
+      : `url(#${strokeId})`;
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} width="100%" ref={ref}>

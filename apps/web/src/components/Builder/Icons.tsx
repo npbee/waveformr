@@ -7,6 +7,7 @@ import {
   Upload as _Upload,
   Settings2,
   ClipboardCopy,
+  Slash,
 } from "lucide-react";
 
 export let Del: LucideIcon = (props) => <Trash {...props} size="0.9em" />;
@@ -19,6 +20,7 @@ export let Back: LucideIcon = (props) => (
 );
 export let Edit: LucideIcon = (props) => <_Edit size="0.9em" {...props} />;
 export let Upload: LucideIcon = (props) => <_Upload size="0.9em" {...props} />;
+export let None: LucideIcon = (props) => <Slash size="0.9em" {...props} />;
 export let Settings: LucideIcon = (props) => (
   <Settings2 size="0.9em" {...props} />
 );

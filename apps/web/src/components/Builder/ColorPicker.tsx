@@ -18,7 +18,8 @@ export interface ColorStop {
 
 export type Color =
   | { type: "hex"; name: string; value: string; check?: string }
-  | { type: "gradient"; name: string; values: ColorStop[] };
+  | { type: "gradient"; name: string; values: ColorStop[] }
+  | { type: "none"; name: "none" };
 
 export let colors: Color[] = [
   { type: "hex", name: "rich-black", value: "#001219ff", check: "#001219" },
@@ -52,6 +53,16 @@ export let colors: Color[] = [
       { offset: 100, color: "#005f73" },
     ],
   },
+  {
+    name: "gradient3",
+    type: "gradient",
+    values: [
+      { offset: 0, color: "#94d2bd" },
+
+      { offset: 100, color: "#bb3e03" },
+    ],
+  },
+  { type: "none", name: "none" },
 ];
 
 export function getColor(colorName: string): Color {
@@ -77,7 +88,7 @@ export function ColorPicker(props: ColorPickerProps) {
         onValueChange={onChange}
         disabled={disabled}
       >
-        <div className="grid grid-cols-6 gap-3">
+        <div className="grid grid-cols-7 gap-3">
           {colors.map((color) => {
             return (
               <RadioGroup.Item
@@ -85,14 +96,24 @@ export function ColorPicker(props: ColorPickerProps) {
                 aria-label={color.name}
                 value={color.name}
                 style={{
-                  background: colorToString(color),
+                  background: colorToBg(color),
                   transitionProperty: "opacity, transform",
                 }}
                 className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95 ${
                   disabled ? "cursor-not-allowed" : ""
+                } ${
+                  color.type === "none"
+                    ? "border border-gray-400 dark:border-gray-400"
+                    : ""
                 }`}
               >
-                <RadioGroup.Indicator className="text-white">
+                <RadioGroup.Indicator
+                  className={`${
+                    color.type === "none"
+                      ? "text-gray-900 dark:text-gray-50"
+                      : "text-white dark:text-gray-900"
+                  }`}
+                >
                   <Check size="1.3em" />
                 </RadioGroup.Indicator>
               </RadioGroup.Item>
@@ -104,9 +125,13 @@ export function ColorPicker(props: ColorPickerProps) {
   );
 }
 
-function colorToString(color: Color) {
+function colorToBg(color: Color) {
   if (color.type === "hex") {
     return color.value;
+  }
+
+  if (color.type === "none") {
+    return "transparent";
   }
 
   let stops = color.values.map(
