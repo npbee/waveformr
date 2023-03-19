@@ -1,28 +1,43 @@
 ---
 import "../styles/base.css";
+import { SEO } from "astro-seo";
 
 export interface Props {
   title: string;
+  ogBasicTitle: string;
 }
 
-const { title } = Astro.props;
+const { title, ogBasicTitle } = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="">
   <head>
-    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <SEO
+      charset="UTF-8"
+      title={title}
+      description="Analyze, design, and build responsive audio waveform visualizations that you can copy and paste to your site."
+      twitter={{
+        site: "@_nickball",
+        creator: "@_nickball",
+        card: "summary",
+      }}
+      openGraph={{
+        basic: {
+          title: ogBasicTitle,
+          type: "website",
+          image: "https://waveformr.com/og.png",
+        },
+        image: {
+          width: 1200,
+          height: 630,
+          alt: "Waveformr",
+        },
+      }}
+    />
   </head>
   <body class="text-gray-900 dark:text-gray-50">
     <svg aria-hidden="true" style="display: none">
@@ -105,6 +120,6 @@ const { title } = Astro.props;
           fill="currentColor"></path>
       </symbol>
     </svg>
+    <slot />
   </body>
-  <slot />
 </html>

@@ -27,6 +27,7 @@ importers:
       '@types/react-dom': ^18.0.11
       '@waveformr/core': workspace:*
       astro: ^2.0.14
+      astro-seo: ^0.7.1
       class-variance-authority: ^0.4.0
       clipboard-copy: ^4.0.1
       clsx: ^1.2.1
@@ -55,6 +56,7 @@ importers:
       '@types/react-dom': 18.0.11
       '@waveformr/core': link:../../packages/core
       astro: 2.0.14
+      astro-seo: 0.7.1
       class-variance-authority: 0.4.0_typescript@4.9.5
       clipboard-copy: 4.0.1
       clsx: 1.2.1
@@ -1433,6 +1435,10 @@ packages:
 
   /array-iterate/2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
+    dev: false
+
+  /astro-seo/0.7.1:
+    resolution: {integrity: sha512-8Yo1nQrl2iB5zj+VUAHrvGIck8bZ4WAmXQgJOeF9FuAZGQD5qK6DtSZaRbpBXsFfZYHA6tE8pjs3btHhLbC1zQ==}
     dev: false
 
   /astro/2.0.14:
