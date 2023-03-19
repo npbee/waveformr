@@ -14,16 +14,16 @@ interface ColorPickerProps {
 }
 
 export let colors = [
-  { name: "rich-black", value: "#001219ff", check: "#001219ff" },
-  { name: "midnight-green", value: "#005f73ff" },
-  { name: "dark-cyan", value: "#0a9396ff" },
-  { name: "tiffany-blue", value: "#94d2bdff" },
-  { name: "vanilla", value: "#e9d8a6ff" },
-  { name: "gamboge", value: "#ee9b00ff" },
-  { name: "alloy-orange", value: "#ca6702ff" },
-  { name: "rust", value: "#bb3e03ff" },
-  { name: "rufous", value: "#ae2012ff" },
-  { name: "auburn", value: "#9b2226ff" },
+  { name: "rich-black", value: "#001219ff", check: "#001219" },
+  { name: "midnight-green", value: "#005f73" },
+  { name: "dark-cyan", value: "#0a9396" },
+  { name: "tiffany-blue", value: "#94d2bd" },
+  { name: "vanilla", value: "#e9d8a6" },
+  { name: "gamboge", value: "#ee9b00" },
+  { name: "alloy-orange", value: "#ca6702" },
+  { name: "rust", value: "#bb3e03" },
+  { name: "rufous", value: "#ae2012" },
+  { name: "auburn", value: "#9b2226" },
 ];
 
 export function ColorPicker(props: ColorPickerProps) {
