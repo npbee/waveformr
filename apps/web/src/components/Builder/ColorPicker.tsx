@@ -8,6 +8,7 @@ interface ColorPickerProps {
   value: string;
   onChange: (colorName: string) => void;
   label: React.ReactNode;
+  disabled?: boolean;
 }
 
 export interface ColorStop {
@@ -60,16 +61,21 @@ export function getColor(colorName: string): Color {
 }
 
 export function ColorPicker(props: ColorPickerProps) {
-  let { value, onChange, label } = props;
+  let { value, onChange, label, disabled } = props;
   let labelId = useId();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div
+      className={`flex flex-col gap-2 ${
+        disabled ? "pointer-events-none cursor-not-allowed opacity-50" : ""
+      }`}
+    >
       <Label id={labelId}>{label}</Label>
       <RadioGroup.Root
         value={value}
         aria-labelledby={labelId}
         onValueChange={onChange}
+        disabled={disabled}
       >
         <div className="grid grid-cols-6 gap-3">
           {colors.map((color) => {
@@ -82,7 +88,9 @@ export function ColorPicker(props: ColorPickerProps) {
                   background: colorToString(color),
                   transitionProperty: "opacity, transform",
                 }}
-                className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95`}
+                className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95 ${
+                  disabled ? "cursor-not-allowed" : ""
+                }`}
               >
                 <RadioGroup.Indicator className="text-white">
                   <Check size="1.3em" />

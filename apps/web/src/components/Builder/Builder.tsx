@@ -44,6 +44,8 @@ export function Builder() {
     events.settingsChanged({ pathConfig: { ...pathConfig, type: newType } });
   }
 
+  let fillApplicable = pathConfig.type === "steps";
+
   if (analysis.status === "uninitialized") {
     return (
       <Layout>
@@ -182,6 +184,7 @@ export function Builder() {
               </div>
               <div>
                 <ColorPicker
+                  disabled={!fillApplicable}
                   label="Fill"
                   value={fill}
                   onChange={(fill) => events.settingsChanged({ fill })}
