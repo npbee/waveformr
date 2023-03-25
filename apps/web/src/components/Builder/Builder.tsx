@@ -45,13 +45,13 @@ export function Builder() {
   if (analysis.status === "uninitialized") {
     return (
       <Layout>
-        <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-24 p-8">
+        <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-12 p-8 md:gap-24">
           <DropZone
             onDrop={events.fileUploaded}
             onSample={events.sampleChosen}
           />
 
-          <ol className="flex flex-col justify-between gap-24 md:flex-row">
+          <ol className="flex flex-col justify-between gap-12 md:flex-row md:gap-24">
             <ListItem title="Upload" icon={<Upload />}>
               Upload your audio or try using a{" "}
               <button
@@ -109,6 +109,16 @@ export function Builder() {
               </HiddenFileInputButton>
             </div>
           </>
+        ) : analysis.status === "error" ? (
+          <div className="text-sm text-gray-700 dark:text-gray-400">
+            There was an error analyzing the audio.
+            <HiddenFileInputButton
+              variant="subtle"
+              onFile={events.fileUploaded}
+            >
+              Try again
+            </HiddenFileInputButton>
+          </div>
         ) : (
           <div className="text-sm text-gray-700 dark:text-gray-400">
             Reanalyzing...
@@ -208,7 +218,7 @@ function CopySvgButton() {
   );
 }
 
-function useLazyLoader(delay = 300) {
+function useLazyLoader(delay = 400) {
   let [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -227,19 +237,23 @@ function useLazyLoader(delay = 300) {
 function Loading() {
   let isLoading = useLazyLoader();
 
-  return isLoading ? <div>Loading...</div> : null;
+  return isLoading ? (
+    <p className="text-medium absolute top-0 left-0 flex h-full w-full items-center justify-center text-base text-gray-600">
+      Loading...
+    </p>
+  ) : null;
 }
 
 function Subheader(props: {
   analysis: Extract<
     AnalysisState,
-    { status: "analyzed" } | { status: "reanalyzing" }
+    { status: "analyzed" } | { status: "reanalyzing" } | { status: "error" }
   >;
 }) {
   const { analysis } = props;
 
   let title =
-    analysis.status === "reanalyzing" ? (
+    analysis.status === "reanalyzing" || analysis.status === "error" ? (
       "..."
     ) : (
       <div>

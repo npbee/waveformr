@@ -6,6 +6,7 @@ import { Color, colors } from "./ColorPicker";
 export type AnalysisState =
   | { status: "uninitialized" }
   | { status: "analyzing" }
+  | { status: "error" }
   | {
       status: "analyzed";
       name: string;
@@ -77,21 +78,29 @@ export let useBuilder = create<BuilderState>()((set, get) => ({
       let analysisState = get().analysis;
       let status = analysisState.status;
 
-      if (status === "analyzed" || status === "uninitialized") {
+      if (
+        status === "analyzed" ||
+        status === "uninitialized" ||
+        status === "error"
+      ) {
         set({
           analysis: {
             status: status === "uninitialized" ? "analyzing" : "reanalyzing",
           },
         });
-        let waveformData = await runClientSideAnalysis(file);
-        set({
-          analysis: {
-            status: "analyzed",
-            svgHtml: null,
-            name: file.name,
-            waveformData,
-          },
-        });
+        try {
+          let waveformData = await runClientSideAnalysis(file);
+          set({
+            analysis: {
+              status: "analyzed",
+              svgHtml: null,
+              name: file.name,
+              waveformData,
+            },
+          });
+        } catch (err) {
+          set({ analysis: { status: "error" } });
+        }
       }
     },
 

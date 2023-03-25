@@ -8,11 +8,8 @@ interface DropZoneProps {
   onSample: () => void;
 }
 
-// Hidden label
-// https://polaris.shopify.com/components/selection-and-input/drop-zone
-
 export function DropZone(props: DropZoneProps) {
-  let { onDrop, onSample } = props;
+  let { onDrop } = props;
   let id = useId();
   let [focused, setFocused] = useState(false);
   let [dragging, setDragging] = useState(false);
@@ -79,7 +76,7 @@ export function DropZone(props: DropZoneProps) {
       )}
     >
       {dragging ? (
-        <p className="text-sm font-semibold text-sky-700">
+        <p className="text-sky-700 text-sm font-semibold">
           Drop file to analyze
         </p>
       ) : (
