@@ -4,7 +4,7 @@ export type ValidExt = "mp3" | "wav";
  * I've tried various ways to pass data to the subprocess and just reading &
  * writing to the file system seems to work the best.
  */
-export async function analyzeFile(file: File, ext: ValidExt, samples = 500) {
+export async function analyzeFile(file: File, ext: ValidExt) {
   let inFile = await Deno.makeTempFile({ suffix: `.${ext}` });
   await Deno.writeFile(inFile, file.stream());
 
@@ -21,4 +21,3 @@ export async function analyzeFile(file: File, ext: ValidExt, samples = 500) {
   Deno.remove(inFile);
   return data;
 }
-

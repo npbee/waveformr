@@ -40,11 +40,14 @@ app.post("/", async (c) => {
     });
   }
 
-  let samples = parseSamples(formData.get("samples"));
-  let result = await analyzeFile(file, ext, samples);
+  let result = await analyzeFile(file, ext);
 
-  // TODO: binary response
-  return c.text(result);
+  return new Response(result.buffer, {
+    headers: {
+      "Content-Type": "application/octet-stream",
+      "Content-Length": String(result.buffer.byteLength),
+    },
+  });
 });
 
 export function run() {
@@ -59,18 +62,6 @@ function isValidExt(ext: unknown): ext is ValidExt {
   let res = ext === "mp3" || ext === "wav";
 
   return res;
-}
-
-function parseSamples(samples: unknown) {
-  if (typeof samples !== "string") {
-    return;
-  }
-
-  let parsed = parseInt(samples);
-
-  if (Number.isNaN(parsed)) return;
-
-  return parsed;
 }
 
 function getApiKey(): string {
