@@ -12,6 +12,7 @@ export type AnalysisState =
       name: string;
       waveformData: WaveformData;
       svgHtml: string | null;
+      url?: string;
     }
   // A distinct state to represent when we've already uploaded a file and
   // started working, but then upload another file. Most existing state
@@ -71,6 +72,7 @@ export let useBuilder = create<BuilderState>()((set, get) => ({
           svgHtml: null,
           name: "Good Sport",
           waveformData,
+          url: "https://open.spotify.com/track/22mwiRps7oowfHX4XQPWG6?si=1ac9b679215b4a57",
         },
       });
     },

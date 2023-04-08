@@ -257,7 +257,18 @@ function Subheader(props: {
       "..."
     ) : (
       <div>
-        {analysis.name}
+        {analysis.url ? (
+          <a
+            className="hover:underline"
+            href={analysis.url}
+            target="_blank"
+            rel="noreferrer noopener nofollow"
+          >
+            {analysis.name}
+          </a>
+        ) : (
+          analysis.name
+        )}
         <WaveformStats
           duration={analysis.waveformData.duration}
           sampleRate={analysis.waveformData.sample_rate}
