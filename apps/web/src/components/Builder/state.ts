@@ -41,11 +41,13 @@ interface BuilderState {
   };
 }
 
+let defaultColor = colors[colors.length - 2];
+
 export let useBuilder = create<BuilderState>()((set, get) => ({
   analysis: { status: "uninitialized" },
   settings: {
-    stroke: colors[0].name,
-    fill: colors[0].name,
+    stroke: defaultColor.name,
+    fill: defaultColor.name,
     strokeWidth: 2,
     strokeLinecap: "round",
     samples: 200,
