@@ -19,11 +19,9 @@ import ExampleWaveform from "../components/ExampleWaveform.astro";
   title="Waveformr – Build responsive audio waveforms"
   ogBasicTitle="Waveformr"
 >
-  <main
-    class="mx-auto flex h-full flex-col items-center p-8 md:overflow-x-hidden"
-  >
+  <main class="mx-auto flex h-full flex-col items-center p-8">
     <div
-      class="flex max-w-2xl flex-1 flex-col gap-4 py-24 text-gray-700 dark:text-gray-50"
+      class="flex max-w-2xl flex-1 flex-col gap-4 text-gray-700 dark:text-gray-50 md:py-24"
     >
       <svg
         aria-hidden="true"
@@ -35,22 +33,22 @@ import ExampleWaveform from "../components/ExampleWaveform.astro";
       <div class="flex flex-col gap-4">
         <h1 class="sr-only">Waveformr</h1>
         <p
-          class="text-xl font-medium leading-normal text-gray-500 dark:text-gray-300 md:text-2xl"
+          class="text-lg font-medium leading-normal text-gray-500 dark:text-gray-300 md:text-2xl"
         >
-          Analyze, design, and build responsive audio waveform visualizations
-          that you can copy and paste to your site.
+          Build responsive audio waveform visualizations that you can copy and
+          paste to your site.
         </p>
         <div class="md:-mx-48">
           <ExampleWaveform />
         </div>
         <div class="flex flex-col gap-2">
           <h2
-            class="text-2xl font-semibold text-gray-700 dark:text-gray-400 md:text-xl"
+            class="text-lg font-semibold text-gray-700 dark:text-gray-400 md:text-xl"
           >
             Why?
           </h2>
           <p
-            class="text-lg leading-relaxed text-gray-700 dark:text-gray-300 md:text-lg md:leading-normal"
+            class="text-base leading-relaxed text-gray-700 dark:text-gray-300 md:text-lg md:leading-normal"
           >
             Most audio waveform visualizations are require JavaScript and are
             not responsive. Waveformr helps you analyze and design a
@@ -84,7 +82,7 @@ import ExampleWaveform from "../components/ExampleWaveform.astro";
         </a>
       </div>
     </div>
-    <footer class="flex w-full max-w-2xl items-start">
+    <footer class="flex w-full max-w-2xl items-start py-6">
       <a href="https://github.com/npbee/waveformr">
         <svg class="w-5 text-[#24292f] dark:text-white" viewBox="0 0 98 96">
           <use href="#github"></use>

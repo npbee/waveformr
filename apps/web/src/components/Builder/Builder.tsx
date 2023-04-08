@@ -45,7 +45,7 @@ export function Builder() {
   if (analysis.status === "uninitialized") {
     return (
       <Layout>
-        <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-12 p-8 md:gap-24">
+        <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-12 p-4 md:gap-24">
           <DropZone
             onDrop={events.fileUploaded}
             onSample={events.sampleChosen}
@@ -86,7 +86,7 @@ export function Builder() {
   return (
     <Layout>
       <Subheader analysis={analysis} />
-      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray-200 bg-gray-50 px-8 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1">
+      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray-200 bg-gray-50 px-4 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1">
         {analysis.status === "analyzed" ? (
           <>
             <SvgWavform
@@ -100,7 +100,7 @@ export function Builder() {
               strokeWidth={strokeWidth}
               strokeLinecap={strokeLinecap}
             />
-            <div className="absolute top-0 right-0 px-8 py-1 md:py-2">
+            <div className="absolute top-0 right-0 px-4 py-1 md:py-2">
               <HiddenFileInputButton
                 variant="subtle"
                 onFile={events.fileUploaded}
@@ -127,7 +127,7 @@ export function Builder() {
       </div>
       <aside className="z-10 flex min-h-0 flex-col gap-4 py-6">
         <ScrollArea>
-          <div className="flex flex-col gap-6 px-8 py-4">
+          <div className="flex flex-col gap-6 px-4 py-4">
             <div className="grid gap-10 md:grid-cols-4">
               <div className="flex flex-col gap-8">
                 <RadioGroup
@@ -266,7 +266,7 @@ function Subheader(props: {
     );
 
   return (
-    <header className="flex w-full items-center justify-between bg-white px-8 py-2 dark:bg-gray-800 md:py-4">
+    <header className="flex w-full items-center justify-between bg-white px-4 py-2 dark:bg-gray-800 md:py-4">
       <div className="flex items-center gap-2">
         <h1 className="text-lg">{title}</h1>
       </div>

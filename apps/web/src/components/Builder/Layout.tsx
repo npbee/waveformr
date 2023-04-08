@@ -4,12 +4,12 @@ export function Layout(props: LayoutProps) {
   let { children } = props;
   return (
     <div className="flex h-full flex-col dark:bg-gray-900">
-      <header className="flex justify-between border-b border-gray-200 px-8 py-3 dark:border-gray-700">
+      <header className="flex justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
         <a
           href="/"
           className="flex w-24 text-gray-800 hover:text-cyan-800 dark:text-gray-50 dark:hover:text-cyan-700"
         >
-          <svg viewBox="0 0 86 20">
+          <svg viewBox="0 0 87 20" className="w-full">
             <use href="#lockup"></use>
           </svg>
         </a>
