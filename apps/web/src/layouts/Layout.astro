@@ -1,6 +1,7 @@
 ---
 import "../styles/base.css";
 import { SEO } from "astro-seo";
+import Analytics from '../components/Analytics.astro'
 
 export interface Props {
   title: string;
@@ -16,6 +17,7 @@ const { title, ogBasicTitle } = Astro.props;
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <Analytics />
     <SEO
       charset="UTF-8"
       title={title}
