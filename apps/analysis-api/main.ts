@@ -1,5 +1,5 @@
 import { bearerAuth, extname, Hono, loadSync, serve } from "./deps.ts";
-import { analyzeFile, ValidExt } from "./service.ts";
+import { analyzeFile, ValidExt, ValidOutput } from "./service.ts";
 
 export let app = new Hono();
 
@@ -7,7 +7,7 @@ const LIMIT = 8000000;
 
 app.use("*", bearerAuth({ token: getApiKey() }));
 
-app.post("/", async (c) => {
+app.post("/stats", async (c) => {
   let formData = await c.req.formData();
   let file = formData.get("file");
 
@@ -40,7 +40,18 @@ app.post("/", async (c) => {
     });
   }
 
-  let result = await analyzeFile(file, ext);
+  let output = formData.get("output");
+
+  if (!isValidOutput(output)) {
+    c.status(400);
+
+    return c.json({
+      status: "error",
+      message: "Output must be either 'dat' or 'json'",
+    });
+  }
+
+  let result = await analyzeFile(file, ext, output);
 
   return new Response(result.buffer, {
     headers: {
@@ -62,6 +73,10 @@ function isValidExt(ext: unknown): ext is ValidExt {
   let res = ext === "mp3" || ext === "wav";
 
   return res;
+}
+
+function isValidOutput(output: unknown): output is ValidOutput {
+  return output === "json" || output === "dat";
 }
 
 function getApiKey(): string {
