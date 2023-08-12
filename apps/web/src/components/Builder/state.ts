@@ -65,7 +65,7 @@ export let useBuilder = create<BuilderState>()((set, get) => ({
 
       set({ analysis: { status: "analyzing" } });
       let arrayBuffer = await fetch("/Good Sport.dat").then((resp) =>
-        resp.arrayBuffer()
+        resp.arrayBuffer(),
       );
       let waveformData = await runClientSideAnalysis(arrayBuffer);
       set({

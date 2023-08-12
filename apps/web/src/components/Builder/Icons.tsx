@@ -1,13 +1,13 @@
 import {
-  Trash,
-  LucideIcon,
   Check as _Check,
   ChevronLeft,
-  Edit as _Edit,
-  Upload as _Upload,
-  Settings2,
   ClipboardCopy,
+  Edit as _Edit,
+  LucideIcon,
+  Settings2,
   Slash,
+  Trash,
+  Upload as _Upload,
 } from "lucide-react";
 
 export let Del: LucideIcon = (props) => <Trash {...props} size="0.9em" />;

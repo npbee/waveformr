@@ -10,7 +10,7 @@ interface CopyButtonProps {
 export function CopyButton(props: CopyButtonProps) {
   let { children, onCopy } = props;
   let [state, setState] = useState<"idle" | "copying" | "copied" | "error">(
-    "idle"
+    "idle",
   );
   let copy = useMemo(() => {
     if (state === "copied") {

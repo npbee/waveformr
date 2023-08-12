@@ -1,6 +1,6 @@
 import {
-  type LinearPathOptions,
   linearPath,
+  type LinearPathOptions,
   WaveformData,
 } from "@waveformr/core";
 import { useEffect, useId, useMemo, useRef } from "react";
@@ -32,7 +32,7 @@ export function SvgWavform(props: SvgWaveformProps) {
 
   let normalizedData = useMemo(
     () => waveformData.getNormalizedData(samples),
-    [waveformData, samples]
+    [waveformData, samples],
   );
 
   let path = linearPath(normalizedData, {

@@ -86,7 +86,7 @@ export function Builder() {
   return (
     <Layout>
       <Subheader analysis={analysis} />
-      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-t border-b border-gray-200 bg-gray-50 px-4 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1">
+      <div className="relative flex h-52 w-full flex-col justify-center gap-8 border-b border-t border-gray-200 bg-gray-50 px-4 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1">
         {analysis.status === "analyzed" ? (
           <>
             <SvgWavform
@@ -100,7 +100,7 @@ export function Builder() {
               strokeWidth={strokeWidth}
               strokeLinecap={strokeLinecap}
             />
-            <div className="absolute top-0 right-0 px-4 py-1 md:py-2">
+            <div className="absolute right-0 top-0 px-4 py-1 md:py-2">
               <HiddenFileInputButton
                 variant="subtle"
                 onFile={events.fileUploaded}
@@ -238,7 +238,7 @@ function Loading() {
   let isLoading = useLazyLoader();
 
   return isLoading ? (
-    <p className="text-medium absolute top-0 left-0 flex h-full w-full items-center justify-center text-base text-gray-600">
+    <p className="text-medium absolute left-0 top-0 flex h-full w-full items-center justify-center text-base text-gray-600">
       Loading...
     </p>
   ) : null;

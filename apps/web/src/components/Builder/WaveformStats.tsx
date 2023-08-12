@@ -8,7 +8,7 @@ export let WaveformStats = memo(function FileInfo(props: {
   let formattedDuration = useMemo(() => formatTime(duration), [duration]);
   let formattedSampleRate = useMemo(
     () => formatSampleRate(sampleRate),
-    [sampleRate]
+    [sampleRate],
   );
   return (
     <dl className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">

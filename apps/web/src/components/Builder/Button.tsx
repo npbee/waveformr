@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { clsx } from "clsx";
-import { VariantProps, cva } from "class-variance-authority";
+import { cva, VariantProps } from "class-variance-authority";
 
 let buttonVariants = cva(
   "active:scale-95 inline-flex items-center rounded-full font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 transition-all",
@@ -20,7 +20,7 @@ let buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -29,20 +29,19 @@ export interface ButtonProps
   icon?: React.ReactNode;
 }
 
-export let Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  props,
-  ref
-) {
-  let { icon, children, variant, size, ...rest } = props;
-  return (
-    <button
-      {...rest}
-      ref={ref}
-      className={clsx(buttonVariants({ variant, size }))}
-      style={{ transitionProperty: "opacity, transform" }}
-    >
-      {icon}
-      <span>{children}</span>
-    </button>
-  );
-});
+export let Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  function Button(props, ref) {
+    let { icon, children, variant, size, ...rest } = props;
+    return (
+      <button
+        {...rest}
+        ref={ref}
+        className={clsx(buttonVariants({ variant, size }))}
+        style={{ transitionProperty: "opacity, transform" }}
+      >
+        {icon}
+        <span>{children}</span>
+      </button>
+    );
+  },
+);

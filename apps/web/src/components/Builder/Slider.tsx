@@ -3,7 +3,7 @@ import { useId } from "react";
 import { Label } from "./Label";
 
 export function Slider(
-  props: RadixSlider.SliderProps & { label: React.ReactNode }
+  props: RadixSlider.SliderProps & { label: React.ReactNode },
 ) {
   let { label, value } = props;
   let labelId = useId();

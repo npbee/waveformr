@@ -30,11 +30,11 @@ export let HiddenFileInput = forwardRef<HTMLInputElement, HiddenFileInputProps>(
         }}
       />
     );
-  }
+  },
 );
 
 export function HiddenFileInputButton(
-  props: React.ComponentProps<typeof Button> & HiddenFileInputProps
+  props: React.ComponentProps<typeof Button> & HiddenFileInputProps,
 ) {
   let { id, accept, onFile, children, ...rest } = props;
   let inputRef = useRef<HTMLInputElement>(null);

@@ -135,7 +135,7 @@ function colorToBg(color: Color) {
   }
 
   let stops = color.values.map(
-    (colorStop) => `${colorStop.color} ${colorStop.offset}%`
+    (colorStop) => `${colorStop.color} ${colorStop.offset}%`,
   );
 
   return `linear-gradient(0deg, ${stops.join(", ")})`;

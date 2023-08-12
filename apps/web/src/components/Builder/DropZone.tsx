@@ -72,7 +72,7 @@ export function DropZone(props: DropZoneProps) {
         "hover:border-cyan-700",
         "gap-4",
         "h-48",
-        focused && "border-cyan-900"
+        focused && "border-cyan-900",
       )}
     >
       {dragging ? (
