@@ -1,26 +1,43 @@
-import { bearerAuth, validator, Hono, loadSync, serve, z } from "./deps.ts";
+import { validator, Hono, serve, z } from "./deps.ts";
+import { rateLimiter } from "$lib/rate_limit_middleware.ts";
 
 export let app = new Hono();
 
-const LIMIT = 8000000;
+const FILE_SIZE_LIMIT = 8000000;
 
-app.use("*", bearerAuth({ token: getApiKey() }));
+if (Deno.env.get("UPSTASH_REDIS_REST_URL")) {
+  app.use("*", rateLimiter());
+}
 
 app.notFound((c) => c.json({ message: "Not found", ok: false }, 404));
 
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
-  ext: z.enum(["mp3"]),
 });
 
-let urlSchema = baseSchema.extend({
-  url: z.string(),
-});
+let extSchema = z.enum(["mp3"]);
+
+let urlSchema = baseSchema
+  .extend({
+    ext: extSchema.optional(),
+    url: z.string(),
+  })
+  .transform((val) => {
+    let extResult = extSchema.safeParse(
+      val.ext ?? extractExtensionFromUrl(val.url),
+    );
+    if (!extResult.success) {
+      throw new Error("Must provide an extension");
+    }
+    return { ...val, ext: extResult.data };
+  });
 
 let fileSchema = baseSchema.extend({
+  // TODO: Should be able to extract the extension from the file name
+  ext: z.enum(["mp3"]),
   file: z
     .custom<File>((val) => val instanceof File, "Please include a file")
-    .refine((file) => file.size < LIMIT, "File size is too big"),
+    .refine((file) => file.size < FILE_SIZE_LIMIT, "File size is too big"),
 });
 
 app.get(
@@ -39,7 +56,6 @@ app.get(
   }),
   async (c) => {
     let params = c.req.valid("query");
-    console.log("Analyzing: " + params.url);
     let result = await analyzeUrl(params);
 
     return new Response(result.buffer, {
@@ -81,15 +97,6 @@ if (import.meta.main) {
   run();
 }
 
-function getApiKey(): string {
-  let dotenv = loadSync();
-  let secret = Deno.env.get("API_KEY") ?? dotenv.API_KEY;
-  if (!secret) {
-    throw new Error("Could not find secret");
-  }
-  return secret;
-}
-
 async function analyzeUrl(params: z.infer<typeof urlSchema>) {
   let { url } = params;
   let { paths, run } = await setupAnalysis(params);
@@ -113,7 +120,9 @@ async function analyzeFile(params: z.infer<typeof fileSchema>) {
   return data;
 }
 
-async function setupAnalysis(params: z.infer<typeof baseSchema>) {
+async function setupAnalysis(
+  params: z.infer<typeof baseSchema> & { ext: z.infer<typeof extSchema> },
+) {
   let { ext, output } = params;
   let paths = {
     in: await Deno.makeTempFile({ suffix: `.${ext}` }),
@@ -127,9 +136,10 @@ async function setupAnalysis(params: z.infer<typeof baseSchema>) {
         args: ["-q", "-i", paths.in, "-o", paths.out],
       });
 
-      let { code } = await cmd.output();
+      let { code, stderr } = await cmd.output();
 
       if (code !== 0) {
+        console.error(stderr);
         throw new Error("Error running audiowaveform");
       }
 
@@ -139,4 +149,8 @@ async function setupAnalysis(params: z.infer<typeof baseSchema>) {
       return data;
     },
   };
+}
+
+function extractExtensionFromUrl(url: string) {
+  return url.split(".").at(1);
 }

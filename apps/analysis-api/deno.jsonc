@@ -8,5 +8,10 @@
     "rules": {
       "exclude": ["prefer-const"]
     }
+  },
+  "imports": {
+    "@upstash/ratelimit": "npm:@upstash/ratelimit",
+    "@upstash/redis": "npm:@upstash/redis",
+    "$lib/": "./lib/"
   }
 }

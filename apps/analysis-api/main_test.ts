@@ -57,6 +57,8 @@ Deno.test("GET mp3 - json", async (t) => {
   await assertSnapshot(t, json);
 });
 
+// TODO: POST / - Extracting ext from file name
+
 // Deno.test("wav - json", async (t) => {
 //   let bytes = await loadFile("../../fixtures/short.wav");
 //   let file = new File([bytes.buffer], "short.wav");
