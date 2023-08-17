@@ -1,4 +1,4 @@
-import { validator, Hono, serve, z } from "./deps.ts";
+import { validator, Hono, z } from "./deps.ts";
 import { rateLimiter } from "$lib/rate_limit_middleware.ts";
 
 export let app = new Hono();
@@ -90,12 +90,12 @@ app.post(
 );
 
 export function run() {
-  serve(app.fetch);
+  Deno.serve(app.fetch);
 }
 
-// if (import.meta.main) {
-//   run();
-// }
+if (import.meta.main) {
+  run();
+}
 
 async function analyzeUrl(params: z.infer<typeof urlSchema>) {
   let { url } = params;
