@@ -93,9 +93,9 @@ export function run() {
   serve(app.fetch);
 }
 
-if (import.meta.main) {
-  run();
-}
+// if (import.meta.main) {
+//   run();
+// }
 
 async function analyzeUrl(params: z.infer<typeof urlSchema>) {
   let { url } = params;
