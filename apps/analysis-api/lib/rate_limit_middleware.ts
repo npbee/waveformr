@@ -1,5 +1,4 @@
-import { MiddlewareHandler } from "https://deno.land/x/hono@v3.0.0/mod.ts";
-import { Ratelimit } from "@upstash/ratelimit";
+import { type MiddlewareHandler, Ratelimit } from "../deps.ts";
 import { redis } from "./redis.ts";
 
 export function rateLimiter(

@@ -1,13 +1,7 @@
-import {
-  assertSnapshot,
-  assertEquals,
-  join,
-  makeloc,
-  load,
-} from "./dev_deps.ts";
+import { assertSnapshot, assertEquals, join, load } from "./dev_deps.ts";
 import { app } from "./main.ts";
 
-let { __dirname } = makeloc(import.meta);
+const __dirname = new URL(".", import.meta.url).pathname;
 let env = await load();
 
 Deno.test("POST mp3 - json", async (t) => {
