@@ -13,6 +13,7 @@
     "@upstash/ratelimit": "npm:@upstash/ratelimit",
     "@upstash/redis": "npm:@upstash/redis",
     "$std/": "https://deno.land/std@0.198.0/",
-    "$lib/": "./lib/"
+    "$lib/": "./lib/",
+    "tiny-invariant": "npm:tiny-invariant"
   }
 }

@@ -1,18 +1,30 @@
 import { type MiddlewareHandler, Ratelimit } from "../deps.ts";
-import { redis } from "./redis.ts";
+import { redis } from "$lib/redis.ts";
 
-export function rateLimiter(
-  requests = 10,
+interface Limit {
+  requests: number;
   seconds:
     | `${number} ms`
     | `${number} s`
     | `${number} m`
     | `${number} h`
-    | `${number} d` = "10 s",
-): MiddlewareHandler {
+    | `${number} d`;
+}
+
+export const anonymousLimit: Limit = {
+  requests: 2,
+  seconds: "1 m",
+};
+
+export const authedLimit: Limit = {
+  requests: 10,
+  seconds: "1 m",
+};
+
+export function rateLimiter(limit: Limit): MiddlewareHandler {
   const ratelimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(requests, seconds),
+    limiter: Ratelimit.slidingWindow(limit.requests, limit.seconds),
     analytics: true,
   });
   return async function handleRequestWithRateLimiting(c, next) {
