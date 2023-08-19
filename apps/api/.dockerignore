@@ -1,0 +1,7 @@
+fly.toml
+REAMDE.md
+main_bench.ts
+main_test.ts
+dev_deps.ts
+token_generator.ts
+.env
