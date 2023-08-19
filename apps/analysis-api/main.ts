@@ -1,4 +1,4 @@
-import { validator, Hono, z } from "./deps.ts";
+import { Hono, validator, z } from "./deps.ts";
 import {
   anonymousLimit,
   authedLimit,

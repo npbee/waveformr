@@ -1,5 +1,5 @@
 import "$std/dotenv/load.ts";
-import { assertSnapshot, assertEquals, join } from "./dev_deps.ts";
+import { assertEquals, assertSnapshot, join } from "./dev_deps.ts";
 import { app } from "./main.ts";
 
 const __dirname = new URL(".", import.meta.url).pathname;

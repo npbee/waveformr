@@ -1,7 +1,7 @@
 export {
   Hono,
-  validator,
   type MiddlewareHandler,
+  validator,
 } from "https://deno.land/x/hono@v3.0.0/mod.ts";
 export { bearerAuth } from "https://deno.land/x/hono@v3.0.0/middleware.ts";
 export { z } from "npm:zod";
