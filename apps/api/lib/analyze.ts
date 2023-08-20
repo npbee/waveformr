@@ -78,11 +78,10 @@ async function setupAnalysis(params: {
         args: ["-q", "-i", paths.in, "-o", paths.out],
       });
 
-      let { code, stderr } = await cmd.output();
+      let { code } = await cmd.output();
 
       if (code !== 0) {
-        console.error(stderr);
-        throw new Error("Error running audiowaveform");
+        throw new Error("Error running audiowaveform. Code: " + code);
       }
 
       let data = await Deno.readFile(paths.out);

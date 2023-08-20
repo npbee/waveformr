@@ -104,7 +104,7 @@ if (import.meta.main) {
 }
 
 function extractExtensionFromUrl(url: string) {
-  return url.split(".").at(1);
+  return url.split(".").at(-1);
 }
 
 function constructPathConfig(
