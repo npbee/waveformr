@@ -1,5 +1,6 @@
 import { z } from "../deps.ts";
 import * as schemas from "$lib/schemas.ts";
+import { audioAnalysis } from "$lib/metrics.ts";
 
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
@@ -78,6 +79,7 @@ async function setupAnalysis(params: {
         args: ["-q", "-i", paths.in, "-o", paths.out],
       });
 
+      audioAnalysis.inc();
       let { code } = await cmd.output();
 
       if (code !== 0) {

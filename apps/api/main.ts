@@ -1,4 +1,4 @@
-import { Hono, z } from "./deps.ts";
+import { Counter, Hono, Registry, z } from "./deps.ts";
 import {
   anonymousLimit,
   authedLimit,
@@ -90,6 +90,11 @@ app.get(
     });
   },
 );
+
+app.get("/metrics", (c) => {
+  c.header("Content-Type", "text/plain; version=0.0.4");
+  return c.text(Registry.default.metrics(), 200);
+});
 
 export function run() {
   return Deno.serve({
