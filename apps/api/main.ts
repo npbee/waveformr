@@ -1,4 +1,4 @@
-import { Counter, Hono, Registry, z } from "./deps.ts";
+import { Etag, Hono, Registry, z } from "./deps.ts";
 import {
   anonymousLimit,
   authedLimit,
@@ -9,6 +9,7 @@ import * as schemas from "$lib/schemas.ts";
 import { WaveformData } from "$lib/waveform_data.ts";
 import * as Render from "$lib/render.ts";
 import { defaultConfig, LinearPathConfig } from "$lib/svg_path.ts";
+import * as Cache from "$lib/cache.ts";
 
 const API_KEY = Deno.env.get("API_KEY");
 
@@ -32,16 +33,15 @@ let renderSchema = z.object({
   "stroke-linecap": z.enum(["square", "butt", "round"]).optional().default(
     "round",
   ),
-})
-  .transform((val) => {
-    let extResult = schemas.ext.safeParse(
-      val.ext ?? extractExtensionFromUrl(val.url),
-    );
-    if (!extResult.success) {
-      throw new Error("Must provide an extension");
-    }
-    return { ...val, ext: extResult.data };
-  });
+}).transform((val) => {
+  let extResult = schemas.ext.safeParse(
+    val.ext ?? extractExtensionFromUrl(val.url),
+  );
+  if (!extResult.success) {
+    throw new Error("Must provide an extension");
+  }
+  return { ...val, ext: extResult.data };
+});
 
 app.get(
   "/render",
@@ -53,7 +53,25 @@ app.get(
     if (!parseResult.success) {
       return c.text("Text invalid", 401);
     }
+
     let params = parseResult.data;
+    let etag = await Cache.etag(Cache.jsonKey(params));
+    let ifNoneMatch = c.req.headers.get("if-none-match");
+
+    if (!Etag.ifNoneMatch(ifNoneMatch, etag)) {
+      let headers = new Headers();
+      headers.set("Content-Type", "image/svg+xml");
+      headers.set("ETag", etag);
+
+      return new Response(null, {
+        status: 304,
+        headers: {
+          "Content-Type": "image/svg+xml",
+          "Etag": etag,
+        },
+      });
+    }
+
     let {
       url,
       ext,
@@ -69,7 +87,7 @@ app.get(
       output: "dat",
     });
 
-    let waveformData = WaveformData.create(analysis.buffer);
+    let waveformData = WaveformData.create(analysis);
 
     let pathConfig = constructPathConfig(params);
 
@@ -86,6 +104,7 @@ app.get(
     return new Response(svg, {
       headers: {
         "Content-Type": "image/svg+xml",
+        "ETag": etag,
       },
     });
   },

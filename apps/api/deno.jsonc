@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run -A --watch main.ts",
+    "dev": "deno run -A --watch dev.ts",
     "prod": "docker system prune -a && docker build -t waveformr-api --build-arg GIT_REVISION=$GIT_REVISION . && docker run -p 8000:8000 --name wapi waveformr-api",
     "deploy": "GIT_REVISION=$(git rev-parse HEAD); fly deploy --build-arg GIT_REVISION=$GIT_REVISION",
     "format": "deno fmt **/*"
@@ -13,10 +13,10 @@
   "imports": {
     "@upstash/ratelimit": "npm:@upstash/ratelimit",
     "@upstash/redis": "npm:@upstash/redis",
-    "$std/": "https://deno.land/std@0.198.0/",
+    "$std/": "https://deno.land/std@0.199.0/",
     "$lib/": "./lib/",
-    "tiny-invariant": "npm:tiny-invariant",
     "waveform-data": "npm:waveform-data",
+    "zod": "npm:zod",
     "gradient-parser": "npm:gradient-parser",
     "colord": "npm:colord",
     "sanitize-filename": "npm:sanitize-filename"

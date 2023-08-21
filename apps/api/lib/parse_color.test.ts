@@ -1,18 +1,18 @@
 import { assertEquals, fail } from "$std/assert/mod.ts";
 import { parseColor } from "$lib/parse_color.ts";
-import invariant from "tiny-invariant";
+import { assert } from "$std/assert/assert.ts";
 
 Deno.test("parseColor() - literal named color", () => {
   let parsed = parseColor("blue");
 
-  invariant(parsed.type === "literal");
+  assert(parsed.type === "literal");
   assertEquals(parsed.color, "blue");
 });
 
 Deno.test("parseColor() - literal hex color", () => {
   let parsed = parseColor("ff0000");
 
-  invariant(parsed.type === "literal");
+  assert(parsed.type === "literal");
   assertEquals(parsed.color, "#ff0000");
 });
 

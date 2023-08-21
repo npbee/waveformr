@@ -32,6 +32,7 @@ export function svg(props: SvgProps) {
   let _fill = "#333333";
   let _stroke = "#333333";
 
+  // TODO: yikes refactor this stuff...
   let defs = ``;
 
   if (parsedFill && parsedFill.type === "literal") {
