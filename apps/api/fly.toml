@@ -4,6 +4,10 @@ app = "waveformr-api"
 kill_signal = "SIGINT"
 kill_timeout = 5
 
+[metrics]
+port = 8000
+path = "/metrics"
+
 [env]
   PORT = "8000"
 
