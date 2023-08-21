@@ -91,12 +91,20 @@ app.get(
   },
 );
 
-app.get("/metrics", (c) => {
+export let metricsApp = new Hono();
+
+metricsApp.get("/metrics", (c) => {
   c.header("Content-Type", "text/plain; version=0.0.4");
   return c.text(Registry.default.metrics(), 200);
 });
 
 export function run() {
+  Deno.serve({
+    port: 9091,
+    onListen({ port, hostname }) {
+      console.log(`Metrics app server started on http://${hostname}:${port}`);
+    },
+  }, metricsApp.fetch);
   return Deno.serve({
     onListen({ port, hostname }) {
       console.log(`App server started on http://${hostname}:${port}`);
