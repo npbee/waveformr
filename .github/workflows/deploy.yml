@@ -22,7 +22,7 @@ jobs:
         name: Install pnpm
         id: pnpm-install
         with:
-          version: 7
+          version: 8
           run_install: false
 
       - name: Get pnpm store directory
@@ -43,7 +43,7 @@ jobs:
         working-directory: ./apps/web
         run: pnpm i
 
-      - name: 'Create env file'
+      - name: "Create env file"
         working-directory: ./apps/web
         # References vars from the repo
         run: |
@@ -60,6 +60,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: 'npbee-waveformr'
-          entrypoint: 'server/entry.mjs'
+          project: "npbee-waveformr"
+          entrypoint: "server/entry.mjs"
           root: ./apps/web/dist
