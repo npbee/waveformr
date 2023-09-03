@@ -1,9 +1,24 @@
 name: Deploy
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
-    name: Deploy
+  deploy-api:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/api
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+  deploy-web:
+    name: Deploy web
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Needed for auth with Deno Deploy
