@@ -11,14 +11,7 @@
     }
   },
   "imports": {
-    "@upstash/ratelimit": "npm:@upstash/ratelimit",
-    "@upstash/redis": "npm:@upstash/redis",
     "$std/": "https://deno.land/std@0.199.0/",
-    "$lib/": "./lib/",
-    "waveform-data": "npm:waveform-data",
-    "zod": "npm:zod",
-    "gradient-parser": "npm:gradient-parser",
-    "colord": "npm:colord",
-    "sanitize-filename": "npm:sanitize-filename"
+    "$lib/": "./lib/"
   }
 }

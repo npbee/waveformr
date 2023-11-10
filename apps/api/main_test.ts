@@ -5,7 +5,7 @@ import { join } from "$std/path/mod.ts";
 import { bold } from "$std/fmt/colors.ts";
 import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
-import sanitizeFilename from "sanitize-filename";
+import { sanitizeFilename } from "./dev_deps.ts";
 import { assertEquals } from "$std/assert/mod.ts";
 
 startServers();
@@ -15,7 +15,9 @@ let renderTests = [
   { path: `/render?url=${fixture("short.mp3")}&stroke=green&fill=red` },
   {
     path: `/render?url=${
-      fixture("short.mp3")
+      fixture(
+        "short.mp3",
+      )
     }&stroke=linear-gradient(blue, red)`,
   },
   { path: `/render?url=${fixture("short.mp3")}&type=bars` },
@@ -24,7 +26,9 @@ let renderTests = [
   { path: `/render?url=${fixture("short.mp3")}&samples=50&stroke-width=10` },
   {
     path: `/render?url=${
-      fixture("short.mp3")
+      fixture(
+        "short.mp3",
+      )
     }&samples=50&stroke-linecap=square`,
   },
 ];
@@ -43,7 +47,7 @@ for (let renderTest of renderTests) {
 
     let printablePath = bold(printableSnapshotPath(snapshotPath));
 
-    if (await exists(snapshotPath) && !Deno.args.includes("--update")) {
+    if ((await exists(snapshotPath)) && !Deno.args.includes("--update")) {
       let existingFile = await Deno.readTextFile(snapshotPath);
       assertEquals(
         existingFile,
@@ -61,15 +65,18 @@ for (let renderTest of renderTests) {
 // Start the app server and a fixture server so that we can hit the endpoint
 // in a way that resembles the real thing
 function startServers() {
-  Deno.serve({
-    port: 3000,
-    onListen({ port, hostname }) {
-      console.log(`Fixture server started at http://${hostname}:${port}`);
+  Deno.serve(
+    {
+      port: 3000,
+      onListen({ port, hostname }) {
+        console.log(`Fixture server started at http://${hostname}:${port}`);
+      },
     },
-  }, (req) =>
-    serveDir(req, {
-      fsRoot: resolve("fixtures"),
-    }));
+    (req) =>
+      serveDir(req, {
+        fsRoot: resolve("fixtures"),
+      }),
+  );
 
   run();
 }
