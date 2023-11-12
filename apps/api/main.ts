@@ -1,10 +1,11 @@
-import { Hono, Registry } from "./deps.ts";
+import { Hono } from "./deps.ts";
 import {
   anonymousLimit,
   authedLimit,
   rateLimiter,
 } from "$lib/rate_limit_middleware.ts";
 import { renderRoute } from "./routes/render.ts";
+import { METRICS_PORT, metricsApp } from "$lib/metrics.ts";
 
 const API_KEY = Deno.env.get("API_KEY");
 
@@ -18,21 +19,15 @@ app.notFound((c) => c.json({ message: "Not found", ok: false }, 404));
 
 app.route("/render", renderRoute);
 
-export let metricsApp = new Hono();
-
-metricsApp.get("/metrics", (c) => {
-  c.header("Content-Type", "text/plain; version=0.0.4");
-  return c.text(Registry.default.metrics(), 200);
-});
-
 export function run() {
   Deno.serve({
-    port: 9091,
+    port: METRICS_PORT,
     onListen({ port, hostname }) {
       console.log(`Metrics app server started on http://${hostname}:${port}`);
     },
   }, metricsApp.fetch);
-  return Deno.serve({
+
+  Deno.serve({
     onListen({ port, hostname }) {
       console.log(`App server started on http://${hostname}:${port}`);
     },
