@@ -7,6 +7,7 @@ import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
 import { sanitizeFilename } from "./dev_deps.ts";
 import { assertEquals } from "$std/assert/mod.ts";
+import { clearWaveformCache } from "$lib/cache.ts";
 
 startServers();
 
@@ -35,6 +36,7 @@ let renderTests = [
 
 for (let renderTest of renderTests) {
   Deno.test(`GET ${renderTest.path}`, async () => {
+    await clearWaveformCache();
     let url = new URL("http://localhost:8000" + renderTest.path);
     let resp = await fetch(url);
     assertEquals(resp.status, 200);
