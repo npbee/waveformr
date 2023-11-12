@@ -2,6 +2,7 @@ import { z } from "../deps.ts";
 import * as schemas from "$lib/schemas.ts";
 import { audioAnalysis } from "$lib/metrics.ts";
 import * as Cache from "$lib/cache.ts";
+import { logger } from "$lib/logger.ts";
 
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
@@ -20,11 +21,11 @@ export async function analyzeUrl(params: AnalyzeUrlParams) {
   let cached = await Cache.getWaveform(cacheKey);
 
   if (cached) {
-    console.log("Cache hit for : " + cacheKey);
+    logger.debug("Analysis cache hit for : " + cacheKey);
     return cached;
   }
 
-  console.log("Cache miss for : " + cacheKey);
+  logger.debug("Analysis cache miss for : " + cacheKey);
 
   let result = await analyze({
     ext: params.ext,

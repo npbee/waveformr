@@ -6,6 +6,7 @@ import {
 } from "$lib/rate_limit_middleware.ts";
 import { renderRoute } from "./routes/render.ts";
 import { METRICS_PORT, metricsApp } from "$lib/metrics.ts";
+import { logger } from "$lib/logger.ts";
 
 const API_KEY = Deno.env.get("API_KEY");
 
@@ -23,13 +24,13 @@ export function run() {
   Deno.serve({
     port: METRICS_PORT,
     onListen({ port, hostname }) {
-      console.log(`Metrics app server started on http://${hostname}:${port}`);
+      logger.debug(`Metrics app server started on http://${hostname}:${port}`);
     },
   }, metricsApp.fetch);
 
   Deno.serve({
     onListen({ port, hostname }) {
-      console.log(`App server started on http://${hostname}:${port}`);
+      logger.debug(`App server started on http://${hostname}:${port}`);
     },
   }, app.fetch);
 }
