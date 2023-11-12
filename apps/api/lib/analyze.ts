@@ -6,23 +6,6 @@ import * as Cache from "$lib/cache.ts";
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
 });
-let extSchema = z.enum(["mp3"]);
-
-export let analyzeUrlSchema = baseSchema
-  .extend({
-    ext: extSchema.optional(),
-    url: z.string(),
-    access_key: z.string().optional(),
-  })
-  .transform((val) => {
-    let extResult = extSchema.safeParse(
-      val.ext ?? extractExtensionFromUrl(val.url),
-    );
-    if (!extResult.success) {
-      throw new Error("Must provide an extension");
-    }
-    return { ...val, ext: extResult.data };
-  });
 
 interface AnalyzeUrlParams {
   url: string;
@@ -111,8 +94,4 @@ async function analyze(params: {
   await Deno.remove(paths.out);
   await Deno.remove(paths.in);
   return data.buffer;
-}
-
-function extractExtensionFromUrl(url: string) {
-  return url.split(".").at(1);
 }
