@@ -3,7 +3,11 @@ export {
   type MiddlewareHandler,
   validator,
 } from "https://deno.land/x/hono@v3.0.0/mod.ts";
-export { bearerAuth } from "https://deno.land/x/hono@v3.0.0/middleware.ts";
+export {
+  bearerAuth,
+  html,
+} from "https://deno.land/x/hono@v3.0.0/middleware.ts";
+export type { HtmlEscapedString } from "https://deno.land/x/hono@v3.0.0/utils/html.ts";
 export { z } from "npm:zod";
 export { extname, join } from "$std/path/posix.ts";
 export * from "npm:@upstash/redis";
