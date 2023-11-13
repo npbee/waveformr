@@ -5,7 +5,7 @@ import { join } from "$std/path/mod.ts";
 import { bold } from "$std/fmt/colors.ts";
 import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
-import { sanitizeFilename } from "./dev_deps.ts";
+import { prettier, sanitizeFilename } from "./dev_deps.ts";
 import { assertEquals } from "$std/assert/mod.ts";
 import { clearWaveformCache } from "$lib/cache.ts";
 
@@ -42,10 +42,13 @@ for (let renderTest of renderTests) {
     assertEquals(resp.status, 200);
     assertEquals(resp.headers.get("Content-Type"), "image/svg+xml");
 
-    let svg = await resp.text();
+    let rawSvg = await resp.text();
     let snapshotPath = svgSnapshotPath(
       sanitizeFilename(renderTest.path) + ".svg",
     );
+    let svg = await prettier.format(rawSvg, {
+      parser: "html",
+    });
 
     let printablePath = bold(printableSnapshotPath(snapshotPath));
 
