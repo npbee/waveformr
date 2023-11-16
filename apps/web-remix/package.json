@@ -1,0 +1,54 @@
+{
+  "name": "@waveformr/web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "remix build",
+    "dev": "remix dev --manual",
+    "preview": "remix serve",
+    "start": "remix-serve build/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-radio-group": "^1.1.3",
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-slider": "^1.1.2",
+    "@remix-run/dev": "^2.3.0",
+    "@remix-run/node": "^2.3.0",
+    "@remix-run/react": "^2.3.0",
+    "@remix-run/serve": "^2.3.0",
+    "class-variance-authority": "^0.7.0",
+    "clipboard-copy": "^4.0.1",
+    "clsx": "^2.0.0",
+    "gzip-size": "^7.0.0",
+    "isbot": "latest",
+    "lucide-react": "^0.292.0",
+    "pretty-bytes": "^6.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-wrap-balancer": "^1.1.0",
+    "tailwindcss": "^3.3.5",
+    "tiny-invariant": "^1.3.1",
+    "use-debounce": "^10.0.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.10",
+    "@types/file-size": "^1.0.3",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    "typescript": "^5.2.2"
+  }
+}

@@ -6,7 +6,7 @@ import { bold } from "$std/fmt/colors.ts";
 import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
 import { prettier, sanitizeFilename } from "./dev_deps.ts";
-import { assertEquals } from "$std/assert/mod.ts";
+import { assertEquals, assertMatch } from "$std/assert/mod.ts";
 import { clearWaveformCache } from "$lib/cache.ts";
 
 startServers();
@@ -36,6 +36,8 @@ let renderTests = [
 
 for (let renderTest of renderTests) {
   Deno.test(`GET ${renderTest.path}`, async () => {
+    Deno.env.set("RATE_LIMIT", "off");
+
     await clearWaveformCache();
     let url = new URL("http://localhost:8000" + renderTest.path);
     let resp = await fetch(url);
@@ -66,6 +68,29 @@ for (let renderTest of renderTests) {
     }
   });
 }
+
+const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+Deno.test("Rate limiting - unique analysis requests", async () => {
+  Deno.env.set("RATE_LIMIT", "on");
+  clearWaveformCache();
+  const resp1 = await fetch(
+    `http://localhost:8000/render?url=${fixture("short.mp3")}&type=mirror`,
+  );
+  const resp2 = await fetch(
+    `http://localhost:8000/render?url=${fixture("long.mp3")}&type=bars`,
+  );
+
+  assertEquals(resp1.status, 200);
+  assertEquals(resp2.status, 429);
+
+  // Need to do all these awaits so Deno doesn't complain about leaked resources
+  await resp1.text();
+  assertMatch(await resp2.text(), /too many requests/i);
+
+  // Waiting for rate limiter timeout
+  await sleep(1000);
+});
 
 // Start the app server and a fixture server so that we can hit the endpoint
 // in a way that resembles the real thing

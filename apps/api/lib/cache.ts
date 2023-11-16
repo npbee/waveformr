@@ -1,6 +1,15 @@
+import * as schemas from "$lib/schemas.ts";
 import { assert, createStorage, Etag } from "../deps.ts";
 
 let waveformStorage = createStorage();
+
+export function createAnalysisKey(params: {
+  url: string;
+  ext: schemas.Ext;
+}) {
+  const { url, ext } = params;
+  return createKey({ url, ext });
+}
 
 export function getWaveform(key: string): Promise<ArrayBuffer | null> {
   return waveformStorage.getItem(key);
