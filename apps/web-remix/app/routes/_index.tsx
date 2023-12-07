@@ -10,10 +10,10 @@ import clsx from "clsx";
 import { LogoLink } from "~/components/logo";
 
 const exampleURL =
-  "http://127.0.0.1:8000/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(red,blue)";
+  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(red,blue)";
 
 const exampleURL2 =
-  "http://127.0.0.1:8000/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=4F315B&fill=AF3736&type=steps&samples=100";
+  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=4F315B&fill=AF3736&type=steps&samples=100";
 
 export const meta: MetaFunction = () => [
   ...getSeo({
