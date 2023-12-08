@@ -1,15 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="24" height="24"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M12 8V16" stroke="#333333" stroke-linecap="round"></path>
-<path d="M14 6V18" stroke="#333333" stroke-linecap="round"></path>
-<path d="M16 4V20" stroke="#333333" stroke-linecap="round"></path>
-<path d="M18 7V17" stroke="#333333" stroke-linecap="round"></path>
-<path d="M20 10V14" stroke="#333333" stroke-linecap="round"></path>
-<path d="M22 11V13" stroke="#333333" stroke-linecap="round"></path>
-<path d="M10 10V14" stroke="#333333" stroke-linecap="round"></path>
-<path d="M8 9V15" stroke="#333333" stroke-linecap="round"></path>
-<path d="M6 10V14" stroke="#333333" stroke-linecap="round"></path>
-<path d="M4 11V13" stroke="#333333" stroke-linecap="round"></path>
-<path d="M2 12.5L2 11.5" stroke="#333333" stroke-linecap="round"></path>
-</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
-@media (prefers-color-scheme: dark) { :root { filter: contrast(0.3846153846153846) brightness(4.5); } }
-</style></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 500 500" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>favicon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="favicon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(0.000000, 140.000000)" stroke-width="10">
+            <polyline id="purple" stroke="#4F315B" points="0 100 120 100 120 60 220 220 220 60 320 220 320 60 420 220 420 100 500 100"></polyline>
+            <polyline id="red" stroke="#AF3736" points="4.4408921e-13 90 110 90 110 30 210 190 210 30 310 190 310 30 410 190 410 90 500 90"></polyline>
+            <polyline id="orange" stroke="#E97927" points="-4.4408921e-13 80 100 80 100 -9.93094496e-14 200 160 200 -1.20681243e-13 300 160 300 -1.27897692e-13 400 160 400 80 500 80"></polyline>
+        </g>
+    </g>
+</svg>
