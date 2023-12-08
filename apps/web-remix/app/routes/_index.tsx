@@ -125,7 +125,7 @@ export default function IndexRoute() {
               <LogoLink />
               <a href="https://github.com/npbee/waveformr">
                 <svg
-                  className="w-5 text-primary-50 dark:text-[#24292f]"
+                  className="w-5 text-primary-50 dark:text-white"
                   viewBox="0 0 98 96"
                 >
                   <use href="#github"></use>
@@ -142,12 +142,13 @@ export default function IndexRoute() {
 
 function Card(props: { title: string; children: React.ReactNode }) {
   const { title, children } = props;
-  const description = "Summary";
   return (
     <div className="relative rounded-lg border-4 border-accent-purple p-4 shadow-2xl ring-4 ring-accent-red ring-offset-4 ring-offset-accent-orange">
       <div className="flex flex-col gap-4">
         <h2 className="font-display text-2xl">{title}</h2>
-        <div className="font-medium text-gray-700">{children}</div>
+        <div className="font-medium text-gray-700 dark:text-gray-200">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -159,10 +160,10 @@ function Hero() {
   return (
     <div className="container relative mx-auto flex w-full flex-col p-4">
       <div className="relative flex w-full flex-1 flex-col gap-4 py-24">
-        <h1 className="font-display text-4xl text-gray-700">
+        <h1 className="font-display text-4xl text-gray-700 dark:text-gray-200">
           <Balancer>Generate audio waveforms on the fly</Balancer>
         </h1>
-        <p className="max-w-prose text-lg text-gray-800">
+        <p className="max-w-prose text-lg text-gray-800 dark:text-gray-300">
           Display beautiful, responsive audio waveforms with a URL. Embed them
           anywhere where you can put an image.
         </p>

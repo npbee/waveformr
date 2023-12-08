@@ -37,7 +37,7 @@ export function Editor(props: EditorProps) {
         url={config.url}
       />
       <div
-        className="relative flex h-52 w-full flex-col justify-center gap-8 border-b border-t border-gray-200 bg-gray-50 px-4 py-6 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1 transition-opacity duration-100"
+        className="relative flex h-52 w-full flex-col justify-center gap-8 border-b border-t border-gray-200 bg-gray-50 px-4 py-6 transition-opacity duration-100 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1"
         style={{
           opacity: isDebouncing ? "0.7" : 1,
         }}
@@ -133,8 +133,8 @@ function Subheader(props: {
 
   return (
     <header className="flex w-full items-center justify-between bg-white px-4 py-2 dark:bg-gray-800 md:py-4">
-      <div className="flex items-center gap-2">
-        <h1 className="text-lg">{title}</h1>
+      <div className="flex items-center gap-4">
+        <h1 className="text-base text-gray-600 dark:text-gray-200">{title}</h1>
         <input type="hidden" name="url" value={url} />
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
           <DialogTrigger asChild>
