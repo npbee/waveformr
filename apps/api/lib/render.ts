@@ -1,6 +1,7 @@
 import { WaveformData } from "$lib/waveform_data.ts";
 import { defaultConfig, linearPath, LinearPathConfig } from "$lib/svg_path.ts";
 import { parseColor } from "$lib/parse_color.ts";
+import { html, HtmlEscapedString } from "../deps.ts";
 
 interface SvgProps {
   path?: LinearPathConfig;
@@ -14,8 +15,6 @@ interface SvgProps {
 
 export function svg(props: SvgProps) {
   let {
-    fill,
-    stroke,
     strokeLinecap = "round",
     strokeWidth = 2,
     samples = 200,
@@ -26,43 +25,19 @@ export function svg(props: SvgProps) {
   let normalizedData = waveformData.getNormalizedData(samples);
   let renderedPath = linearPath(normalizedData, path);
 
-  let parsedFill = fill ? parseColor(fill) : null;
-  let parsedStroke = stroke ? parseColor(stroke) : null;
+  let [fill, fillGradient] = useColor(props.fill ?? "#333333");
+  let [stroke, strokeGradient] = useColor(props.stroke ?? "#333333");
 
-  let _fill = "#333333";
-  let _stroke = "#333333";
+  let defs: HtmlEscapedString | null = (fillGradient || strokeGradient)
+    ? html`<defs>${fillGradient}${strokeGradient}</defs>`
+    : null;
 
-  // TODO: yikes refactor this stuff...
-  let defs = ``;
-
-  if (parsedFill && parsedFill.type === "literal") {
-    _fill = parsedFill.color;
-  } else if (parsedFill && parsedFill.type === "linear-gradient") {
-    let fillId = gradientId();
-    _fill = `url(#${fillId})`;
-    let def = gradientDef(fillId, parsedFill.colorStops);
-    defs += def;
-  }
-
-  if (parsedStroke && parsedStroke.type === "literal") {
-    _stroke = parsedStroke.color;
-  } else if (parsedStroke && parsedStroke.type === "linear-gradient") {
-    let id = gradientId();
-    _stroke = `url(#${id})`;
-    let def = gradientDef(id, parsedStroke.colorStops);
-    defs += def;
-  }
-
-  if (defs) {
-    defs = `<defs>${defs}</defs>`;
-  }
-
-  return `<svg viewBox="0 0 ${path.width} ${path.height}" width="100%" xmlns="http://www.w3.org/2000/svg">
+  return html`<svg viewBox="0 0 ${path.width} ${path.height}" width="100%" xmlns="http://www.w3.org/2000/svg">
       ${defs}
       <path
         d="${renderedPath}"
-        fill="${_fill}"
-        stroke="${_stroke}"
+        fill="${fill}"
+        stroke="${stroke}"
         stroke-width="${strokeWidth}"
         stroke-linecap="${strokeLinecap}"
       />
@@ -76,13 +51,27 @@ function gradientId() {
   return prefix + ++cnt;
 }
 
-function gradientDef(
+function Gradient(
   id: string,
   colorStops: Array<{ color: string; stop: string }>,
-) {
+): HtmlEscapedString {
   let stops = colorStops.map((stop) =>
-    `<stop offset="${stop.stop}" style="stop-color: ${stop.color}"></stop>`
-  ).join("");
+    html`<stop offset="${stop.stop}" style="stop-color: ${stop.color}"></stop>`
+  );
 
-  return `<linearGradient id="${id}">${stops}</linearGradient>`;
+  return html`<linearGradient id="${id}">${stops}</linearGradient>`;
+}
+
+function useColor(colorString: string): [string, HtmlEscapedString | null] {
+  let parsed = parseColor(colorString);
+  if (parsed.type === "literal") {
+    return [parsed.color, null];
+  } else if (parsed.type === "linear-gradient") {
+    let id = gradientId();
+    let color = `url(#${id})`;
+    let def = Gradient(id, parsed.colorStops);
+    return [color, def];
+  }
+
+  throw new Error("Error trying to use color value");
 }

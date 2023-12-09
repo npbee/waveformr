@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - web-remix
 
 jobs:
   deploy-api:
@@ -17,64 +18,12 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  deploy-web:
-    name: Deploy web
+  deploy-web-remix:
+    name: Deploy Web Remix
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
-
     steps:
-      - name: Clone repository
-        uses: actions/checkout@v3
-
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 8
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: Install dependencies
-        working-directory: ./apps/web
-        run: pnpm i
-
-      - name: "Create env file"
-        working-directory: ./apps/web
-        # References vars from the repo
-        run: |
-          touch .env
-          echo ANALYSIS_URL=${{ vars.ANALYSIS_URL }} >> .env
-          echo API_KEY=${{ secrets.API_KEY }} >> .env
-          cat .env
-
-      # TODO: add a build step here
-      - name: Build Astro
-        working-directory: ./apps/web
-        run: pnpm build
-
-      - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
-        with:
-          project: "npbee-waveformr"
-          entrypoint: "server/entry.mjs"
-          root: ./apps/web/dist
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --config ./apps/web-remix/fly.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_WEB_DEPLOY_TOKEN }}

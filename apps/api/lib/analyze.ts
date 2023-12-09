@@ -1,8 +1,6 @@
 import { z } from "../deps.ts";
 import * as schemas from "$lib/schemas.ts";
 import { audioAnalysis } from "$lib/metrics.ts";
-import * as Cache from "$lib/cache.ts";
-import { logger } from "$lib/logger.ts";
 
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
@@ -14,20 +12,10 @@ interface AnalyzeUrlParams {
   output: schemas.Output;
 }
 
-export async function analyzeUrl(params: AnalyzeUrlParams) {
-  let { url, ext } = params;
+export function analyzeUrl(params: AnalyzeUrlParams) {
+  let { url } = params;
 
-  let cacheKey = await Cache.createKey({ url, ext });
-  let cached = await Cache.getWaveform(cacheKey);
-
-  if (cached) {
-    logger.debug("Analysis cache hit for : " + cacheKey);
-    return cached;
-  }
-
-  logger.debug("Analysis cache miss for : " + cacheKey);
-
-  let result = await analyze({
+  return analyze({
     ext: params.ext,
     output: params.output,
     prepare: async (paths) => {
@@ -38,10 +26,6 @@ export async function analyzeUrl(params: AnalyzeUrlParams) {
       }
     },
   });
-
-  await Cache.setWaveform(cacheKey, result);
-
-  return result;
 }
 
 const FILE_SIZE_LIMIT = 8000000;
@@ -54,16 +38,15 @@ let fileSchema = baseSchema.extend({
     .refine((file) => file.size < FILE_SIZE_LIMIT, "File size is too big"),
 });
 
-export async function analyzeFile(params: z.infer<typeof fileSchema>) {
+export function analyzeFile(params: z.infer<typeof fileSchema>) {
   let { file } = params;
-  let result = await analyze({
+  return analyze({
     ext: params.ext,
     output: params.output,
     prepare: async (paths) => {
       await Deno.writeFile(paths.in, file.stream());
     },
   });
-  return result;
 }
 
 async function analyze(params: {
