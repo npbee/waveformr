@@ -7,8 +7,6 @@ import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
 import { prettier, sanitizeFilename } from "./dev_deps.ts";
 import { assertEquals, assertMatch } from "$std/assert/mod.ts";
-import { sanitizeFilename } from "./dev_deps.ts";
-import { assertEquals } from "$std/assert/mod.ts";
 import { clearWaveformCache } from "$lib/cache.ts";
 
 startServers();
