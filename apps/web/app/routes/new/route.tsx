@@ -39,21 +39,30 @@ function EmptyState() {
         </Form>
 
         <ol className="flex flex-col justify-between gap-12 md:flex-row md:gap-24">
-          <ListItem title="Add a URL" icon={<Icon name="upload" />}>
+          <ListItem
+            title="Add a URL"
+            icon={<Icon name="upload" size="1.5em" />}
+          >
             Enter a URL to an MP3 audio file or try using a{" "}
             <Link
-              className="trans font-semibold text-cyan-800 underline underline-offset-2 hover:text-cyan-600 dark:text-cyan-50 dark:hover:text-cyan-700"
+              className="trans font-semibold text-primary-800 underline underline-offset-2 hover:text-primary-600 dark:text-primary-50 dark:hover:text-primary-700"
               to={`/edit?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=005f73`}
             >
               sample
             </Link>
             . Audio is never stored on our servers.
           </ListItem>
-          <ListItem title="Configure" icon={<Icon name="settings" />}>
+          <ListItem
+            title="Configure"
+            icon={<Icon name="settings" size="1.5em" />}
+          >
             Change colors, style, and tweak settings until the design looks just
             right.
           </ListItem>
-          <ListItem title="Copy and Paste" icon={<Icon name="copy" />}>
+          <ListItem
+            title="Copy and Paste"
+            icon={<Icon name="copy" size="1.5em" />}
+          >
             Copy the resulting SVG code and paste it directly into your site.
           </ListItem>
         </ol>
