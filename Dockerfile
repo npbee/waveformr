@@ -22,7 +22,7 @@ ENV NODE_ENV="production"
 # This repo is set up as a monorepo, but we're only deploying the remix app 
 # here. 
 FROM base AS build
-COPY ./apps/web-remix ./apps/web-remix
+COPY ./apps/web ./apps/web
 COPY --link pnpm-lock.yaml package.json pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 

@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - web-remix
 
 jobs:
   deploy-api:
@@ -18,12 +17,12 @@ jobs:
       - run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  deploy-web-remix:
-    name: Deploy Web Remix
+  deploy-web:
+    name: Deploy web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only --config ./apps/web-remix/fly.toml
+      - run: flyctl deploy --remote-only --config ./apps/web/fly.toml
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_WEB_DEPLOY_TOKEN }}

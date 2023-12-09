@@ -1,4 +1,4 @@
-![Waveformr logo](./apps/web-remix/public/logo.svg)
+![Waveformr logo](./apps/web/public/logo.svg)
 
 This is a tool for generating SVG waveforms of audio files.
 It uses [audiowaveform](https://github.com/bbc/audiowaveform) and  [waveform-data](https://github.com/bbc/waveform-data.js) to accept an audio URL and return an SVG of the waveform.
