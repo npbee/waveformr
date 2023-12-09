@@ -13,10 +13,10 @@ export function Browser(props: BrowserProps) {
           <div className="w-3 aspect-square rounded-full bg-[#F4BF4F]" />
           <div className="w-3 aspect-square rounded-full bg-[#61C554]" />
         </div>
-        <div className="bg-[#F1F1F1] py-2 px-2 rounded-md flex-1 overflow-hidden">
+        <div className="bg-[#F1F1F1] dark:bg-[#1e1e1e] py-2 px-2 rounded-md flex-1 overflow-hidden">
           <div className="flex gap-2 items-center justify-start text-gray-600">
             <Lock />
-            <span className="text-xs font-medium flex-1 text-left whitespace-nowrap overflow-hidden">
+            <span className="text-sm flex-1 dark:text-gray-300 text-left whitespace-nowrap overflow-hidden">
               {url}
             </span>
             <span className="text-gray-400 flex-shrink-0">

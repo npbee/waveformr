@@ -59,7 +59,7 @@ export default function IndexRoute() {
                   Waveforms everywhere
                 </h2>
                 <div className="flex-2 text-lg leading-normal">
-                  <p>
+                  <p className="font-displayMono">
                     Waveformr is an API for displaying audio waveforms like an
                     image. Provide a URL and get back a waveform. Provide
                     parameters to style it to your liking.
@@ -78,7 +78,7 @@ export default function IndexRoute() {
                 Features
               </h2>
               <div className="relative">
-                <div className="relative mx-auto flex w-full max-w-5xl flex-col border-b border-gray-50/50 md:flex-row">
+                <div className="relative mx-auto flex w-full max-w-5xl flex-col md:border-b border-gray-50/50 md:flex-row">
                   <Feature title="Responsive" bordered>
                     The Waveformr API uses an SVG format that is responsive
                     without the need for JavaScript.
@@ -146,7 +146,7 @@ function Card(props: { title: string; children: React.ReactNode }) {
     <div className="relative rounded-lg border-4 border-accent-purple p-4 shadow-2xl ring-4 ring-accent-red ring-offset-4 ring-offset-accent-orange">
       <div className="flex flex-col gap-4">
         <h2 className="font-display text-2xl">{title}</h2>
-        <div className="font-medium text-gray-700 dark:text-gray-200">
+        <div className="font-medium text-gray-700 dark:text-gray-200 font-displayMono">
           {children}
         </div>
       </div>
@@ -163,9 +163,9 @@ function Hero() {
         <h1 className="font-display text-4xl text-gray-700 dark:text-gray-200">
           <Balancer>Generate audio waveforms on the fly</Balancer>
         </h1>
-        <p className="max-w-prose text-lg text-gray-800 dark:text-gray-300">
+        <p className="max-w-xl text-lg text-gray-600 font-displayMono dark:text-gray-300">
           Display beautiful, responsive audio waveforms with a URL. Embed them
-          anywhere where you can put an image.
+          anywhere you can put an image.
         </p>
         <div>
           <ButtonLink to="/new">Try the editor</ButtonLink>
@@ -195,11 +195,11 @@ function Feature(props: {
     <div
       className={clsx(
         "relative flex-[1] space-y-4 p-12",
-        props.bordered && "border-r border-gray-50/50",
+        props.bordered && "md:border-r border-gray-50/50",
       )}
     >
       <h3 className="font-display text-xl">{props.title}</h3>
-      <div>{props.children}</div>
+      <div className="font-displayMono">{props.children}</div>
     </div>
   );
 }

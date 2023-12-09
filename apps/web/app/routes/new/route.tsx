@@ -43,7 +43,7 @@ function EmptyState() {
             Enter a URL to an MP3 audio file or try using a{" "}
             <Link
               className="trans font-semibold text-cyan-800 underline underline-offset-2 hover:text-cyan-600 dark:text-cyan-50 dark:hover:text-cyan-700"
-              to={`/edit?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3`}
+              to={`/edit?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=005f73`}
             >
               sample
             </Link>
@@ -77,11 +77,11 @@ function ListItem(props: ListItemProps) {
         <span className="inline-flex w-fit rounded-full text-lg text-cyan-800 dark:text-cyan-600">
           {icon}
         </span>
-        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200">
+        <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-200 font-display">
           {title}
         </h3>
       </div>
-      <p className="leading-normal text-gray-600 dark:text-gray-300">
+      <p className="leading-normal text-gray-600 dark:text-gray-300 font-displayMono">
         {children}
       </p>
     </li>

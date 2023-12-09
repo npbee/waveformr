@@ -57,6 +57,7 @@ export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
                   "data-[state=checked]:border-cyan-800",
                   "data-[state=checked]:dark:bg-primary-900",
                   "data-[state=checked]:dark:text-gray-50",
+                  "data-[state=checked]:dark:hover:bg-primary-900",
                 )}
                 value={item.value}
                 id={item.value}

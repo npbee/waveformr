@@ -74,7 +74,7 @@ export function ColorPicker(props: ColorPickerProps) {
         name={name}
         disabled={disabled}
       >
-        <div className="grid grid-cols-7 gap-3">
+        <div className="grid grid-cols-5 md:flex flex-wrap gap-3">
           {colors.map((color) => {
             return (
               <RadioGroup.Item
@@ -85,7 +85,7 @@ export function ColorPicker(props: ColorPickerProps) {
                   background: color.value,
                   transitionProperty: "opacity, transform",
                 }}
-                className={`flex aspect-square w-full items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95 ${
+                className={`flex aspect-square md:w-9 flex-shrink-0 items-center justify-center rounded-full ring-cyan-800 transition-all hover:opacity-75 focus:outline-none focus-visible:ring focus-visible:ring-offset-2 active:scale-95 ${
                   disabled ? "cursor-not-allowed" : ""
                 } ${
                   color.type === "none"
@@ -94,7 +94,7 @@ export function ColorPicker(props: ColorPickerProps) {
                 }`}
               >
                 <RadioGroup.Indicator
-                  className={`${
+                  className={`text-3xl md:text-base ${
                     color.type === "none"
                       ? "text-gray-900 dark:text-gray-50"
                       : "text-white dark:text-gray-900"

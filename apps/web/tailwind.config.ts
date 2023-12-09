@@ -20,6 +20,7 @@ export default {
       },
       fontFamily: {
         display: ["Audiowide"],
+        displayMono: ["SpaceMono"],
       },
       keyframes: {
         overlayShow: {

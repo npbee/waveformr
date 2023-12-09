@@ -17,37 +17,14 @@
   }
 
   @font-face {
-    font-family: SpaceMonoBold;
-    src: url("/fonts/Space_Mono/SpaceMono-Bold.ttf");
-    font-weight: 700;
-    font-style: normal;
-  }
-
-  @font-face {
     font-family: Audiowide;
     src: url("/fonts/Audiowide/Audiowide-Regular.ttf");
     font-weight: 400;
     font-style: normal;
   }
 
-  @supports (font-variation-settings: normal) {
-    @font-face {
-      font-family: Manrope;
-      src: url("/fonts/manrope/Manrope-Variable.ttf")
-          format("truetype supports variations"),
-        url("/fonts/manrope/Manrope-Variable.ttf") format("truetype-variations");
-      font-weight: 400 800;
-      font-display: swap;
-      font-style: normal;
-    }
-
-    body {
-      font-family: SpaceMono, serif;
-    }
-  }
-
   body {
-    @apply bg-white;
+    @apply bg-white font-sans;
   }
 
   .dark body {

@@ -12,7 +12,7 @@ export function URLForm() {
         <input
           id="audio-url"
           name="url"
-          className="rounded border border-gray-800 px-4 py-2 text-lg"
+          className="rounded border border-gray-800 px-4 py-2 text-base"
           placeholder="https://file.mp3"
           autoFocus
         />

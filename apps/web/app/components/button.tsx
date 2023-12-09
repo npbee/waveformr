@@ -4,17 +4,17 @@ import { cva, VariantProps } from "class-variance-authority";
 import { Link } from "@remix-run/react";
 
 let btnOuter = cva(
-  "border-2 border-[transparent] rounded-sm inline-flex items-stretch group",
+  "border-2 border-[transparent] rounded inline-flex items-stretch group",
   {
     variants: {
       variant: {
         default: "bg-gray-950 shadow-lg ",
         subtle:
-          "border border-gray-200 text-gray-600 dark:text-gray-400 hover:bg-gray-100 underline-offset-2 hover:text-gray-500 trans-all shadow-sm dark:border-gray-300",
+          "border border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-100 underline-offset-2 hover:text-gray-500 trans-all dark:border-gray-700",
       },
       size: {
         default: "h-9",
-        small: "h-6",
+        small: "h-7",
       },
     },
     defaultVariants: {
@@ -25,7 +25,7 @@ let btnOuter = cva(
 );
 
 let btnInner = cva(
-  "rounded-sm px-2 flex items-center font-bold transition-all duration-75 ",
+  "rounded-sm px-2 flex items-center font-semibold transition-all duration-75 ",
   {
     variants: {
       variant: {
@@ -35,7 +35,7 @@ let btnInner = cva(
       },
       size: {
         default: "text-sm gap-2",
-        small: "text-xs gap-1",
+        small: "text-xs gap-2",
       },
     },
     defaultVariants: {

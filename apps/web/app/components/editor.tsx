@@ -99,21 +99,17 @@ export function Editor(props: EditorProps) {
                   max={10}
                 />
               </div>
-              <div>
-                <ColorPicker
-                  name="stroke"
-                  label="Stroke"
-                  defaultValue={config.stroke}
-                />
-              </div>
-              <div>
-                <ColorPicker
-                  name="fill"
-                  disabled={!fillApplicable}
-                  label="Fill"
-                  defaultValue={config.fill}
-                />
-              </div>
+              <ColorPicker
+                name="stroke"
+                label="Stroke"
+                defaultValue={config.stroke}
+              />
+              <ColorPicker
+                name="fill"
+                disabled={!fillApplicable}
+                label="Fill"
+                defaultValue={config.fill}
+              />
             </div>
           </div>
         </ScrollArea>
@@ -132,8 +128,8 @@ function Subheader(props: {
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <header className="flex w-full items-center justify-between bg-white px-4 py-2 dark:bg-gray-800 md:py-4">
-      <div className="flex items-center gap-4">
+    <header className="flex flex-col md:flex-row w-full gap-2 md:items-center justify-between bg-white px-4 py-2 dark:bg-gray-800 md:py-4">
+      <div className="flex items-center justify-between gap-4">
         <h1 className="text-base text-gray-600 dark:text-gray-200">{title}</h1>
         <input type="hidden" name="url" value={url} />
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
@@ -162,7 +158,7 @@ function Subheader(props: {
           </DialogContent>
         </Dialog>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex w-full justify-end items-center gap-2">
         {svg ? <CopySvgButton svg={svg} /> : null}
         {renderUrl ? <CopyUrlButton url={renderUrl} /> : null}
       </div>

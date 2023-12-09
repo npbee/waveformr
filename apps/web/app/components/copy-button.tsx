@@ -38,6 +38,7 @@ export function CopyButton(props: CopyButtonProps) {
   });
   return (
     <Button
+      size="small"
       icon={<Icon name="copy" />}
       onClick={async () => {
         try {
