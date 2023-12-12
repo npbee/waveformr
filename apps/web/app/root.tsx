@@ -47,6 +47,14 @@ export default function App() {
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <Links />
+        <script
+          data-host="https://app.microanalytics.io"
+          data-dnt="false"
+          src="https://app.microanalytics.io/js/script.js"
+          id="ZwSg9rf6GA"
+          async
+          defer
+        ></script>
       </head>
       <body className="text-gray-900 bg-gray-50 dark:text-gray-50">
         <SvgSprite />
