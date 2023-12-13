@@ -28,20 +28,24 @@ export function svg(props: SvgProps) {
   let [fill, fillGradient] = useColor(props.fill ?? "#333333");
   let [stroke, strokeGradient] = useColor(props.stroke ?? "#333333");
 
-  let defs: HtmlEscapedString | null = (fillGradient || strokeGradient)
+  let defs: HtmlEscapedString | null = fillGradient || strokeGradient
     ? html`<defs>${fillGradient}${strokeGradient}</defs>`
     : null;
 
-  return html`<svg viewBox="0 0 ${path.width} ${path.height}" width="100%" xmlns="http://www.w3.org/2000/svg">
-      ${defs}
-      <path
-        d="${renderedPath}"
-        fill="${fill}"
-        stroke="${stroke}"
-        stroke-width="${strokeWidth}"
-        stroke-linecap="${strokeLinecap}"
-      />
-    </svg>`;
+  return html`<svg
+    viewBox="0 0 ${path.width} ${path.height}"
+    width="100%"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    ${defs}
+    <path
+      d="${renderedPath}"
+      fill="${fill}"
+      stroke="${stroke}"
+      stroke-width="${strokeWidth}"
+      stroke-linecap="${strokeLinecap}"
+    />
+  </svg>`;
 }
 
 let prefix = "waveformr-gradient-";
@@ -55,8 +59,12 @@ function Gradient(
   id: string,
   colorStops: Array<{ color: string; stop: string }>,
 ): HtmlEscapedString {
-  let stops = colorStops.map((stop) =>
-    html`<stop offset="${stop.stop}" style="stop-color: ${stop.color}"></stop>`
+  let stops = colorStops.map(
+    (stop) =>
+      html`<stop
+        offset="${stop.stop}"
+        style="stop-color: ${stop.color}"
+      ></stop>`,
   );
 
   return html`<linearGradient id="${id}">${stops}</linearGradient>`;

@@ -8,18 +8,16 @@ import { ReactNode } from "react";
 import { FancyLink } from "~/components/fancy-link";
 import clsx from "clsx";
 import { LogoLink } from "~/components/logo";
+import { AudioPlayer } from "~/components/audio-player";
 
 const exampleURL =
   "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(red,blue)";
-
-const exampleURL2 =
-  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=4F315B&fill=AF3736&type=steps&samples=100";
 
 export const meta: MetaFunction = () => [
   ...getSeo({
     title: "Responsive audio waveform image service - Waveformr",
     description:
-      "Analyze, design, and build responsive audio waveform visualizations that you can copy and paste to your site or serve as an image.",
+      "Display audio waveforms like an image. Analyze, design, and build responsive audio waveform visualizations that you can copy and paste to your site or serve as an image.",
     pathname: "/",
   }),
 ];
@@ -53,21 +51,21 @@ export default function IndexRoute() {
             <div className="flex w-24 opacity-50 mix-blend-luminosity">
               <TriangleWave />
             </div>
-            <div className="container relative mx-auto flex w-full flex-col justify-between gap-16 p-8">
+            <div className="container relative mx-auto flex w-full flex-col justify-between gap-12 p-8">
               <div className="flex max-w-prose flex-1 flex-col gap-4">
                 <h2 className="flex-1 font-display text-4xl">
-                  Waveforms everywhere
+                  <Balancer>Give your audio players a visual boost</Balancer>
                 </h2>
                 <div className="flex-2 text-lg leading-normal">
                   <p className="font-displayMono">
                     Waveformr is an API for displaying audio waveforms like an
-                    image. Provide a URL and get back a waveform. Provide
-                    parameters to style it to your liking.
+                    image. Use it to display your waveforms in your audio
+                    players without expensive client-side JavaScript.
                   </p>
                 </div>
               </div>
               <div className="right-0 w-full self-end">
-                <img src={exampleURL2} />
+                <AudioPlayer />
               </div>
             </div>
             <div className="relative flex w-full flex-col gap-16 p-4 py-32 text-primary-50">

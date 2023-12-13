@@ -23,6 +23,8 @@ let renderSchema = z
     fill: z.string().optional(),
     type: z.enum(["mirror", "steps", "bars"]).optional().default("mirror"),
     samples: z.coerce.number().int().optional().default(200),
+    width: z.coerce.number().optional(),
+    height: z.coerce.number().optional(),
     "stroke-width": z.coerce.number().int().optional().default(2),
     "stroke-linecap": z
       .enum(["square", "butt", "round"])
@@ -120,6 +122,7 @@ function constructPathConfig(
   if (params.type === "mirror") {
     return {
       ...defaultConfig,
+      ...params,
       type: "mirror",
       options: {},
     };
@@ -128,6 +131,7 @@ function constructPathConfig(
   if (params.type === "steps") {
     return {
       ...defaultConfig,
+      ...params,
       type: "steps",
       options: {},
     };
@@ -136,6 +140,7 @@ function constructPathConfig(
   if (params.type === "bars") {
     return {
       ...defaultConfig,
+      ...params,
       type: "bars",
       options: {},
     };

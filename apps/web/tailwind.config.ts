@@ -4,17 +4,17 @@ import type { Config } from "tailwindcss";
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    colors: {
-      gray: colors.slate,
-      primary: colors.orange,
-      white: colors.white,
-      accent: {
-        orange: "#E97927",
-        red: "#AF3736",
-        purple: "#4F315B",
-      },
-    },
     extend: {
+      colors: {
+        gray: colors.slate,
+        primary: colors.orange,
+        white: colors.white,
+        accent: {
+          orange: "#E97927",
+          red: "#AF3736",
+          purple: "#4F315B",
+        },
+      },
       scale: {
         flip: "-1",
       },
