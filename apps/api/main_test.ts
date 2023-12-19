@@ -56,6 +56,28 @@ for (let renderTest of renderTests) {
     let actualValue = await prettier.format(html, {
       parser: "html",
     });
+    await Deno.writeTextFile(actualPath, actualValue);
+
+    let report = `<html>
+      <body>
+        <div>
+          <h1>Expected</h1>
+          <div style="border: 1px dotted black"
+          ${expectedValue}
+          </div>
+        </div>
+        <div>
+          <h1>Actual</h1>
+          <div style="border: 1px dotted black"
+          ${actualValue}
+          </div>
+        </div>
+    </body></html>`;
+
+    await Deno.writeTextFile(
+      expectedPath.replace(/\.html$/, ".report.html"),
+      report,
+    );
 
     if ((await exists(expectedPath)) && !Deno.args.includes("--update")) {
       let printedExpectedPath = printableSnapshotPath(expectedPath);
