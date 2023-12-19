@@ -4,6 +4,8 @@ import { Path } from "$lib/path.ts";
 interface BaseLinearPathConfig {
   width: number;
   height: number;
+  strokeLinecap: "square" | "butt" | "round";
+  strokeWidth: number;
 }
 
 export interface MirrorPathConfig extends BaseLinearPathConfig {
@@ -47,6 +49,8 @@ export const defaultConfig: LinearPathConfig = {
   type: "mirror",
   width: 800,
   height: 100,
+  strokeLinecap: "round",
+  strokeWidth: 2,
   options: {
     bars: [{ height: 100, offset: 0 }],
   },
@@ -56,13 +60,20 @@ export function linearPath(
   data: Array<number>,
   config: LinearPathConfig = defaultConfig,
 ) {
-  const { type, height } = config;
+  const { type, height, strokeWidth, strokeLinecap } = config;
   const sampleLength = data.length;
   const width = config.width / sampleLength;
   let path = Path.create();
 
+  // We need to know the linecap here so that we can adjust the
+  // height of the bars to account for the linecap.
+  const capHeight =
+    strokeLinecap === "round" || strokeLinecap === "square" ? strokeWidth : 0;
+
+  const defaultheight = height - capHeight;
+
   if (type === "mirror") {
-    const { bars = [{ height: 100 }] } = config.options ?? {};
+    const { bars = [{ height: defaultheight }] } = config.options ?? {};
     const halfHeight = height / 2;
     const barsLength = bars.length;
 
@@ -118,7 +129,7 @@ export function linearPath(
 
     return path.end();
   } else if (type === "steps") {
-    let { steps = [{ height: 100 }] } = config.options ?? {};
+    let { steps = [{ height: defaultheight }] } = config.options ?? {};
     const halfHeight = height / 2;
     const stepsLength = steps.length;
     for (let i = 0; i < sampleLength; i++) {
@@ -153,7 +164,7 @@ export function linearPath(
     }
     return path.end();
   } else if (type === "bars") {
-    let { bars = [{ height: 100 }], invert } = config.options ?? {};
+    let { bars = [{ height: defaultheight }], invert } = config.options ?? {};
     const barsLength = bars.length;
 
     for (let i = 0; i < sampleLength; i++) {

@@ -85,20 +85,12 @@ function svgResponse(props: {
 }) {
   const { analysis, params, etag } = props;
 
-  let {
-    fill,
-    stroke,
-    samples,
-    "stroke-width": strokeWidth,
-    "stroke-linecap": strokeLinecap,
-  } = params;
+  let { fill, stroke, samples } = params;
   let waveformData = WaveformData.create(analysis);
   let pathConfig = constructPathConfig(params);
   let svg = Render.svg({
     path: pathConfig,
     waveformData,
-    strokeWidth,
-    strokeLinecap,
     fill,
     stroke,
     samples,
@@ -123,6 +115,8 @@ function constructPathConfig(
     return {
       ...defaultConfig,
       ...params,
+      strokeLinecap: params["stroke-linecap"],
+      strokeWidth: params["stroke-width"],
       type: "mirror",
       options: {},
     };
@@ -132,6 +126,8 @@ function constructPathConfig(
     return {
       ...defaultConfig,
       ...params,
+      strokeLinecap: params["stroke-linecap"],
+      strokeWidth: params["stroke-width"],
       type: "steps",
       options: {},
     };
@@ -141,6 +137,8 @@ function constructPathConfig(
     return {
       ...defaultConfig,
       ...params,
+      strokeLinecap: params["stroke-linecap"],
+      strokeWidth: params["stroke-width"],
       type: "bars",
       options: {},
     };

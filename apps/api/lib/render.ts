@@ -7,20 +7,12 @@ interface SvgProps {
   path?: LinearPathConfig;
   fill?: string;
   stroke?: string;
-  strokeWidth?: number;
-  strokeLinecap?: "butt" | "round" | "square";
   samples?: number;
   waveformData: WaveformData;
 }
 
 export function svg(props: SvgProps) {
-  let {
-    strokeLinecap = "round",
-    strokeWidth = 2,
-    samples = 200,
-    waveformData,
-    path = defaultConfig,
-  } = props;
+  let { samples = 200, waveformData, path = defaultConfig } = props;
 
   let normalizedData = waveformData.getNormalizedData(samples);
   let renderedPath = linearPath(normalizedData, path);
@@ -42,8 +34,8 @@ export function svg(props: SvgProps) {
       d="${renderedPath}"
       fill="${fill}"
       stroke="${stroke}"
-      stroke-width="${strokeWidth}"
-      stroke-linecap="${strokeLinecap}"
+      stroke-width="${path.strokeWidth}"
+      stroke-linecap="${path.strokeLinecap}"
     />
   </svg>`;
 }
