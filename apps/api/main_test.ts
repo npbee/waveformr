@@ -45,26 +45,29 @@ for (let renderTest of renderTests) {
     assertEquals(resp.headers.get("Content-Type"), "image/svg+xml");
 
     let rawSvg = await resp.text();
-    let snapshotPath = svgSnapshotPath(
-      sanitizeFilename(renderTest.path) + ".svg",
+    let html = `<html><body>${rawSvg}</body></html>`;
+
+    let expectedPath = createSnapshotPath(
+      sanitizeFilename(renderTest.path) + ".html",
     );
-    let svg = await prettier.format(rawSvg, {
+    let expectedValue = await Deno.readTextFile(expectedPath);
+
+    let actualPath = expectedPath.replace(/\.html$/, ".actual.html");
+    let actualValue = await prettier.format(html, {
       parser: "html",
     });
 
-    let printablePath = bold(printableSnapshotPath(snapshotPath));
-
-    if ((await exists(snapshotPath)) && !Deno.args.includes("--update")) {
-      let existingFile = await Deno.readTextFile(snapshotPath);
+    if ((await exists(expectedPath)) && !Deno.args.includes("--update")) {
+      let printedExpectedPath = printableSnapshotPath(expectedPath);
+      let printedActualPath = printableSnapshotPath(actualPath);
       assertEquals(
-        existingFile,
-        svg,
-        `\n\n    Snapshot does not match:  ${printablePath}`,
+        expectedValue,
+        actualValue,
+        `\n\n    Snapshot does not match:  \n  expected: ${printedExpectedPath}\n  actual:   ${printedActualPath}\n\n`,
       );
-      console.log("Snapshot path: " + printablePath);
     } else {
-      await Deno.writeTextFile(snapshotPath, svg);
-      console.log("Snapshot written: " + printablePath);
+      await Deno.writeTextFile(expectedPath, actualValue);
+      console.log("Snapshot written: " + print(expectedPath));
     }
   });
 }
@@ -115,10 +118,14 @@ function fixture(path: string) {
   return `http://localhost:3000/${path}`;
 }
 
-function svgSnapshotPath(name: string) {
+function createSnapshotPath(name: string) {
   return join("./__images__", name);
 }
 
 function printableSnapshotPath(name: string) {
   return `file://${encodeURI(resolve(name))}`;
+}
+
+function print(path: string) {
+  return bold(`file://${encodeURI(resolve(name))}`);
 }
