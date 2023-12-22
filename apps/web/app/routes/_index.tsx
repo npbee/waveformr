@@ -1,7 +1,7 @@
 import { LinksFunction, MetaFunction } from "@remix-run/node";
 import { Balancer } from "react-wrap-balancer";
 import { Browser } from "~/components/browser";
-import { ButtonLink } from "~/components/button";
+import { Button, ButtonLink } from "~/components/button";
 import { Header } from "~/components/header";
 import { getLinks, getSeo } from "~/seo";
 import { ReactNode } from "react";
@@ -110,8 +110,35 @@ export default function IndexRoute() {
               <Card title="How much?">
                 For now...free! The public API is open with a generous rate
                 limit. Interested in more features like higher usage or
-                file-based waveforms? Let me know{" "}
-                <FancyLink to="https://tally.so/r/nGRy1Q">here</FancyLink>.
+                file-based waveforms? Sign up for updates below.
+                <form
+                  action="https://buttondown.email/api/emails/embed-subscribe/waveformr"
+                  method="post"
+                  target="popupwindow"
+                  onSubmit={(evt) => {
+                    window.open(
+                      "https://buttondown.email/waveformr",
+                      "popupwindow",
+                    );
+                  }}
+                  className="py-4 flex flex-col gap-1"
+                >
+                  <label htmlFor="bd-email" className="">
+                    Enter your email
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      name="email"
+                      id="bd-email"
+                      className="border border-gray-300 rounded px-2 py-1 flex-1"
+                    />
+
+                    <div>
+                      <Button type="submit">Subscribe</Button>
+                    </div>
+                  </div>
+                </form>
               </Card>
             </div>
           </div>
