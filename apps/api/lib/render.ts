@@ -20,9 +20,10 @@ export function svg(props: SvgProps) {
   let [fill, fillGradient] = useColor(props.fill ?? "#333333");
   let [stroke, strokeGradient] = useColor(props.stroke ?? "#333333");
 
-  let defs: HtmlEscapedString | null = fillGradient || strokeGradient
-    ? html`<defs>${fillGradient}${strokeGradient}</defs>`
-    : null;
+  let defs: HtmlEscapedString | null =
+    fillGradient || strokeGradient
+      ? html`<defs>${fillGradient}${strokeGradient}</defs>`
+      : null;
 
   return html`<svg
     viewBox="0 0 ${path.width} ${path.height}"
@@ -59,7 +60,9 @@ function Gradient(
       ></stop>`,
   );
 
-  return html`<linearGradient id="${id}">${stops}</linearGradient>`;
+  return html`<linearGradient id="${id}" x1="0" x2="0" y1="50%" y2="100%"
+    >${stops}</linearGradient
+  >`;
 }
 
 function useColor(colorString: string): [string, HtmlEscapedString | null] {
