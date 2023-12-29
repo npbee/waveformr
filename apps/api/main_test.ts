@@ -6,7 +6,7 @@ import { bold } from "$std/fmt/colors.ts";
 import { exists } from "$std/fs/mod.ts";
 import { run } from "./main.ts";
 import { prettier, sanitizeFilename } from "./dev_deps.ts";
-import { assertEquals, assertMatch } from "$std/assert/mod.ts";
+import { assertEquals, assertMatch, fail } from "$std/assert/mod.ts";
 import { clearWaveformCache } from "$lib/cache.ts";
 
 startServers();
@@ -15,22 +15,31 @@ let renderTests = [
   { path: `/render?url=${fixture("short.mp3")}` },
   { path: `/render?url=${fixture("short.mp3")}&stroke=green&fill=red` },
   {
-    path: `/render?url=${
-      fixture(
-        "short.mp3",
-      )
-    }&stroke=linear-gradient(blue, red)`,
+    path: `/render?url=${fixture(
+      "short.mp3",
+    )}&stroke=linear-gradient(blue, red)`,
   },
   { path: `/render?url=${fixture("short.mp3")}&type=bars` },
   { path: `/render?url=${fixture("short.mp3")}&type=steps` },
   { path: `/render?url=${fixture("short.mp3")}&samples=50` },
   { path: `/render?url=${fixture("short.mp3")}&samples=50&stroke-width=10` },
   {
-    path: `/render?url=${
-      fixture(
-        "short.mp3",
-      )
-    }&samples=50&stroke-linecap=square`,
+    path: `/render?url=${fixture(
+      "short.mp3",
+    )}&samples=50&stroke-linecap=square`,
+  },
+  {
+    path: `/render?url=${fixture("short.mp3")}&height=200&samples=10&type=bars`,
+  },
+  {
+    path: `/render?url=${fixture(
+      "short.mp3",
+    )}&height=200&samples=10&type=mirror`,
+  },
+  {
+    path: `/render?url=${fixture(
+      "short.mp3",
+    )}&height=200&samples=10&type=steps`,
   },
 ];
 
@@ -50,46 +59,37 @@ for (let renderTest of renderTests) {
     let expectedPath = createSnapshotPath(
       sanitizeFilename(renderTest.path) + ".html",
     );
-    let expectedValue = await Deno.readTextFile(expectedPath);
 
     let actualPath = expectedPath.replace(/\.html$/, ".actual.html");
     let actualValue = await prettier.format(html, {
       parser: "html",
     });
+    let printedActualPath = printableSnapshotPath(actualPath);
     await Deno.writeTextFile(actualPath, actualValue);
 
-    let report = `<html>
-      <body>
-        <div>
-          <h1>Expected</h1>
-          <div style="border: 1px dotted black"
-          ${expectedValue}
-          </div>
-        </div>
-        <div>
-          <h1>Actual</h1>
-          <div style="border: 1px dotted black"
-          ${actualValue}
-          </div>
-        </div>
-    </body></html>`;
+    const comparing = await exists(expectedPath);
 
-    await Deno.writeTextFile(
-      expectedPath.replace(/\.html$/, ".report.html"),
-      report,
-    );
-
-    if ((await exists(expectedPath)) && !Deno.args.includes("--update")) {
-      let printedExpectedPath = printableSnapshotPath(expectedPath);
-      let printedActualPath = printableSnapshotPath(actualPath);
-      assertEquals(
-        expectedValue,
-        actualValue,
-        `\n\n    Snapshot does not match:  \n  expected: ${printedExpectedPath}\n  actual:   ${printedActualPath}\n\n`,
-      );
-    } else {
+    if (!comparing || Deno.args.includes("--update")) {
       await Deno.writeTextFile(expectedPath, actualValue);
-      console.log("Snapshot written: " + print(expectedPath));
+    }
+
+    let expectedValue = await Deno.readTextFile(expectedPath);
+    let printedExpectedPath = printableSnapshotPath(expectedPath);
+    let report = createReport(expectedValue, actualValue);
+    let reportPath = expectedPath.replace(/\.html$/, ".report.html");
+    let printedReportPath = printableSnapshotPath(reportPath);
+    await Deno.writeTextFile(reportPath, report);
+
+    if (comparing && !Deno.args.includes("--update")) {
+      if (expectedValue !== actualValue) {
+        fail(
+          `Snapshot does not match:  \n\n  expected: ${printedExpectedPath}\n  actual:   ${printedActualPath}\n  report:   ${printedReportPath}\n\n`,
+        );
+      }
+    } else if (!comparing) {
+      console.log(
+        `New snapshot written: actual:  \n\n actual: ${printedActualPath}\n report: ${printedReportPath} \n\n`,
+      );
     }
   });
 }
@@ -136,6 +136,24 @@ function startServers() {
   run();
 }
 
+function createReport(expected: string, actual: string) {
+  return `<html>
+    <body>
+      <div>
+        <h1>Expected</h1>
+        <div style="border: 1px dotted black"
+        ${expected}
+        </div>
+      </div>
+      <div>
+        <h1>Actual</h1>
+        <div style="border: 1px dotted black"
+        ${actual}
+        </div>
+      </div>
+  </body></html>`;
+}
+
 function fixture(path: string) {
   return `http://localhost:3000/${path}`;
 }
@@ -146,8 +164,4 @@ function createSnapshotPath(name: string) {
 
 function printableSnapshotPath(name: string) {
   return `file://${encodeURI(resolve(name))}`;
-}
-
-function print(path: string) {
-  return bold(`file://${encodeURI(resolve(name))}`);
 }
