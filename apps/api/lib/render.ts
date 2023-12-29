@@ -1,10 +1,11 @@
 import { WaveformData } from "$lib/waveform_data.ts";
-import { defaultConfig, linearPath, LinearPathConfig } from "$lib/svg_path.ts";
+import { linearPath } from "$lib/svg_path.ts";
 import { parseColor } from "$lib/parse_color.ts";
 import { html, HtmlEscapedString } from "../deps.ts";
+import type { RenderParams } from "$lib/schemas.ts";
 
 interface SvgProps {
-  path?: LinearPathConfig;
+  params: RenderParams;
   fill?: string;
   stroke?: string;
   samples?: number;
@@ -12,21 +13,20 @@ interface SvgProps {
 }
 
 export function svg(props: SvgProps) {
-  let { samples = 200, waveformData, path = defaultConfig } = props;
+  let { samples = 200, waveformData, params } = props;
 
   let normalizedData = waveformData.getNormalizedData(samples);
-  let renderedPath = linearPath(normalizedData, path);
+  let renderedPath = linearPath(normalizedData, params);
 
   let [fill, fillGradient] = useColor(props.fill ?? "#333333");
   let [stroke, strokeGradient] = useColor(props.stroke ?? "#333333");
 
-  let defs: HtmlEscapedString | null =
-    fillGradient || strokeGradient
-      ? html`<defs>${fillGradient}${strokeGradient}</defs>`
-      : null;
+  let defs: HtmlEscapedString | null = fillGradient || strokeGradient
+    ? html`<defs>${fillGradient}${strokeGradient}</defs>`
+    : null;
 
   return html`<svg
-    viewBox="0 0 ${path.width} ${path.height}"
+    viewBox="0 0 ${params.width} ${params.height}"
     width="100%"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -35,8 +35,8 @@ export function svg(props: SvgProps) {
       d="${renderedPath}"
       fill="${fill}"
       stroke="${stroke}"
-      stroke-width="${path.strokeWidth}"
-      stroke-linecap="${path.strokeLinecap}"
+      stroke-width="${params.strokeWidth}"
+      stroke-linecap="${params.strokeLinecap}"
     />
   </svg>`;
 }

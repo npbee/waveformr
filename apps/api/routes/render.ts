@@ -4,46 +4,17 @@ import {
   type IRateLimiterOptions,
   MiddlewareHandler,
   RateLimiterMemory,
-  z,
 } from "../deps.ts";
 import { WaveformData } from "$lib/waveform_data.ts";
 import { analyzeUrl } from "$lib/analyze.ts";
 import * as Render from "$lib/render.ts";
 import * as Cache from "$lib/cache.ts";
 import * as schemas from "$lib/schemas.ts";
-import { defaultConfig, LinearPathConfig } from "$lib/svg_path.ts";
 import { logger } from "$lib/logger.ts";
-
-let renderSchema = z
-  .object({
-    url: z.string(),
-    ext: schemas.ext.optional(),
-    api_key: z.string().optional(),
-    stroke: z.string().optional(),
-    fill: z.string().optional(),
-    type: z.enum(["mirror", "steps", "bars"]).optional().default("mirror"),
-    samples: z.coerce.number().int().optional().default(200),
-    width: z.coerce.number().optional(),
-    height: z.coerce.number().optional(),
-    "stroke-width": z.coerce.number().int().optional().default(2),
-    "stroke-linecap": z
-      .enum(["square", "butt", "round"])
-      .optional()
-      .default("round"),
-  })
-  .transform((val) => {
-    let extResult = schemas.ext.safeParse(
-      val.ext ?? extractExtensionFromUrl(val.url),
-    );
-    if (!extResult.success) {
-      throw new Error("Must provide an extension");
-    }
-    return { ...val, ext: extResult.data };
-  });
 
 type Variables = {
   etag: string;
-  params: z.output<typeof renderSchema>;
+  params: schemas.RenderParams;
   analysisCacheKey: string;
 };
 
@@ -79,7 +50,7 @@ renderRoute.get(
 );
 
 function svgResponse(props: {
-  params: z.output<typeof renderSchema>;
+  params: schemas.RenderParams;
   analysis: ArrayBuffer;
   etag: string;
 }) {
@@ -87,9 +58,9 @@ function svgResponse(props: {
 
   let { fill, stroke, samples } = params;
   let waveformData = WaveformData.create(analysis);
-  let pathConfig = constructPathConfig(params);
+  let pathConfig = params;
   let svg = Render.svg({
-    path: pathConfig,
+    params: pathConfig,
     waveformData,
     fill,
     stroke,
@@ -104,49 +75,6 @@ function svgResponse(props: {
   });
 }
 
-function extractExtensionFromUrl(url: string) {
-  return url.split(".").at(-1);
-}
-
-function constructPathConfig(
-  params: z.infer<typeof renderSchema>,
-): LinearPathConfig {
-  if (params.type === "mirror") {
-    return {
-      ...defaultConfig,
-      ...params,
-      strokeLinecap: params["stroke-linecap"],
-      strokeWidth: params["stroke-width"],
-      type: "mirror",
-      options: {},
-    };
-  }
-
-  if (params.type === "steps") {
-    return {
-      ...defaultConfig,
-      ...params,
-      strokeLinecap: params["stroke-linecap"],
-      strokeWidth: params["stroke-width"],
-      type: "steps",
-      options: {},
-    };
-  }
-
-  if (params.type === "bars") {
-    return {
-      ...defaultConfig,
-      ...params,
-      strokeLinecap: params["stroke-linecap"],
-      strokeWidth: params["stroke-width"],
-      type: "bars",
-      options: {},
-    };
-  }
-
-  throw new Error("Could not infer path config from type");
-}
-
 /**
  * Extract the params and create the unique key for later use
  */
@@ -154,7 +82,7 @@ function paramsMiddleware(): MiddlewareHandler<{ Variables: Variables }> {
   return async (c, next) => {
     let searchParams = new URL(c.req.url).searchParams;
     let rawParams = Object.fromEntries(searchParams.entries());
-    let parseResult = renderSchema.safeParse(rawParams);
+    let parseResult = schemas.render.safeParse(rawParams);
 
     if (!parseResult.success) {
       return c.text("Text invalid", 401);
