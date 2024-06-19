@@ -6,7 +6,7 @@ interface BrowserProps {
 export function Browser(props: BrowserProps) {
   const { children, url } = props;
   return (
-    <div className="border border-gray-200 rounded-xl w-full shadow-lg">
+    <div className="border border-gray-200 rounded-xl w-full shadow-lg translate-x-0">
       <div className="h-[56px] border-b flex items-center px-6 gap-4">
         <div className="controls flex gap-2">
           <div className="w-3 aspect-square rounded-full bg-[#ED6A5E]" />
@@ -25,7 +25,7 @@ export function Browser(props: BrowserProps) {
           </div>
         </div>
       </div>
-      <div className="p-8 pb-40">{children}</div>
+      <div className="p-8 pb-48">{children}</div>
     </div>
   );
 }

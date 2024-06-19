@@ -11,7 +11,7 @@ import { LogoLink } from "~/components/logo";
 import { AudioPlayer } from "~/components/audio-player";
 
 const exampleURL =
-  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(red,blue)";
+  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(coral,steelblue)";
 
 export const meta: MetaFunction = () => [
   ...getSeo({
@@ -48,7 +48,7 @@ export default function IndexRoute() {
             </div>
 
             <Hero />
-            <div className="flex w-24 opacity-50 mix-blend-luminosity">
+            <div className="flex w-24 -my-12">
               <TriangleWave />
             </div>
             <div className="container relative mx-auto flex w-full flex-col justify-between gap-12 p-8">
@@ -56,54 +56,37 @@ export default function IndexRoute() {
                 <h2 className="flex-1 font-display text-4xl">
                   <Balancer>Give your audio players a visual boost</Balancer>
                 </h2>
-                <div className="flex-2 text-lg leading-normal">
-                  <p className="font-displayMono">
-                    Waveformr is an API for displaying audio waveforms like an
-                    image. Use it to display your waveforms in your audio
-                    players without expensive client-side JavaScript.
-                  </p>
-                </div>
+                <p className="flex-2 text-lg text-gray-600">
+                  Waveformr is an API for displaying audio waveforms like an
+                  image. Use it to display your waveforms in your audio players
+                  without expensive client-side JavaScript.
+                </p>
               </div>
               <div className="right-0 w-full self-end">
                 <AudioPlayer />
               </div>
             </div>
-            <div className="relative flex w-full flex-col gap-16 p-4 py-32 text-primary-50">
-              <div className="absolute left-0 top-0 h-full w-full bg-gray-950">
-                <div className="dark-grunge absolute left-0 top-0 z-0 h-full w-full select-none opacity-[30%]" />
+            <div className="relative w-full text-primary-50 bg-gray-950/95 py-24">
+              <div className="container w-full grid grid-cols-4 mx-auto gap-12 p-8">
+                <Feature title="Responsive" icon={<Phone />}>
+                  The Waveformr API uses an SVG format that is responsive
+                  without the need for JavaScript.
+                </Feature>
+                <Feature title="Customizable" icon={<SettingsIcon />}>
+                  Provide parameters on the URL to change the style and colors.
+                </Feature>
+                <Feature title="Performant" icon={<GaugeIcon />}>
+                  Responses are fast and heavily cached so expensive audio
+                  analysis is only done when absolutely needed.
+                </Feature>
+                <Feature title="Open source" icon={<GitBranchIcon />}>
+                  All source code is proudly available on{" "}
+                  <FancyLink to="https://github.com/npbee/waveformr">
+                    GitHub
+                  </FancyLink>
+                  .
+                </Feature>
               </div>
-              <h2 className="z-10 text-center font-display text-4xl">
-                Features
-              </h2>
-              <div className="relative">
-                <div className="relative mx-auto flex w-full max-w-5xl flex-col md:border-b border-gray-50/50 md:flex-row">
-                  <Feature title="Responsive" bordered>
-                    The Waveformr API uses an SVG format that is responsive
-                    without the need for JavaScript.
-                  </Feature>
-                  <Feature title="Customizable">
-                    Provide parameters on the URL to change the style and
-                    colors.
-                  </Feature>
-                </div>
-                <div className="container mx-auto flex max-w-5xl flex-col md:flex-row">
-                  <Feature title="Performant" bordered>
-                    Responses are fast and heavily cached so expensive audio
-                    analysis is only done when absolutely needed.
-                  </Feature>
-                  <Feature title="Open source">
-                    All source code is proudly available on{" "}
-                    <FancyLink to="https://github.com/npbee/waveformr">
-                      GitHub
-                    </FancyLink>
-                    .
-                  </Feature>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex w-24 opacity-50 mix-blend-luminosity">
-              <SquareWave />
             </div>
 
             <div className="container mx-auto max-w-xl p-8 py-8">
@@ -184,11 +167,11 @@ const prettifiedUrl = prettyUrl(exampleURL);
 function Hero() {
   return (
     <div className="container relative mx-auto flex w-full flex-col p-4">
-      <div className="relative flex w-full flex-1 flex-col gap-4 py-24">
-        <h1 className="font-display text-4xl text-gray-700 dark:text-gray-200">
+      <div className="relative flex w-full flex-1 flex-col gap-6 pt-24 pb-12 md:py-24">
+        <h1 className="font-display text-5xl max-w-4xl text-gray-700 dark:text-gray-200">
           <Balancer>Generate audio waveforms on the fly</Balancer>
         </h1>
-        <p className="max-w-xl text-lg text-gray-600 font-displayMono dark:text-gray-300">
+        <p className="max-w-xl text-xl font-medium text-gray-600/90 dark:text-gray-300 xfont-mono">
           Display beautiful, responsive audio waveforms with a URL. Embed them
           anywhere you can put an image.
         </p>
@@ -196,9 +179,12 @@ function Hero() {
           <ButtonLink to="/new">Try the editor</ButtonLink>
         </div>
       </div>
-      <div className="flex-2 relative flex w-full flex-col items-center gap-4">
+      <div className="flex-2 relative flex w-full flex-col items-center gap-4 md:translate-x-1/3 md:-translate-y-1/4 scale-125 origin-top-left md:scale-100">
         <Browser url={prettifiedUrl}>
-          <img className="left-0 w-full" src={exampleURL} />
+          <img
+            className="left-0 w-full scale-[2] md:scale-[1] origin-top-left"
+            src={exampleURL}
+          />
         </Browser>
       </div>
     </div>
@@ -215,16 +201,15 @@ function Feature(props: {
   title: string;
   children: ReactNode;
   bordered?: boolean;
+  icon?: ReactNode;
 }) {
   return (
-    <div
-      className={clsx(
-        "relative flex-[1] space-y-4 p-12",
-        props.bordered && "md:border-r border-gray-50/50",
-      )}
-    >
-      <h3 className="font-display text-xl">{props.title}</h3>
-      <div className="font-displayMono">{props.children}</div>
+    <div className={clsx("relative flex-[1] space-y-3")}>
+      <div className="flex items-center gap-2">
+        {props.icon}
+        <h3 className="text-sm font-medium">{props.title}</h3>
+      </div>
+      <div className="text-sm text-gray-300">{props.children}</div>
     </div>
   );
 }
@@ -310,6 +295,88 @@ function TriangleWave() {
           d="M0 60h50l30-50 60 100 60-100 60 100 60-100 60 100 30-50h50"
         ></path>
       </g>
+    </svg>
+  );
+}
+
+function Phone() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-smartphone"
+    >
+      <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+      <path d="M12 18h.01" />
+    </svg>
+  );
+}
+
+function SettingsIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-settings"
+    >
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function GaugeIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-gauge"
+    >
+      <path d="m12 14 4-4" />
+      <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+    </svg>
+  );
+}
+
+function GitBranchIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1dm"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="lucide lucide-git-branch"
+    >
+      <line x1="6" x2="6" y1="3" y2="15" />
+      <circle cx="18" cy="6" r="3" />
+      <circle cx="6" cy="18" r="3" />
+      <path d="M18 9a9 9 0 0 1-9 9" />
     </svg>
   );
 }

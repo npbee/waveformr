@@ -60,6 +60,8 @@ async function analyze(params: {
     out: await Deno.makeTempFile({ suffix: `.${output}` }),
   };
 
+  console.log(paths);
+
   await prepare(paths);
 
   let cmd = new Deno.Command("audiowaveform", {
@@ -75,7 +77,7 @@ async function analyze(params: {
   }
 
   let data = await Deno.readFile(paths.out);
-  await Deno.remove(paths.out);
-  await Deno.remove(paths.in);
+  // await Deno.remove(paths.out);
+  // await Deno.remove(paths.in);
   return data.buffer;
 }

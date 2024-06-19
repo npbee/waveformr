@@ -1,4 +1,5 @@
 import colors from "tailwindcss/colors";
+import defaultTheme from "tailwindcss/defaultTheme";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -21,6 +22,7 @@ export default {
       fontFamily: {
         display: ["Audiowide"],
         displayMono: ["SpaceMono"],
+        sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
       keyframes: {
         overlayShow: {

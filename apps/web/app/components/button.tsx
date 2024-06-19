@@ -25,7 +25,7 @@ let btnOuter = cva(
 );
 
 let btnInner = cva(
-  "rounded-sm px-2 flex items-center font-semibold transition-all duration-75 ",
+  "rounded-sm px-2 flex items-center font-medium tracking-wide transition-all duration-75 ",
   {
     variants: {
       variant: {

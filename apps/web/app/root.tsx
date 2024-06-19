@@ -46,15 +46,19 @@ export default function App() {
         <Meta />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="preconnect" href="https://rsms.me/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <Links />
-        <script
-          data-host="https://app.microanalytics.io"
-          data-dnt="false"
-          src="https://app.microanalytics.io/js/script.js"
-          id="ZwSg9rf6GA"
-          async
-          defer
-        ></script>
+        {process.env.NODE_ENV === "production" ? (
+          <script
+            data-host="https://app.microanalytics.io"
+            data-dnt="false"
+            src="https://app.microanalytics.io/js/script.js"
+            id="ZwSg9rf6GA"
+            async
+            defer
+          ></script>
+        ) : null}
       </head>
       <body className="text-gray-900 bg-gray-50 dark:text-gray-50">
         <SvgSprite />
