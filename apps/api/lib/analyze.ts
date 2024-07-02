@@ -1,4 +1,4 @@
-import { z } from "../deps.ts";
+import { z } from "zod";
 import * as schemas from "$lib/schemas.ts";
 import { audioAnalysis } from "$lib/metrics.ts";
 

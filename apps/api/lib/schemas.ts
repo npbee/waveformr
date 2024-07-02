@@ -1,4 +1,4 @@
-import { z } from "../deps.ts";
+import { z } from "zod";
 
 export let ext = z.enum(["mp3"]);
 export type Ext = z.infer<typeof ext>;

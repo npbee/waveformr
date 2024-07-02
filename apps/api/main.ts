@@ -1,4 +1,4 @@
-import { Hono } from "./deps.ts";
+import { Hono } from "hono";
 import { renderRoute } from "./routes/render.ts";
 import { METRICS_PORT, metricsApp } from "$lib/metrics.ts";
 import { logger } from "$lib/logger.ts";

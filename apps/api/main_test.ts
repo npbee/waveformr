@@ -1,12 +1,11 @@
-import "$std/dotenv/load.ts";
-import { serveDir } from "$std/http/file_server.ts";
-import { resolve } from "$std/path/resolve.ts";
-import { join } from "$std/path/mod.ts";
-import { bold } from "$std/fmt/colors.ts";
-import { exists } from "$std/fs/mod.ts";
+import "@std/dotenv/load";
+import { serveDir } from "@std/http/file-server";
+import { resolve } from "@std/path";
+import { join } from "@std/path";
+import { exists } from "@std/fs";
 import { run } from "./main.ts";
 import { prettier, sanitizeFilename } from "./dev_deps.ts";
-import { assertEquals, assertMatch, fail } from "$std/assert/mod.ts";
+import { assertEquals, assertMatch, fail } from "@std/assert";
 import { clearWaveformCache } from "$lib/cache.ts";
 
 startServers();
@@ -15,31 +14,39 @@ let renderTests = [
   { path: `/render?url=${fixture("short.mp3")}` },
   { path: `/render?url=${fixture("short.mp3")}&stroke=green&fill=red` },
   {
-    path: `/render?url=${fixture(
-      "short.mp3",
-    )}&stroke=linear-gradient(blue, red)`,
+    path: `/render?url=${
+      fixture(
+        "short.mp3",
+      )
+    }&stroke=linear-gradient(blue, red)`,
   },
   { path: `/render?url=${fixture("short.mp3")}&type=bars` },
   { path: `/render?url=${fixture("short.mp3")}&type=steps` },
   { path: `/render?url=${fixture("short.mp3")}&samples=50` },
   { path: `/render?url=${fixture("short.mp3")}&samples=50&stroke-width=10` },
   {
-    path: `/render?url=${fixture(
-      "short.mp3",
-    )}&samples=50&stroke-linecap=square`,
+    path: `/render?url=${
+      fixture(
+        "short.mp3",
+      )
+    }&samples=50&stroke-linecap=square`,
   },
   {
     path: `/render?url=${fixture("short.mp3")}&height=200&samples=10&type=bars`,
   },
   {
-    path: `/render?url=${fixture(
-      "short.mp3",
-    )}&height=200&samples=10&type=mirror`,
+    path: `/render?url=${
+      fixture(
+        "short.mp3",
+      )
+    }&height=200&samples=10&type=mirror`,
   },
   {
-    path: `/render?url=${fixture(
-      "short.mp3",
-    )}&height=200&samples=10&type=steps`,
+    path: `/render?url=${
+      fixture(
+        "short.mp3",
+      )
+    }&height=200&samples=10&type=steps`,
   },
 ];
 

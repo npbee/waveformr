@@ -1,16 +1,12 @@
-import {
-  Etag,
-  Hono,
-  type IRateLimiterOptions,
-  MiddlewareHandler,
-  RateLimiterMemory,
-} from "../deps.ts";
+import { Hono, MiddlewareHandler } from "hono";
+import * as Etag from "@std/http/etag";
 import { WaveformData } from "$lib/waveform_data.ts";
 import { analyzeUrl } from "$lib/analyze.ts";
 import * as Render from "$lib/render.ts";
 import * as Cache from "$lib/cache.ts";
 import * as schemas from "$lib/schemas.ts";
 import { logger } from "$lib/logger.ts";
+import { IRateLimiterOptions, RateLimiterMemory } from "rate-limiter-flexible";
 
 type Variables = {
   etag: string;
@@ -39,7 +35,7 @@ renderRoute.get(
     let params = c.get("params");
     let { url, ext } = params;
     let analysis = await analyzeUrl({ url, ext, output: "dat" });
-    await Cache.setWaveform(c.get("analysisCacheKey"), analysis);
+    Cache.setWaveform(c.get("analysisCacheKey"), analysis);
 
     return svgResponse({
       params,
@@ -67,6 +63,7 @@ function svgResponse(props: {
     samples,
   });
 
+  // @ts-ignore test
   return new Response(svg, {
     headers: {
       "Content-Type": "image/svg+xml",
@@ -102,10 +99,10 @@ function paramsMiddleware(): MiddlewareHandler<{ Variables: Variables }> {
  */
 function etagMiddleware(): MiddlewareHandler<{ Variables: Variables }> {
   return async (c, next) => {
-    let ifNoneMatch = c.req.headers.get("if-none-match");
+    let ifNoneMatch = c.req.header("if-none-match");
     let etag = c.get("etag");
 
-    if (!Etag.ifNoneMatch(ifNoneMatch, etag)) {
+    if (ifNoneMatch && !Etag.ifNoneMatch(ifNoneMatch, etag)) {
       let headers = new Headers();
       headers.set("Content-Type", "image/svg+xml");
       headers.set("ETag", etag);
@@ -133,7 +130,7 @@ function audioAnalysisCacheMiddleware(): MiddlewareHandler<{
       ext: params.ext,
     });
     c.set("analysisCacheKey", cacheKey);
-    let cached = await Cache.getWaveform(c.get("analysisCacheKey"));
+    let cached = Cache.getWaveform(c.get("analysisCacheKey"));
 
     if (cached) {
       logger.debug("Analysis cache hit for : " + cacheKey);
@@ -159,7 +156,7 @@ function rateLimiterMiddleware(
       return next();
     }
 
-    let remoteAddress = c.req.headers.get("Fly-Client-IP") ?? "global";
+    let remoteAddress = c.req.header("Fly-Client-IP") ?? "global";
 
     try {
       const result = await rateLimiter.consume(remoteAddress, 1);

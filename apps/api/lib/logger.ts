@@ -1,9 +1,9 @@
-import { log } from "../deps.ts";
+import * as log from "@std/log";
 
 log.setup({
   handlers: {
-    console: new log.handlers.ConsoleHandler("DEBUG", {
-      formatter: "[{levelName}] {msg}",
+    console: new log.ConsoleHandler("DEBUG", {
+      formatter: (record) => `[${record.levelName}] ${record.msg}`,
     }),
   },
 
