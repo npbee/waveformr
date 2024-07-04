@@ -1,4 +1,5 @@
-import { Counter, Hono, Registry } from "../deps.ts";
+import { Counter, Registry } from "@wok/prometheus";
+import { Hono } from "hono";
 
 export let audioAnalysis = Counter.with({
   name: "audio_analysis_total",

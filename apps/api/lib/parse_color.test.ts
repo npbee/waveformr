@@ -1,6 +1,5 @@
-import { assertEquals, fail } from "$std/assert/mod.ts";
 import { parseColor } from "$lib/parse_color.ts";
-import { assert } from "$std/assert/assert.ts";
+import { assert, assertEquals, fail } from "@std/assert";
 
 Deno.test("parseColor() - literal named color", () => {
   let parsed = parseColor("blue");

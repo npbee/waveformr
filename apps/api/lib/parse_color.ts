@@ -1,4 +1,4 @@
-import { colord } from "../deps.ts";
+import { colord } from "colord";
 
 interface LiteralColor {
   type: "literal";

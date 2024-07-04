@@ -1,4 +1,4 @@
-import { z } from "../deps.ts";
+import { z } from "zod";
 import * as schemas from "$lib/schemas.ts";
 import { audioAnalysis } from "$lib/metrics.ts";
 
@@ -60,8 +60,6 @@ async function analyze(params: {
     out: await Deno.makeTempFile({ suffix: `.${output}` }),
   };
 
-  console.log(paths);
-
   await prepare(paths);
 
   let cmd = new Deno.Command("audiowaveform", {
@@ -77,7 +75,7 @@ async function analyze(params: {
   }
 
   let data = await Deno.readFile(paths.out);
-  // await Deno.remove(paths.out);
-  // await Deno.remove(paths.in);
+  await Deno.remove(paths.out);
+  await Deno.remove(paths.in);
   return data.buffer;
 }

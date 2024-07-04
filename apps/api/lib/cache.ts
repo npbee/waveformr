@@ -1,7 +1,8 @@
 import * as schemas from "$lib/schemas.ts";
-import { assert, createStorage, Etag } from "../deps.ts";
+import * as Etag from "@std/http/etag";
+import { assert } from "@std/assert";
 
-let waveformStorage = createStorage();
+let waveformStorage = new Map<string, ArrayBuffer | null>();
 
 export function createAnalysisKey(params: {
   url: string;
@@ -11,12 +12,12 @@ export function createAnalysisKey(params: {
   return createKey({ url, ext });
 }
 
-export function getWaveform(key: string): Promise<ArrayBuffer | null> {
-  return waveformStorage.getItem(key);
+export function getWaveform(key: string): ArrayBuffer | null | undefined {
+  return waveformStorage.get(key);
 }
 
-export function setWaveform(key: string, waveform: ArrayBuffer): Promise<void> {
-  return waveformStorage.setItemRaw(key, waveform);
+export function setWaveform(key: string, waveform: ArrayBuffer): void {
+  waveformStorage.set(key, waveform);
 }
 
 export function clearWaveformCache() {

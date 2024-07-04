@@ -1,9 +1,8 @@
-import {
-  BBCWaveformData,
+import BBCWaveformData, {
   type JsonWaveformData,
   WaveformDataAudioBufferOptions,
   WaveformDataAudioContextOptions,
-} from "../deps.ts";
+} from "waveform-data";
 
 export type { JsonWaveformData };
 
