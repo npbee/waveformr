@@ -1,6 +1,6 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useSyncExternalStore } from "react";
 import { ExportActions } from "~/components/export-actions";
 import { getInk, type Ink, InkPicker } from "~/components/ink-picker";
@@ -30,45 +30,62 @@ export function MiniEditor(props: { xstyle?: StyleXStyles }) {
   let [ink, setInk] = useState<Ink>("ink");
   let origin = useOrigin();
   let stroke = strokeParam(getInk(ink).hex);
-  let waveformUrl = origin
-    ? renderUrl(origin, { url: new URL(track.audio, origin).href, type: waveformStyle, stroke })
-    : null;
+  let audioUrl = origin ? new URL(track.audio, origin).href : null;
+  let waveformUrl =
+    origin && audioUrl ? renderUrl(origin, { url: audioUrl, type: waveformStyle, stroke }) : null;
   return (
-    <Card role="region" aria-label="Try it" xstyle={[styles.root, props.xstyle]}>
-      <audio {...player.audioProps} />
-      <div {...stylex.props(styles.track)}>
-        <PlayButton status={player.status} onClick={player.toggle} />
-        <span {...stylex.props(styles.title)}>{track.title}</span>
-        <PlaybackTime currentTime={player.currentTime} duration={player.duration} />
-      </div>
-      <div {...stylex.props(styles.waveform)}>
-        <Waveform
-          src={waveformUrl}
-          aspectRatio={size.width / size.height}
-          progress={player.progress}
-          label={`Waveform of ${track.title}`}
-        />
-        <Scrubber
-          currentTime={player.currentTime}
-          duration={player.duration}
-          onSeek={player.seek}
-          started={player.status !== "idle"}
-        />
-      </div>
-      <div {...stylex.props(styles.pickers)}>
-        <StylePicker value={waveformStyle} onValueChange={setWaveformStyle} />
-        <InkPicker value={ink} onValueChange={setInk} />
-      </div>
-      <div {...stylex.props(styles.actions)}>
-        <LoadForm
-          onLoad={(url) => navigate({ to: "/edit", search: { url, type: waveformStyle, stroke } })}
-        />
-        <ExportActions
-          renderUrl={waveformUrl}
-          filename={`${track.title.toLowerCase()}.svg`}
-        />
-      </div>
-    </Card>
+    <div {...stylex.props(styles.root, props.xstyle)}>
+      <Card role="region" aria-label="Try it" xstyle={styles.card}>
+        <audio {...player.audioProps} />
+        <div {...stylex.props(styles.track)}>
+          <PlayButton status={player.status} onClick={player.toggle} />
+          <span {...stylex.props(styles.title)}>{track.title}</span>
+          <PlaybackTime currentTime={player.currentTime} duration={player.duration} />
+        </div>
+        <div {...stylex.props(styles.waveform)}>
+          <Waveform
+            src={waveformUrl}
+            aspectRatio={size.width / size.height}
+            progress={player.progress}
+            label={`Waveform of ${track.title}`}
+          />
+          <Scrubber
+            currentTime={player.currentTime}
+            duration={player.duration}
+            onSeek={player.seek}
+            started={player.status !== "idle"}
+          />
+        </div>
+        <div {...stylex.props(styles.pickers)}>
+          <StylePicker value={waveformStyle} onValueChange={setWaveformStyle} />
+          <InkPicker value={ink} onValueChange={setInk} />
+        </div>
+        <div {...stylex.props(styles.actions)}>
+          <LoadForm
+            onLoad={(url) =>
+              navigate({
+                to: "/edit",
+                search: { url, type: waveformStyle, stroke },
+              })
+            }
+          />
+          <ExportActions renderUrl={waveformUrl} filename={`${track.title.toLowerCase()}.svg`} />
+        </div>
+      </Card>
+      {/* Needs the page origin for the audio URL, so it appears after hydration;
+        the line's height is reserved meanwhile. */}
+      <p {...stylex.props(styles.footer)}>
+        {audioUrl ? (
+          <Link
+            to="/edit"
+            search={{ url: audioUrl, type: waveformStyle, stroke }}
+            {...stylex.props(styles.editorLink)}
+          >
+            Open this song in the editor
+          </Link>
+        ) : null}
+      </p>
+    </div>
   );
 }
 
@@ -105,6 +122,29 @@ function noopSubscribe() {
 
 const styles = stylex.create({
   root: {
+    display: "flex",
+    flexDirection: "column",
+    // Clears the card's 10px offset shadow.
+    gap: 28,
+  },
+  footer: {
+    margin: 0,
+    minBlockSize: "1lh",
+    fontSize: 15,
+  },
+  editorLink: {
+    color: {
+      default: color.textMuted,
+      "@media (hover: hover) and (pointer: fine)": {
+        default: color.textMuted,
+        ":hover": color.accentText,
+      },
+    },
+    textDecorationLine: "underline",
+    textDecorationThickness: "0.06em",
+    textUnderlineOffset: "0.15em",
+  },
+  card: {
     minBlockSize: 420,
     display: "flex",
     flexDirection: "column",
