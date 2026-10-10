@@ -9,7 +9,7 @@ FROM node:${NODE_VERSION}-slim as base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 
 LABEL fly_launch_runtime="Remix"
 
