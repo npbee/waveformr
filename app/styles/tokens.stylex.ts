@@ -25,4 +25,7 @@ export const color = stylex.defineVars({
   danger: colors.red9,
   dangerText: colors.red11,
   dangerSubtle: colors.red3,
+
+  // The logo mark follows the wordmark text until a theme sets its own color.
+  logoMark: "currentColor",
 });

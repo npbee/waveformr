@@ -1,3 +1,4 @@
+import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { Browser } from "~/components/browser";
 import { Button, ButtonLink } from "~/components/button";
@@ -131,7 +132,7 @@ function IndexRoute() {
               <Sawtooth />
             </div>
             <div className="container mx-auto flex items-center justify-between text-primary-50">
-              <LogoLink />
+              <LogoLink xstyle={styles.footerLogo} />
               <a href="https://github.com/npbee/waveformr">
                 <svg
                   className="w-5 text-primary-50 dark:text-white"
@@ -381,3 +382,10 @@ function GitBranchIcon() {
     </svg>
   );
 }
+
+const styles = stylex.create({
+  // The footer is always dark, so the logo keeps the footer's light text color.
+  footerLogo: {
+    color: "inherit",
+  },
+});
