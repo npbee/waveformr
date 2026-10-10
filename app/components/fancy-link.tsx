@@ -1,4 +1,6 @@
-export function FancyLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
+export function FancyLink(
+  props: React.AnchorHTMLAttributes<HTMLAnchorElement>,
+) {
   return (
     <span className="inline-flex relative text-primary-700 group text-sm font-bold">
       <svg

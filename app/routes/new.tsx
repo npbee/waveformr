@@ -1,6 +1,5 @@
 import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { EditorLayout } from "~/components/editor-layout";
-import { GetForm } from "~/components/get-form";
 import { Icon } from "~/components/icons";
 import { URLForm } from "~/components/url-form";
 import { getLinks, getSeo } from "~/seo";
@@ -36,9 +35,7 @@ function EmptyState() {
   return (
     <EditorLayout>
       <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-12 p-4 md:gap-24">
-        <GetForm action="/edit">
-          <URLForm />
-        </GetForm>
+        <URLForm />
 
         <ol className="flex flex-col justify-between gap-12 md:flex-row md:gap-24">
           <ListItem
@@ -51,7 +48,7 @@ function EmptyState() {
               to="/edit"
               search={{
                 url: "https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3",
-                stroke: "005f73",
+                stroke: "#005f73",
               }}
             >
               sample

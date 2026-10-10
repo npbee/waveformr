@@ -1,4 +1,9 @@
-import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  stripSearchParams,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
@@ -7,27 +12,42 @@ import { Editor } from "~/components/editor";
 import { useDebouncedCallback } from "use-debounce";
 import { svgSize } from "~/utils.server";
 import { SvgSize } from "~/components/file-size";
-import { GetForm, useSubmitForm } from "~/components/get-form";
 import * as schemas from "~/waveform/schemas";
 import { clientKey, renderWaveform } from "~/waveform/render_waveform.server";
 
-// TODO: Share with backend??
-export let renderSchema = z.object({
+const defaults = {
+  stroke: "#001219ff",
+  fill: "#001219ff",
+  type: "mirror",
+  samples: 200,
+  "stroke-width": 2,
+  "stroke-linecap": "round",
+} as const;
+
+export const editorSearch = z.object({
   url: z.string(),
-  stroke: z.string().optional().default("#001219ff"),
-  fill: z.string().optional().default("#001219ff"),
-  type: z.enum(["mirror", "steps", "bars"]).optional().default("mirror"),
-  samples: z.coerce.number().int().optional().default(200),
-  cacheKey: z.string().optional(),
-  "stroke-width": z.coerce.number().int().optional().default(2),
+  stroke: z.string().default(defaults.stroke),
+  fill: z.string().default(defaults.fill),
+  type: z
+    .enum(["mirror", "steps", "bars"])
+    .default(defaults.type)
+    .catch(defaults.type),
+  samples: z.number().int().default(defaults.samples).catch(defaults.samples),
+  "stroke-width": z
+    .number()
+    .int()
+    .default(defaults["stroke-width"])
+    .catch(defaults["stroke-width"]),
   "stroke-linecap": z
     .enum(["square", "butt", "round"])
-    .optional()
-    .default("round"),
+    .default(defaults["stroke-linecap"])
+    .catch(defaults["stroke-linecap"]),
 });
 
+export type EditorConfig = z.infer<typeof editorSearch>;
+
 const renderEditor = createServerFn({ method: "GET" })
-  .validator(renderSchema)
+  .validator(editorSearch)
   .handler(async ({ data: config }) => {
     const request = getRequest();
     const renderUrl = new URL("/render", publicOrigin(request));
@@ -65,13 +85,10 @@ const renderEditor = createServerFn({ method: "GET" })
     } as const;
   });
 
-// Defaults live in `renderSchema` rather than here so they aren't written back
-// into the URL, which would redirect every shared link on first load.
-const searchSchema = z.object({ url: z.string() }).catchall(z.string());
-
 export const Route = createFileRoute("/edit")({
-  validateSearch: searchSchema,
-  loaderDeps: ({ search }) => renderSchema.parse(search),
+  validateSearch: editorSearch,
+  search: { middlewares: [stripSearchParams(defaults)] },
+  loaderDeps: ({ search }) => search,
   loader: ({ deps }) => renderEditor({ data: deps }),
   head: () => ({
     meta: getSeo({
@@ -87,28 +104,27 @@ export const Route = createFileRoute("/edit")({
 
 function EditRoute() {
   const data = Route.useLoaderData();
-  const submit = useDebouncedCallback(useSubmitForm(), 100);
+  const navigate = useNavigate({ from: Route.fullPath });
   const isLoading = useRouterState({ select: (s) => s.isLoading });
   const editorState =
     data.status === "error" ? "error" : isLoading ? "pending" : "idle";
 
+  const update = (patch: Partial<EditorConfig>) =>
+    navigate({ search: (prev) => ({ ...prev, ...patch }) });
+  // Sliders fire on every step of a drag
+  const debouncedUpdate = useDebouncedCallback(update, 100);
+
   return (
-    <GetForm
-      className="h-full"
-      action="/edit"
-      onChange={(evt) => {
-        submit(evt.currentTarget);
-      }}
-    >
-      <Editor
-        svg={data.svg}
-        config={data.config}
-        renderUrl={data.renderUrl}
-        state={editorState}
-        title={data.title}
-        svgSize={data.status === "ok" ? <SvgSize size={data.svgSize} /> : null}
-      />
-    </GetForm>
+    <Editor
+      svg={data.svg}
+      config={data.config}
+      renderUrl={data.renderUrl}
+      state={editorState}
+      title={data.title}
+      svgSize={data.status === "ok" ? <SvgSize size={data.svgSize} /> : null}
+      onChange={update}
+      onSlide={debouncedUpdate}
+    />
   );
 }
 

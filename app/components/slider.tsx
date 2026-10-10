@@ -1,13 +1,21 @@
 import * as RadixSlider from "@radix-ui/react-slider";
-import { useId, useState } from "react";
+import { useId } from "react";
 import { Label } from "./label";
+import { useLocalValue } from "./use-local-value";
 
-export function Slider(
-  props: RadixSlider.SliderProps & { label: React.ReactNode },
-) {
-  let { label, defaultValue } = props;
+interface SliderProps {
+  label: React.ReactNode;
+  value: number;
+  onValueChange: (value: number) => void;
+  min: number;
+  max: number;
+  step: number;
+}
+
+export function Slider(props: SliderProps) {
+  let { label, value: committed, onValueChange, min, max, step } = props;
   let labelId = useId();
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useLocalValue(committed);
 
   return (
     <div className="space-y-2">
@@ -17,8 +25,14 @@ export function Slider(
       </div>
 
       <RadixSlider.Root
-        {...props}
-        onValueChange={setValue}
+        value={[value]}
+        min={min}
+        max={max}
+        step={step}
+        onValueChange={([next]) => {
+          setValue(next);
+          onValueChange(next);
+        }}
         aria-labelledby={labelId}
         className="relative flex h-5 w-full touch-none select-none items-center"
       >
