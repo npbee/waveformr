@@ -20,8 +20,8 @@ export default defineConfig({
       enableDebugDataProp: false,
       // StyleX resolves theme imports itself and ignores tsconfig paths.
       aliases: { "~/*": [fileURLToPath(new URL("./app/*", import.meta.url))] },
-      // Production rules go in the reset stylesheet, the one CSS file that
-      // outlives Tailwind. Unlayered, they still win over the reset's layer.
+      // Production rules go in the reset stylesheet rather than whichever CSS
+      // asset comes first. Unlayered, they still win over the reset's layer.
       cssInjectionTarget: (fileName: string) => fileName.includes("reset"),
     }),
     viteReact(),

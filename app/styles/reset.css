@@ -1,5 +1,5 @@
-/* Plain CSS so it outlives Tailwind. The layer keeps it below StyleX, which
-   is unlayered, whatever order the stylesheets load in. */
+/* The layer keeps the reset below StyleX, which is unlayered, whatever
+   order the stylesheets load in. */
 @layer reset {
   *,
   *::before,

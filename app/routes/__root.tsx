@@ -2,9 +2,9 @@ import type { ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import resetHref from "../styles/reset.css?url";
-import tailwindHref from "../tailwind.css?url";
+import fontsHref from "../styles/fonts.css?url";
 import { SvgSprite } from "~/components/svg-sprite";
-import { color, space, texture } from "~/styles/tokens.stylex";
+import { color, font, space, texture } from "~/styles/tokens.stylex";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -29,7 +29,7 @@ export const Route = createRootRoute({
       { rel: "preconnect", href: "https://rsms.me/" },
       { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
       { rel: "stylesheet", href: resetHref },
-      { rel: "stylesheet", href: tailwindHref },
+      { rel: "stylesheet", href: fontsHref },
       // Production builds append StyleX rules to the reset stylesheet.
       ...(import.meta.env.DEV
         ? [{ rel: "stylesheet", href: "/virtual:stylex.css" }]
@@ -107,5 +107,7 @@ const styles = stylex.create({
     backgroundColor: color.bg,
     backgroundImage: texture.paper,
     color: color.text,
+    fontFamily: font.sans,
+    lineHeight: 1.5,
   },
 });

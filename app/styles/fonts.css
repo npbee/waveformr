@@ -1,0 +1,8 @@
+/* Variable font, subset to Latin; the wordmark is Fraunces too. */
+@font-face {
+  font-family: Fraunces;
+  src: url("/fonts/Fraunces/Fraunces.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
