@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Balancer } from "react-wrap-balancer";
 import { Browser } from "~/components/browser";
 import { Button, ButtonLink } from "~/components/button";
 import { Header } from "~/components/header";
@@ -55,8 +54,8 @@ function IndexRoute() {
             </div>
             <div className="container relative mx-auto flex w-full flex-col justify-between gap-12 p-8">
               <div className="flex max-w-prose flex-1 flex-col gap-4">
-                <h2 className="flex-1 font-display text-4xl">
-                  <Balancer>Give your audio players a visual boost</Balancer>
+                <h2 className="flex-1 font-display text-4xl text-balance">
+                  Give your audio players a visual boost
                 </h2>
                 <p className="flex-2 text-lg text-gray-600">
                   Waveformr is an API for displaying audio waveforms like an
@@ -170,8 +169,8 @@ function Hero() {
   return (
     <div className="container relative mx-auto flex w-full flex-col p-4">
       <div className="relative flex w-full flex-1 flex-col gap-6 pt-24 pb-12 md:py-24">
-        <h1 className="font-display text-5xl max-w-4xl text-gray-700 dark:text-gray-200">
-          <Balancer>Generate audio waveforms on the fly</Balancer>
+        <h1 className="font-display text-5xl max-w-4xl text-balance text-gray-700 dark:text-gray-200">
+          Generate audio waveforms on the fly
         </h1>
         <p className="max-w-xl text-xl font-medium text-gray-600/90 dark:text-gray-300 xfont-mono">
           Display beautiful, responsive audio waveforms with a URL. Embed them
