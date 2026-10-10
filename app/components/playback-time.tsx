@@ -15,7 +15,7 @@ export function PlaybackTime(props: {
 }
 
 // m:ss, which covers anything shorter than an hour.
-function formatTime(seconds: number) {
+export function formatTime(seconds: number) {
   let whole = Math.floor(seconds);
   return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, "0")}`;
 }

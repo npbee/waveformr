@@ -1,6 +1,5 @@
 // Inspired by: https://github.com/jerosoler/waveform-path
 import { Path } from "./path.ts";
-import type { RenderParams } from "./schemas.ts";
 
 interface BaseLinearPathConfig {
   width: number;
@@ -26,7 +25,7 @@ export type LinearPathConfig =
   | StepsPathConfig
   | BarsPathConfig;
 
-export function linearPath(data: Array<number>, config: RenderParams) {
+export function linearPath(data: Array<number>, config: LinearPathConfig) {
   const { type, height, strokeWidth, strokeLinecap } = config;
   const sampleLength = data.length;
   const width = config.width / sampleLength;
