@@ -8,9 +8,10 @@
     min-width: 0;
   }
 
+  /* No scrollbar-gutter: some browsers paint the reserved gutter without the
+     body's background texture. */
   :root {
     interpolate-size: allow-keywords;
-    scrollbar-gutter: stable;
     text-wrap: pretty;
     overflow-wrap: break-word;
     font-synthesis: none;

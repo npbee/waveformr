@@ -2,14 +2,7 @@ import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { LogoLink } from "~/components/logo";
 import { getLinks, getSeo } from "~/seo";
-import {
-  color,
-  font,
-  radius,
-  space,
-  text,
-  texture,
-} from "~/styles/tokens.stylex";
+import { color, font, radius, space, text } from "~/styles/tokens.stylex";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,36 +19,29 @@ export const Route = createFileRoute("/")({
 
 function IndexRoute() {
   return (
-    <div {...stylex.props(styles.backdrop)}>
-      <div {...stylex.props(styles.page)}>
-        <header {...stylex.props(styles.header)}>
-          <LogoLink />
-        </header>
-        <main {...stylex.props(styles.main)}>
-          <p {...stylex.props(styles.intro)}>
-            <span {...stylex.props(styles.highlight)}>
-              Waveformr reads an audio file and draws its waveform,
-            </span>{" "}
-            in whatever style and color you like. Save it as an SVG, or use the
-            link anywhere an image can go. By{" "}
-            <a href="https://github.com/npbee" {...stylex.props(styles.link)}>
-              Nick Ball
-            </a>
-            .
-          </p>
-          {/* Placeholder for the mini editor */}
-          <div {...stylex.props(styles.editorSlot)} />
-        </main>
-      </div>
+    <div {...stylex.props(styles.page)}>
+      <header {...stylex.props(styles.header)}>
+        <LogoLink />
+      </header>
+      <main {...stylex.props(styles.main)}>
+        <p {...stylex.props(styles.intro)}>
+          <span {...stylex.props(styles.highlight)}>Waveformr</span> reads an
+          audio file and draws its waveform as an SVG. It allows for custom
+          colors and gradients. Copy the SVG code directly or use a link just
+          like an image. By{" "}
+          <a href="https://github.com/npbee" {...stylex.props(styles.link)}>
+            Nick Ball
+          </a>
+          .
+        </p>
+        {/* Placeholder for the mini editor */}
+        <div {...stylex.props(styles.editorSlot)} />
+      </main>
     </div>
   );
 }
 
 const styles = stylex.create({
-  backdrop: {
-    backgroundColor: color.bg,
-    backgroundImage: texture.paper,
-  },
   page: {
     minBlockSize: "100svh",
     display: "flex",

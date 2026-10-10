@@ -4,7 +4,7 @@ import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import resetHref from "../styles/reset.css?url";
 import tailwindHref from "../tailwind.css?url";
 import { SvgSprite } from "~/components/svg-sprite";
-import { color, space } from "~/styles/tokens.stylex";
+import { color, space, texture } from "~/styles/tokens.stylex";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -102,8 +102,10 @@ const styles = stylex.create({
   html: {
     colorScheme: "light dark",
   },
+  // On body so it propagates to the canvas and covers the scrollbar gutter.
   body: {
     backgroundColor: color.bg,
+    backgroundImage: texture.paper,
     color: color.text,
   },
 });
