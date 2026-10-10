@@ -39,26 +39,7 @@ const styles = stylex.create({
       default: "none",
       ":focus-visible": `2px solid ${color.focusRing}`,
     },
-    outlineOffset: 2,
-    // Riso press: the button sits up off an offset ink layer and stamps down
-    // onto it when pressed.
-    boxShadow: {
-      default: `3px 3px 0 ${color.accent}`,
-      ":active": `0 0 0 ${color.accent}`,
-      ":disabled": `3px 3px 0 ${color.accent}`,
-    },
-    translate: {
-      default: "0 0",
-      ":active": "3px 3px",
-      ":disabled": "0 0",
-    },
-    transitionProperty: "translate, box-shadow",
-    transitionDuration: {
-      default: "120ms",
-      ":active": "40ms",
-      "@media (prefers-reduced-motion: reduce)": "0s",
-    },
-    transitionTimingFunction: "ease-out",
+    outlineOffset: 3,
   },
   solid: {
     backgroundColor: color.text,

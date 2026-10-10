@@ -21,7 +21,8 @@ export const color = stylex.defineVars({
   accentText: colors.orange11,
   accentSubtle: colors.orange3,
   onAccent: colors.orangeContrast,
-  focusRing: colors.orange8,
+  // Ink, not orange, so it never blurs into the orange offset shadows.
+  focusRing: colors.khaki12,
 
   danger: colors.red9,
   dangerText: colors.red11,
@@ -49,7 +50,7 @@ export const space = stylex.defineVars({
 
 export const font = stylex.defineVars({
   display: "Fraunces, Georgia, serif",
-  sans: 'Geist, ui-sans-serif, system-ui, sans-serif',
+  sans: "Geist, ui-sans-serif, system-ui, sans-serif",
 });
 
 // Nested corners derive from these: inner = outer - padding.
