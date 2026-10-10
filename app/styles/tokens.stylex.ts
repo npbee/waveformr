@@ -49,7 +49,7 @@ export const space = stylex.defineVars({
 
 export const font = stylex.defineVars({
   display: "Fraunces, Georgia, serif",
-  sans: '"Inter var", ui-sans-serif, system-ui, sans-serif',
+  sans: 'Geist, ui-sans-serif, system-ui, sans-serif',
 });
 
 // Nested corners derive from these: inner = outer - padding.

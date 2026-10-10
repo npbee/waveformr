@@ -26,8 +26,13 @@ export const Route = createRootRoute({
         type: "font/woff2",
         crossOrigin: "anonymous",
       },
-      { rel: "preconnect", href: "https://rsms.me/" },
-      { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
+      {
+        rel: "preload",
+        href: "/fonts/Geist/Geist.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "stylesheet", href: resetHref },
       { rel: "stylesheet", href: fontsHref },
       // Production builds append StyleX rules to the reset stylesheet.
