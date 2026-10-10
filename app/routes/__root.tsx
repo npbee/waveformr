@@ -1,11 +1,9 @@
 import type { ReactNode } from "react";
-import {
-  HeadContent,
-  Scripts,
-  createRootRoute,
-} from "@tanstack/react-router";
-import styles from "../tailwind.css?url";
+import * as stylex from "@stylexjs/stylex";
+import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import tailwindHref from "../tailwind.css?url";
 import { SvgSprite } from "~/components/svg-sprite";
+import { color } from "~/styles/tokens.stylex";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,7 +18,9 @@ export const Route = createRootRoute({
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "preconnect", href: "https://rsms.me/" },
       { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
-      { rel: "stylesheet", href: styles },
+      { rel: "stylesheet", href: tailwindHref },
+      // Production builds append StyleX rules to the bundled CSS asset.
+      ...(import.meta.env.DEV ? [{ rel: "stylesheet", href: "/virtual:stylex.css" }] : []),
     ],
     scripts: import.meta.env.PROD
       ? [
@@ -33,7 +33,8 @@ export const Route = createRootRoute({
             defer: true,
           },
         ]
-      : [],
+      : // Reloads StyleX CSS on HMR.
+        [{ type: "module", src: "/@id/virtual:stylex:runtime" }],
   }),
   shellComponent: RootDocument,
   errorComponent: ErrorComponent,
@@ -41,11 +42,11 @@ export const Route = createRootRoute({
 
 function RootDocument(props: { children: ReactNode }) {
   return (
-    <html>
+    <html {...stylex.props(styles.html)}>
       <head>
         <HeadContent />
       </head>
-      <body className="text-gray-900 bg-gray-50 dark:text-gray-50">
+      <body {...stylex.props(styles.body)}>
         <SvgSprite />
         {props.children}
         <Scripts />
@@ -64,3 +65,14 @@ function ErrorComponent(props: { error: unknown }) {
     </div>
   );
 }
+
+const styles = stylex.create({
+  // Follows the OS setting; set "light" or "dark" here to force a mode.
+  html: {
+    colorScheme: "light dark",
+  },
+  body: {
+    backgroundColor: color.bg,
+    color: color.text,
+  },
+});
