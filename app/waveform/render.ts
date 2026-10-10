@@ -1,7 +1,7 @@
-import { WaveformData } from "#lib/waveform_data.ts";
-import { linearPath } from "#lib/svg_path.ts";
-import { parseColor } from "#lib/parse_color.ts";
-import type { RenderParams } from "#lib/schemas.ts";
+import { WaveformData } from "./waveform_data.ts";
+import { linearPath } from "./svg_path.ts";
+import { parseColor } from "./parse_color.ts";
+import type { RenderParams } from "./schemas.ts";
 
 interface SvgProps {
   params: RenderParams;

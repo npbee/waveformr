@@ -6,9 +6,7 @@ const trackUrl =
   "https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/rest.mp3";
 
 const waveformUrl = (params: string) =>
-  process.env.NODE_ENV === "development"
-    ? `http://localhost:8000/render?url=${trackUrl}&type=bars${params}`
-    : `https://api.waveformr.com/render?url=${trackUrl}&type=bars${params}`;
+  `/render?url=${trackUrl}&type=bars${params}`;
 
 export function AudioPlayer() {
   const ref = useRef<HTMLAudioElement>(null);

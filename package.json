@@ -1,20 +1,57 @@
 {
   "name": "waveformr",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "run-p -l dev:*",
-    "dev:web": "pnpm --filter @waveformr/web dev",
-    "dev:api": "pnpm --filter @waveformr/api dev",
-    "preview": "run-p preview:*",
-    "preview:web": "pnpm --filter @waveformr/web preview",
-    "test": "pnpm --filter @waveformr/api test"
+    "build": "remix build",
+    "dev": "remix dev --manual",
+    "start": "remix-serve build/index.js",
+    "test": "node --env-file-if-exists=.env --test test/*.test.ts",
+    "test:update": "UPDATE_SNAPSHOTS=1 pnpm test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "prettier": {
+    "xplugins": [
+      "prettier-plugin-tailwindcss"
+    ]
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-radio-group": "^1.1.3",
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-slider": "^1.1.2",
+    "@remix-run/dev": "^2.3.1",
+    "@remix-run/node": "^2.3.1",
+    "@remix-run/react": "^2.3.1",
+    "@remix-run/serve": "^2.3.1",
+    "class-variance-authority": "^0.7.0",
+    "clipboard-copy": "^4.0.1",
+    "clsx": "^2.0.0",
+    "colord": "^2.10.0",
+    "gzip-size": "^7.0.0",
+    "isbot": "^3.7.1",
+    "lucide-react": "^0.294.0",
+    "pretty-bytes": "^6.1.1",
+    "rate-limiter-flexible": "^5.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-wrap-balancer": "^1.1.0",
+    "tailwindcss": "^3.3.6",
+    "tiny-invariant": "^1.3.1",
+    "use-debounce": "^10.0.0",
+    "waveform-data": "^4.5.2",
+    "zod": "^3.25.76"
+  },
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "@types/node": "^24.19.2",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "oxfmt": "^0.72.0",
+    "prettier": "^3.1.0",
+    "prettier-plugin-tailwindcss": "^0.5.9",
+    "sanitize-filename": "^1.6.4",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }

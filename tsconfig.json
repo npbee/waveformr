@@ -3,10 +3,12 @@
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "isolatedModules": true,
+    "module": "ESNext",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "target": "ES2022",
     "strict": true,
     "allowJs": true,

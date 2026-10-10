@@ -16,9 +16,10 @@ import { getLinks, getSeo } from "~/seo";
 import { Editor } from "~/components/editor";
 import { useDebouncedCallback } from "use-debounce";
 import { useState } from "react";
-import invariant from "tiny-invariant";
 import { svgSize } from "~/utils.server";
 import { SvgSize } from "~/components/file-size";
+import * as schemas from "~/waveform/schemas";
+import { clientKey, renderWaveform } from "~/waveform/render_waveform.server";
 
 export const meta: MetaFunction = () => [
   ...getSeo({
@@ -50,28 +51,30 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const searchParams = new URL(request.url).searchParams;
   const parsed = renderSchema.parse(Object.fromEntries(searchParams.entries()));
 
-  const API_URL = process.env.API_URL;
-  invariant(API_URL, "Expected API_URL in environment");
-  const renderUrl = new URL(`/render`, API_URL);
-  renderUrl.searchParams.set("url", parsed.url);
-
+  const renderUrl = new URL("/render", publicOrigin(request));
   for (const [key, value] of Object.entries(parsed)) {
     renderUrl.searchParams.set(key, String(value));
   }
 
-  const svgResp = await fetch(renderUrl);
   const title = parsed.url.split("/").at(-1) ?? "...";
+  const params = schemas.render.safeParse(
+    Object.fromEntries(renderUrl.searchParams.entries()),
+  );
 
-  if (svgResp.ok) {
-    const svg = await svgResp.text();
-    return defer({
-      config: parsed,
-      status: "ok",
-      svg,
-      renderUrl,
-      title,
-      svgSize: svgSize(svg),
-    } as const);
+  if (params.success) {
+    try {
+      const svg = await renderWaveform(params.data, clientKey(request));
+      return defer({
+        config: parsed,
+        status: "ok",
+        svg,
+        renderUrl: renderUrl.toString(),
+        title,
+        svgSize: svgSize(svg),
+      } as const);
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return {
@@ -106,6 +109,18 @@ export default function EditRoute() {
       />
     </Form>
   );
+}
+
+/**
+ * Origin as the user sees it. TLS terminates at Fly's proxy, so the request
+ * itself arrives over plain HTTP.
+ */
+function publicOrigin(request: Request) {
+  const url = new URL(request.url);
+  if (request.headers.get("x-forwarded-proto") === "https") {
+    url.protocol = "https:";
+  }
+  return url.origin;
 }
 
 function useEditorState(): [SubmitFunction, "idle" | "pending" | "error"] {
