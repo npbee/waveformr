@@ -1,17 +1,16 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { linearPath, type LinearPathConfig } from "~/waveform/svg_path";
 import { WaveformData } from "~/waveform/waveform_data";
 
 // Drawing space for the path; the SVG stretches it to fit its box.
-const config: LinearPathConfig = {
-  type: "bars",
+const config = {
   width: 800,
   height: 100,
   strokeWidth: 3,
   strokeLinecap: "round",
-};
+} as const;
 const samples = 100;
 
 /**
@@ -20,13 +19,22 @@ const samples = 100;
  */
 export function Waveform(props: {
   src: string;
+  type: LinearPathConfig["type"];
+  /** One color, or several for a top-to-bottom gradient. */
+  colors: readonly string[];
   /** 0–1; the part after it is dimmed. */
   progress: number;
   label: string;
   xstyle?: StyleXStyles;
 }) {
-  let path = useWaveformPath(props.src);
+  let peaks = usePeaks(props.src);
+  let path = useMemo(
+    () => (peaks ? linearPath(peaks, { ...config, type: props.type }) : null),
+    [peaks, props.type],
+  );
   let clipId = useId();
+  let gradientId = useId();
+  let stroke = props.colors.length > 1 ? `url(#${gradientId})` : props.colors[0];
   let played = config.width * Math.min(Math.max(props.progress, 0), 1);
 
   return (
@@ -39,11 +47,28 @@ export function Waveform(props: {
     >
       {path ? (
         <>
+          {props.colors.length > 1 ? (
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              {props.colors.map((c, i) => (
+                <stop
+                  key={i}
+                  offset={i / (props.colors.length - 1)}
+                  // As a style, not an attribute, so CSS variables resolve.
+                  style={{ stopColor: c }}
+                />
+              ))}
+            </linearGradient>
+          ) : null}
           <clipPath id={clipId}>
             <rect width={played} height={config.height} />
           </clipPath>
-          <path d={path} {...pathProps} {...stylex.props(styles.unplayed)} />
-          <path d={path} {...pathProps} clipPath={`url(#${clipId})`} />
+          <path d={path} {...pathProps} {...stylex.props(styles.stroke(stroke), styles.unplayed)} />
+          <path
+            d={path}
+            {...pathProps}
+            clipPath={`url(#${clipId})`}
+            {...stylex.props(styles.stroke(stroke))}
+          />
         </>
       ) : null}
     </svg>
@@ -52,27 +77,25 @@ export function Waveform(props: {
 
 const pathProps = {
   fill: "none",
-  stroke: "currentColor",
   strokeWidth: config.strokeWidth,
   strokeLinecap: config.strokeLinecap,
   // Keeps bar widths fixed while the viewBox stretches to the box.
   vectorEffect: "non-scaling-stroke",
 } as const;
 
-function useWaveformPath(src: string) {
-  let [path, setPath] = useState<string | null>(null);
+function usePeaks(src: string) {
+  let [peaks, setPeaks] = useState<number[] | null>(null);
 
   useEffect(() => {
     let controller = new AbortController();
-    setPath(null);
+    setPeaks(null);
     fetch(src, { signal: controller.signal })
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load ${src}: ${res.status}`);
         return res.arrayBuffer();
       })
       .then((buffer) => {
-        let data = WaveformData.create(buffer).getNormalizedData(samples);
-        setPath(linearPath(data, config));
+        setPeaks(WaveformData.create(buffer).getNormalizedData(samples));
       })
       .catch((err) => {
         if (!controller.signal.aborted) console.error(err);
@@ -80,7 +103,7 @@ function useWaveformPath(src: string) {
     return () => controller.abort();
   }, [src]);
 
-  return path;
+  return peaks;
 }
 
 const styles = stylex.create({
@@ -89,6 +112,10 @@ const styles = stylex.create({
     inlineSize: "100%",
     blockSize: 170,
   },
+  // A style, not the stroke attribute, so CSS variables resolve.
+  stroke: (stroke: string) => ({
+    stroke,
+  }),
   unplayed: {
     opacity: 0.32,
   },

@@ -1,8 +1,11 @@
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
+import { useState } from "react";
+import { type Ink, InkPicker, inkColors } from "~/components/ink-picker";
 import { PlayButton } from "~/components/play-button";
 import { PlaybackTime } from "~/components/playback-time";
 import { Scrubber } from "~/components/scrubber";
+import { StylePicker, type WaveformStyle } from "~/components/style-picker";
 import { Card } from "~/components/ui/card";
 import { useAudioPlayer } from "~/components/use-audio-player";
 import { Waveform } from "~/components/waveform";
@@ -11,6 +14,8 @@ import { color, font } from "~/styles/tokens.stylex";
 /** The home page's small, playable taste of the full editor. */
 export function MiniEditor(props: { xstyle?: StyleXStyles }) {
   let player = useAudioPlayer("/Rest.mp3");
+  let [waveformStyle, setWaveformStyle] = useState<WaveformStyle>("bars");
+  let [ink, setInk] = useState<Ink>("ink");
   return (
     <Card role="region" aria-label="Try it" xstyle={[styles.root, props.xstyle]}>
       <audio {...player.audioProps} />
@@ -20,13 +25,23 @@ export function MiniEditor(props: { xstyle?: StyleXStyles }) {
         <PlaybackTime currentTime={player.currentTime} duration={player.duration} />
       </div>
       <div {...stylex.props(styles.waveform)}>
-        <Waveform src="/Rest.dat" progress={player.progress} label="Waveform of Rest" />
+        <Waveform
+          src="/Rest.dat"
+          type={waveformStyle}
+          progress={player.progress}
+          label="Waveform of Rest"
+          colors={inkColors(ink)}
+        />
         <Scrubber
           currentTime={player.currentTime}
           duration={player.duration}
           onSeek={player.seek}
           started={player.status !== "idle"}
         />
+      </div>
+      <div {...stylex.props(styles.pickers)}>
+        <StylePicker value={waveformStyle} onValueChange={setWaveformStyle} />
+        <InkPicker value={ink} onValueChange={setInk} />
       </div>
     </Card>
   );
@@ -49,6 +64,13 @@ const styles = stylex.create({
   },
   waveform: {
     position: "relative",
+  },
+  pickers: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: "12px 20px",
   },
   title: {
     flex: 1,
