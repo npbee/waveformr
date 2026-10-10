@@ -20,10 +20,14 @@ const styles = stylex.create({
   link: {
     display: "flex",
     alignItems: "center",
-    width: "8rem",
+    inlineSize: "8rem",
     color: {
       default: color.text,
-      ":hover": color.accentText,
+      "@media (hover: hover) and (pointer: fine)": {
+        default: color.text,
+        ":hover": color.accentText,
+      },
+      ":active": color.accent,
     },
   },
 });

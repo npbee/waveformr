@@ -29,3 +29,34 @@ export const color = stylex.defineVars({
   // The logo mark follows the wordmark text until a theme sets its own color.
   logoMark: "currentColor",
 });
+
+// Fluid sizes: rem + vw so they follow the reader's font size and zoom.
+export const text = stylex.defineVars({
+  // 22px at a 360px screen to 30px at 1240px.
+  lead: "clamp(1.375rem, 1.17rem + 0.91vw, 1.875rem)",
+});
+
+// Fluid between a 360px and a 1240px screen, same as `text`.
+export const space = stylex.defineVars({
+  // 16px to 24px
+  gutter: "clamp(1rem, 0.8rem + 0.91vw, 1.5rem)",
+  // 24px to 32px
+  block: "clamp(1.5rem, 1.3rem + 0.91vw, 2rem)",
+  // 32px to 56px
+  section: "clamp(2rem, 1.39rem + 2.73vw, 3.5rem)",
+});
+
+export const font = stylex.defineVars({
+  display: "Fraunces, Georgia, serif",
+});
+
+// Nested corners derive from these: inner = outer - padding.
+export const radius = stylex.defineVars({
+  lg: "18px",
+});
+
+// light-dark() only takes colors, so a dark texture goes in a
+// "@media (prefers-color-scheme: dark)" value here.
+export const texture = stylex.defineVars({
+  paper: "url(/paper-texture.svg)",
+});

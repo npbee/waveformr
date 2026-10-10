@@ -1,15 +1,18 @@
 import type { ReactNode } from "react";
 import * as stylex from "@stylexjs/stylex";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import resetHref from "../styles/reset.css?url";
 import tailwindHref from "../tailwind.css?url";
 import { SvgSprite } from "~/components/svg-sprite";
-import { color } from "~/styles/tokens.stylex";
+import { color, space } from "~/styles/tokens.stylex";
 
 export const Route = createRootRoute({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width" },
+      // Paints the OS theme's background before any CSS loads.
+      { name: "color-scheme", content: "light dark" },
       { name: "robots", content: "index, follow" },
     ],
     links: [
@@ -25,9 +28,12 @@ export const Route = createRootRoute({
       },
       { rel: "preconnect", href: "https://rsms.me/" },
       { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
+      { rel: "stylesheet", href: resetHref },
       { rel: "stylesheet", href: tailwindHref },
-      // Production builds append StyleX rules to the bundled CSS asset.
-      ...(import.meta.env.DEV ? [{ rel: "stylesheet", href: "/virtual:stylex.css" }] : []),
+      // Production builds append StyleX rules to the reset stylesheet.
+      ...(import.meta.env.DEV
+        ? [{ rel: "stylesheet", href: "/virtual:stylex.css" }]
+        : []),
     ],
     scripts: import.meta.env.PROD
       ? [
@@ -45,6 +51,8 @@ export const Route = createRootRoute({
   }),
   shellComponent: RootDocument,
   errorComponent: ErrorComponent,
+  // Also catches Chrome DevTools' /.well-known probe in dev.
+  notFoundComponent: NotFoundComponent,
 });
 
 function RootDocument(props: { children: ReactNode }) {
@@ -73,7 +81,23 @@ function ErrorComponent(props: { error: unknown }) {
   );
 }
 
+function NotFoundComponent() {
+  return (
+    <main {...stylex.props(styles.notFound)}>
+      <p>
+        Nothing here. <a href="/">Go home</a>.
+      </p>
+    </main>
+  );
+}
+
 const styles = stylex.create({
+  notFound: {
+    display: "grid",
+    placeItems: "center",
+    minBlockSize: "100svh",
+    padding: space.gutter,
+  },
   // Follows the OS setting; set "light" or "dark" here to force a mode.
   html: {
     colorScheme: "light dark",
