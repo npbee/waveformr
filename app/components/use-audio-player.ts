@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type AudioStatus = "idle" | "loading" | "playing" | "paused" | "error";
 
@@ -11,6 +11,13 @@ export function useAudioPlayer(src: string) {
   const [status, setStatus] = useState<AudioStatus>("idle");
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  // The server-rendered element can load metadata before hydration attaches
+  // the handlers below, so pick up anything it already knows.
+  useEffect(() => {
+    const audio = ref.current;
+    if (audio && audio.duration) setDuration(audio.duration);
+  }, [src]);
 
   function play() {
     const audio = ref.current;
