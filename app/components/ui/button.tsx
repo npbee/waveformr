@@ -5,12 +5,14 @@ import type { ComponentProps } from "react";
 import { color } from "~/styles/tokens.stylex";
 
 export function Button({
+  variant = "solid",
   xstyle,
   ...props
 }: Omit<ComponentProps<typeof BaseButton>, "className" | "style"> & {
+  variant?: "solid" | "outline";
   xstyle?: StyleXStyles;
 }) {
-  return <BaseButton {...props} {...stylex.props(styles.root, xstyle)} />;
+  return <BaseButton {...props} {...stylex.props(styles.root, styles[variant], xstyle)} />;
 }
 
 const styles = stylex.create({
@@ -25,8 +27,6 @@ const styles = stylex.create({
     borderWidth: 2,
     borderStyle: "solid",
     borderColor: color.border,
-    backgroundColor: color.text,
-    color: color.bg,
     cursor: {
       default: "pointer",
       ":disabled": "not-allowed",
@@ -59,5 +59,13 @@ const styles = stylex.create({
       "@media (prefers-reduced-motion: reduce)": "0s",
     },
     transitionTimingFunction: "ease-out",
+  },
+  solid: {
+    backgroundColor: color.text,
+    color: color.bg,
+  },
+  outline: {
+    backgroundColor: "transparent",
+    color: color.text,
   },
 });

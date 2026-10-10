@@ -5,20 +5,26 @@ import { colors } from "~/styles/colors.stylex";
 import { color } from "~/styles/tokens.stylex";
 
 // Riso-style spot colors, straight from the palette scales. A gradient ink
-// blends its colors top to bottom.
+// blends its colors top to bottom. `hex` holds the light-mode values for
+// rendered SVGs, which have no theme and can't read CSS variables.
 export const inks = [
-  { value: "ink", label: "Ink", colors: [colors.khaki12] },
-  { value: "orange", label: "Orange", colors: [colors.orange9] },
-  { value: "red", label: "Red", colors: [colors.red9] },
-  { value: "plum", label: "Plum", colors: [colors.plum9] },
-  { value: "teal", label: "Teal", colors: [colors.teal9] },
-  { value: "sunset", label: "Sunset", colors: [colors.orange9, colors.plum9] },
+  { value: "ink", label: "Ink", colors: [colors.khaki12], hex: ["212017"] },
+  { value: "orange", label: "Orange", colors: [colors.orange9], hex: ["da834c"] },
+  { value: "red", label: "Red", colors: [colors.red9], hex: ["a34541"] },
+  { value: "plum", label: "Plum", colors: [colors.plum9], hex: ["4d3457"] },
+  { value: "teal", label: "Teal", colors: [colors.teal9], hex: ["428f91"] },
+  {
+    value: "sunset",
+    label: "Sunset",
+    colors: [colors.orange9, colors.plum9],
+    hex: ["da834c", "4d3457"],
+  },
 ] as const;
 
 export type Ink = (typeof inks)[number]["value"];
 
-export function inkColors(ink: Ink): readonly string[] {
-  return inks.find((i) => i.value === ink)!.colors;
+export function getInk(ink: Ink) {
+  return inks.find((i) => i.value === ink)!;
 }
 
 export function InkPicker(props: {
