@@ -15,6 +15,9 @@ export default defineConfig({
     // contribute rules to the single dev stylesheet.
     stylex.vite({
       devPersistToDisk: true,
+      // TanStack Start transforms route files differently for client and SSR,
+      // so the line numbers in data-style-src differ and break hydration.
+      enableDebugDataProp: false,
       // StyleX resolves theme imports itself and ignores tsconfig paths.
       aliases: { "~/*": [fileURLToPath(new URL("./app/*", import.meta.url))] },
     }),
