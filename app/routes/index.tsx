@@ -2,8 +2,9 @@ import * as stylex from "@stylexjs/stylex";
 import { createFileRoute } from "@tanstack/react-router";
 import { FauxWords } from "~/components/faux-words";
 import { LogoLink } from "~/components/logo";
+import { MiniEditor } from "~/components/mini-editor";
 import { getLinks, getSeo } from "~/seo";
-import { color, font, radius, space, text } from "~/styles/tokens.stylex";
+import { color, font, space, text } from "~/styles/tokens.stylex";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,8 +39,7 @@ function IndexRoute() {
           .
           <FauxWords part="after" />
         </p>
-        {/* Placeholder for the mini editor */}
-        <div {...stylex.props(styles.editorSlot)} />
+        <MiniEditor xstyle={styles.editor} />
       </main>
     </div>
   );
@@ -90,12 +90,7 @@ const styles = stylex.create({
     textDecorationThickness: "0.06em",
     textUnderlineOffset: "0.15em",
   },
-  editorSlot: {
+  editor: {
     flex: "1.35 1 480px",
-    minBlockSize: 420,
-    borderWidth: 2,
-    borderStyle: "dashed",
-    borderColor: color.border,
-    borderRadius: radius.lg,
   },
 });
