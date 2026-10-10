@@ -1,15 +1,5 @@
-# fly.toml app configuration file generated for waveformr-web on 2023-11-18T13:52:14-08:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = "waveformr-web"
 primary_region = "sea"
-
-[env]
-  API_URL = "https://api.waveformr.com"
-
-[build]
 
 [http_service]
   internal_port = 3000

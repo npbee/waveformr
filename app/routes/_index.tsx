@@ -11,7 +11,7 @@ import { LogoLink } from "~/components/logo";
 import { AudioPlayer } from "~/components/audio-player";
 
 const exampleURL =
-  "https://api.waveformr.com/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(coral,steelblue)";
+  "/render?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=linear-gradient(coral,steelblue)";
 
 export const meta: MetaFunction = () => [
   ...getSeo({
@@ -192,7 +192,7 @@ function Hero() {
 }
 
 function prettyUrl(url: string) {
-  const prettified = new URL(url);
+  const prettified = new URL(url, "https://waveformr.com");
   prettified.searchParams.set("url", "https://cdn.audio.mp3");
   return decodeURIComponent(prettified.toString());
 }

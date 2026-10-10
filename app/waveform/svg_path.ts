@@ -1,6 +1,6 @@
 // Inspired by: https://github.com/jerosoler/waveform-path
-import { Path } from "#lib/path.ts";
-import type { RenderParams } from "#lib/schemas.ts";
+import { Path } from "./path.ts";
+import type { RenderParams } from "./schemas.ts";
 
 interface BaseLinearPathConfig {
   width: number;

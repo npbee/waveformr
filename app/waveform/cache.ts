@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type * as schemas from "#lib/schemas.ts";
+import type * as schemas from "./schemas.ts";
 
 let waveformStorage = new Map<string, ArrayBuffer | null>();
 

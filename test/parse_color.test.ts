@@ -1,4 +1,4 @@
-import { parseColor } from "#lib/parse_color.ts";
+import { parseColor } from "../app/waveform/parse_color.ts";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 

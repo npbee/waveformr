@@ -21,10 +21,11 @@ export let render = z
       .optional()
       .default("round"),
   })
-  .transform((val) => {
+  .transform((val, ctx) => {
     let extResult = ext.safeParse(val.ext ?? extractExtensionFromUrl(val.url));
     if (!extResult.success) {
-      throw new Error("Must provide an extension");
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Must provide an extension" });
+      return z.NEVER;
     }
 
     const {
