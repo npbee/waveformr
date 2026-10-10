@@ -1,17 +1,20 @@
-import { Counter, Registry } from "@wok/prometheus";
+import { Counter, Registry } from "prom-client";
 import { Hono } from "hono";
 
-export let audioAnalysis = Counter.with({
+let registry = new Registry();
+
+export let audioAnalysis = new Counter({
   name: "audio_analysis_total",
   help: "Total audio analysis requests",
-  labels: [],
+  registers: [registry],
 });
 
 export let METRICS_PORT = 9091;
 
 export let metricsApp = new Hono();
 
-metricsApp.get("/metrics", (c) => {
-  c.header("Content-Type", "text/plain; version=0.0.4");
-  return c.text(Registry.default.metrics(), 200);
+metricsApp.get("/metrics", async (c) => {
+  return c.body(await registry.metrics(), 200, {
+    "Content-Type": registry.contentType,
+  });
 });

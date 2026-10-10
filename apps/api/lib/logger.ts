@@ -1,18 +1,6 @@
-import * as log from "@std/log";
-
-log.setup({
-  handlers: {
-    console: new log.ConsoleHandler("DEBUG", {
-      formatter: (record) => `[${record.levelName}] ${record.msg}`,
-    }),
-  },
-
-  loggers: {
-    default: {
-      level: "DEBUG",
-      handlers: ["console"],
-    },
-  },
-});
-
-export const logger = log.getLogger();
+export const logger = {
+  debug: (msg: string) => console.debug(`[DEBUG] ${msg}`),
+  info: (msg: string) => console.info(`[INFO] ${msg}`),
+  warn: (msg: string) => console.warn(`[WARN] ${msg}`),
+  error: (msg: string) => console.error(`[ERROR] ${msg}`),
+};

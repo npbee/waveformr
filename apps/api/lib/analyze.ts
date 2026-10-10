@@ -1,6 +1,13 @@
+import { execFile } from "node:child_process";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { promisify } from "node:util";
 import { z } from "zod";
-import * as schemas from "$lib/schemas.ts";
-import { audioAnalysis } from "$lib/metrics.ts";
+import type * as schemas from "#lib/schemas.ts";
+import { audioAnalysis } from "#lib/metrics.ts";
+
+let execFileAsync = promisify(execFile);
 
 let baseSchema = z.object({
   output: z.enum(["json", "dat"]),
@@ -21,8 +28,7 @@ export function analyzeUrl(params: AnalyzeUrlParams) {
     prepare: async (paths) => {
       let fileResponse = await fetch(url);
       if (fileResponse.body) {
-        let file = await Deno.open(paths.in, { write: true });
-        await fileResponse.body.pipeTo(file.writable);
+        await writeFile(paths.in, fileResponse.body);
       }
     },
   });
@@ -44,7 +50,7 @@ export function analyzeFile(params: z.infer<typeof fileSchema>) {
     ext: params.ext,
     output: params.output,
     prepare: async (paths) => {
-      await Deno.writeFile(paths.in, file.stream());
+      await writeFile(paths.in, file.stream());
     },
   });
 }
@@ -55,27 +61,36 @@ async function analyze(params: {
   prepare: (paths: { in: string; out: string }) => Promise<void>;
 }): Promise<ArrayBuffer> {
   let { ext, output, prepare } = params;
+  let dir = await mkdtemp(join(tmpdir(), "waveformr-"));
   let paths = {
-    in: await Deno.makeTempFile({ suffix: `.${ext}` }),
-    out: await Deno.makeTempFile({ suffix: `.${output}` }),
+    in: join(dir, `in.${ext}`),
+    out: join(dir, `out.${output}`),
   };
 
-  await prepare(paths);
+  try {
+    await prepare(paths);
 
-  let cmd = new Deno.Command("audiowaveform", {
-    args: ["-q", "-i", paths.in, "-o", paths.out],
-  });
+    audioAnalysis.inc();
 
-  audioAnalysis.inc();
+    try {
+      await execFileAsync("audiowaveform", [
+        "-q",
+        "-i",
+        paths.in,
+        "-o",
+        paths.out,
+      ]);
+    } catch (err) {
+      let { code, signal } = err as { code?: unknown; signal?: unknown };
+      throw new Error(`Error running audiowaveform. Code: ${code ?? signal}`, {
+        cause: err,
+      });
+    }
 
-  let { code } = await cmd.output();
-
-  if (code !== 0) {
-    throw new Error("Error running audiowaveform. Code: " + code);
+    let data = await readFile(paths.out);
+    // Copy out of the Buffer: it may be a view into a larger shared pool
+    return new Uint8Array(data).buffer;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
   }
-
-  let data = await Deno.readFile(paths.out);
-  await Deno.remove(paths.out);
-  await Deno.remove(paths.in);
-  return data.buffer;
 }
