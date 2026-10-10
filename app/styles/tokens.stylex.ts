@@ -15,12 +15,12 @@ export const color = stylex.defineVars({
   text: colors.khaki12,
   textMuted: colors.khaki11,
 
-  accent: colors.red9,
-  accentHover: colors.red10,
-  accentText: colors.red10,
-  accentSubtle: colors.red3,
-  onAccent: colors.redContrast,
-  focusRing: colors.red8,
+  accent: colors.orange9,
+  accentHover: colors.orange10,
+  accentText: colors.orange11,
+  accentSubtle: colors.orange3,
+  onAccent: colors.orangeContrast,
+  focusRing: colors.orange8,
 
   danger: colors.red9,
   dangerText: colors.red11,
@@ -33,7 +33,7 @@ export const color = stylex.defineVars({
 // Fluid sizes: rem + vw so they follow the reader's font size and zoom.
 export const text = stylex.defineVars({
   // 22px at a 360px screen to 30px at 1240px.
-  lead: "clamp(1.375rem, 1.7rem + 0.91vw, 1.875rem)",
+  lead: "clamp(1.375rem, 1.17rem + 0.91vw, 1.875rem)",
 });
 
 // Fluid between a 360px and a 1240px screen, same as `text`.
