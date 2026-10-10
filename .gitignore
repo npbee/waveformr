@@ -4,3 +4,7 @@ node_modules
 .cache
 /build
 /public/build
+/.output
+/dist
+/.nitro
+/.tanstack

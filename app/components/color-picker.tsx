@@ -1,14 +1,15 @@
 import * as RadioGroup from "@radix-ui/react-radio-group";
 import { useId } from "react";
+import { useLocalValue } from "./use-local-value";
 import invariant from "tiny-invariant";
 import { Icon } from "./icons";
 import { Label } from "./label";
 
 interface ColorPickerProps {
-  defaultValue: RadioGroup.RadioGroupProps["defaultValue"];
+  value: string;
   label: React.ReactNode;
   disabled?: boolean;
-  name: string;
+  onValueChange: (value: string) => void;
 }
 
 export interface ColorStop {
@@ -58,8 +59,9 @@ export function getColor(colorName: string): Color {
 }
 
 export function ColorPicker(props: ColorPickerProps) {
-  let { defaultValue, name, label, disabled } = props;
+  let { label, disabled, onValueChange } = props;
   let labelId = useId();
+  let [value, setValue] = useLocalValue(props.value);
 
   return (
     <div
@@ -69,9 +71,12 @@ export function ColorPicker(props: ColorPickerProps) {
     >
       <Label id={labelId}>{label}</Label>
       <RadioGroup.Root
-        defaultValue={defaultValue}
+        value={value}
         aria-labelledby={labelId}
-        name={name}
+        onValueChange={(next) => {
+          setValue(next);
+          onValueChange(next);
+        }}
         disabled={disabled}
       >
         <div className="grid grid-cols-5 md:flex flex-wrap gap-3">

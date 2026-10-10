@@ -24,7 +24,7 @@ export let render = z
   .transform((val, ctx) => {
     let extResult = ext.safeParse(val.ext ?? extractExtensionFromUrl(val.url));
     if (!extResult.success) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "Must provide an extension" });
+      ctx.addIssue({ code: "custom", message: "Must provide an extension" });
       return z.NEVER;
     }
 

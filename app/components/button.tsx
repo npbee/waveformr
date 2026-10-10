@@ -1,7 +1,6 @@
-import { forwardRef } from "react";
 import { clsx } from "clsx";
 import { cva, VariantProps } from "class-variance-authority";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 
 let btnOuter = cva(
   "border-2 border-[transparent] rounded inline-flex items-stretch group",
@@ -46,32 +45,30 @@ let btnInner = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends React.ComponentProps<"button">,
     VariantProps<typeof btnOuter> {
   icon?: React.ReactNode;
 }
 
-export let Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button(props, ref) {
-    let { icon, children, variant, size, ...rest } = props;
-    return (
-      <button
-        {...rest}
-        ref={ref}
-        className={clsx(btnOuter({ variant, size }))}
-        style={{ transitionProperty: "opacity, transform" }}
-      >
-        <span className={btnInner({ variant, size })}>
-          {icon}
-          {children}
-        </span>
-      </button>
-    );
-  },
-);
+export function Button(props: ButtonProps) {
+  let { icon, children, variant, size, ...rest } = props;
+  return (
+    <button
+      {...rest}
+      className={clsx(btnOuter({ variant, size }))}
+      style={{ transitionProperty: "opacity, transform" }}
+    >
+      <span className={btnInner({ variant, size })}>
+        {icon}
+        {children}
+      </span>
+    </button>
+  );
+}
 
 export function ButtonLink(
-  props: React.ComponentProps<typeof Link> & VariantProps<typeof btnOuter>,
+  props: Omit<React.ComponentProps<typeof Link>, "children"> &
+    VariantProps<typeof btnOuter> & { children?: React.ReactNode },
 ) {
   const { variant = "default", size = "default", ...rest } = props;
   return (

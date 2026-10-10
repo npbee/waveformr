@@ -1,13 +1,11 @@
-import { EditorLayout } from "~/routes/edit/layout";
+import { EditorLayout } from "./editor-layout";
 import { CopyButton } from "./copy-button";
 import copy from "clipboard-copy";
 import { ScrollArea } from "./scroll-area";
 import { RadioGroup } from "./radio-group";
 import { Slider } from "./slider";
-import { z } from "zod";
-import { renderSchema } from "~/routes/edit/route";
+import type { EditorConfig } from "~/routes/edit";
 import { ColorPicker } from "./color-picker";
-import { Form } from "@remix-run/react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
 import { URLForm } from "./url-form";
 import { useState } from "react";
@@ -17,25 +15,23 @@ import { Button } from "./button";
 interface EditorProps {
   svg?: string | null;
   renderUrl?: string | null;
-  config: z.infer<typeof renderSchema>;
+  config: EditorConfig;
   state: "idle" | "pending" | "error";
   title: string;
   svgSize: React.ReactNode;
+  onChange: (patch: Partial<EditorConfig>) => void;
+  onSlide: (patch: Partial<EditorConfig>) => void;
 }
 export function Editor(props: EditorProps) {
-  const { svg, config, renderUrl, state, title, svgSize } = props;
+  const { svg, config, renderUrl, state, title, svgSize, onChange, onSlide } =
+    props;
   const isDebouncing = state === "pending";
 
   let fillApplicable = config.type === "steps";
 
   return (
     <EditorLayout>
-      <Subheader
-        svg={svg}
-        renderUrl={renderUrl}
-        title={title}
-        url={config.url}
-      />
+      <Subheader svg={svg} renderUrl={renderUrl} title={title} />
       <div
         className="relative flex h-52 w-full flex-col justify-center gap-8 border-b border-t border-gray-200 bg-gray-50 px-4 py-6 transition-opacity duration-100 dark:border-gray-700 dark:bg-gray-800 md:h-auto md:flex-1"
         style={{
@@ -57,9 +53,9 @@ export function Editor(props: EditorProps) {
             <div className="grid gap-10 md:grid-cols-4">
               <div className="flex flex-col gap-8">
                 <RadioGroup
-                  name="type"
                   label="Style"
-                  defaultValue={config.type}
+                  value={config.type}
+                  onValueChange={(type) => onChange({ type })}
                   items={
                     [
                       { label: "Mirror", value: "mirror" },
@@ -69,9 +65,9 @@ export function Editor(props: EditorProps) {
                   }
                 />
                 <Slider
-                  name="samples"
                   label="Samples"
-                  defaultValue={[config.samples]}
+                  value={config.samples}
+                  onValueChange={(samples) => onSlide({ samples })}
                   step={10}
                   min={50}
                   max={500}
@@ -79,9 +75,11 @@ export function Editor(props: EditorProps) {
               </div>
               <div className="flex flex-col gap-8">
                 <RadioGroup
-                  name="stroke-linecap"
                   label="Stroke Linecap"
-                  defaultValue={config["stroke-linecap"]}
+                  value={config["stroke-linecap"]}
+                  onValueChange={(value) =>
+                    onChange({ "stroke-linecap": value })
+                  }
                   items={
                     [
                       { label: "Square", value: "square" },
@@ -91,24 +89,24 @@ export function Editor(props: EditorProps) {
                   }
                 />
                 <Slider
-                  name="stroke-width"
                   label="Stroke width"
-                  defaultValue={[config["stroke-width"]]}
+                  value={config["stroke-width"]}
+                  onValueChange={(value) => onSlide({ "stroke-width": value })}
                   step={1}
                   min={1}
                   max={10}
                 />
               </div>
               <ColorPicker
-                name="stroke"
                 label="Stroke"
-                defaultValue={config.stroke}
+                value={config.stroke}
+                onValueChange={(stroke) => onChange({ stroke })}
               />
               <ColorPicker
-                name="fill"
                 disabled={!fillApplicable}
                 label="Fill"
-                defaultValue={config.fill}
+                value={config.fill}
+                onValueChange={(fill) => onChange({ fill })}
               />
             </div>
           </div>
@@ -122,16 +120,14 @@ function Subheader(props: {
   svg?: string | null;
   renderUrl?: string | null;
   title: string;
-  url?: string;
 }) {
-  const { svg, renderUrl, title, url } = props;
+  const { svg, renderUrl, title } = props;
   const [editOpen, setEditOpen] = useState(false);
 
   return (
     <header className="flex flex-col md:flex-row w-full gap-2 md:items-center justify-between bg-white px-4 py-2 dark:bg-gray-800 md:py-4">
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-base text-gray-600 dark:text-gray-200">{title}</h1>
-        <input type="hidden" name="url" value={url} />
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
           <DialogTrigger asChild>
             <Button size="small" icon={<Icon name="edit" />} variant="subtle">
@@ -139,22 +135,10 @@ function Subheader(props: {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <Form
-              method="GET"
-              action="/edit"
-              onChange={(evt) => {
-                // To avoid hitting the parent form
-                evt.stopPropagation();
-              }}
-              onSubmit={() => {
-                setEditOpen(false);
-              }}
-            >
-              <div className="flex flex-col gap-4">
-                <DialogTitle>Edit URL</DialogTitle>
-                <URLForm />
-              </div>
-            </Form>
+            <div className="flex flex-col gap-4">
+              <DialogTitle>Edit URL</DialogTitle>
+              <URLForm onSubmit={() => setEditOpen(false)} />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

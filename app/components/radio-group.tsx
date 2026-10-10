@@ -1,6 +1,7 @@
 import * as RadixRadioGroup from "@radix-ui/react-radio-group";
 import { Label } from "./label";
 import { useId } from "react";
+import { useLocalValue } from "./use-local-value";
 import clsx from "clsx";
 
 interface Item {
@@ -11,20 +12,24 @@ interface Item {
 interface RadioGroupProps<I extends Item> {
   items: ReadonlyArray<I>;
   label: React.ReactNode;
-  defaultValue: RadixRadioGroup.RadioGroupProps["defaultValue"];
-  name: string;
+  value: I["value"];
+  onValueChange: (value: I["value"]) => void;
 }
 
 export function RadioGroup<I extends Item>(props: RadioGroupProps<I>) {
-  let { items, defaultValue, label, name } = props;
+  let { items, label, onValueChange } = props;
   let labelId = useId();
+  let [value, setValue] = useLocalValue(props.value);
 
   return (
     <RadixRadioGroup.Root
       className={`flex flex-col gap-2`}
-      defaultValue={defaultValue}
+      value={value}
       aria-labelledby={labelId}
-      name={name}
+      onValueChange={(next) => {
+        setValue(next);
+        onValueChange(next);
+      }}
     >
       <Label id={labelId}>{label}</Label>
       <div

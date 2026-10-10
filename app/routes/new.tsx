@@ -1,25 +1,26 @@
-import { LinksFunction, MetaFunction } from "@remix-run/node";
-import { useNavigation, Form, Link } from "@remix-run/react";
-import { EditorLayout } from "~/routes/edit/layout";
+import { Link, createFileRoute, useRouterState } from "@tanstack/react-router";
+import { EditorLayout } from "~/components/editor-layout";
 import { Icon } from "~/components/icons";
 import { URLForm } from "~/components/url-form";
 import { getLinks, getSeo } from "~/seo";
 
-export const meta: MetaFunction = () => [
-  ...getSeo({
-    title: "New waveform - Waveformr",
-    description:
-      "Design, and build responsive audio waveform visualizations that you can copy and paste to your site or serve as an image.",
-    pathname: "/new",
+export const Route = createFileRoute("/new")({
+  head: () => ({
+    meta: getSeo({
+      title: "New waveform - Waveformr",
+      description:
+        "Design, and build responsive audio waveform visualizations that you can copy and paste to your site or serve as an image.",
+      pathname: "/new",
+    }),
+    links: getLinks({ pathname: "/new" }),
   }),
-];
+  component: NewRoute,
+});
 
-export const links: LinksFunction = () => [...getLinks({ pathname: "/new" })];
+function NewRoute() {
+  const isLoading = useRouterState({ select: (s) => s.isLoading });
 
-export default function NewRoute() {
-  const navigation = useNavigation();
-
-  if (navigation.state === "submitting" || navigation.state === "loading") {
+  if (isLoading) {
     return (
       <div className="w-full h-full flex justify-center items-center">
         <div className="text-lg font-medium text-gray-700">Loading...</div>
@@ -34,9 +35,7 @@ function EmptyState() {
   return (
     <EditorLayout>
       <div className="mx-auto flex h-full max-w-6xl flex-1 flex-col gap-12 p-4 md:gap-24">
-        <Form method="GET" action="/edit">
-          <URLForm />
-        </Form>
+        <URLForm />
 
         <ol className="flex flex-col justify-between gap-12 md:flex-row md:gap-24">
           <ListItem
@@ -46,7 +45,11 @@ function EmptyState() {
             Enter a URL to an MP3 audio file or try using a{" "}
             <Link
               className="trans font-semibold text-primary-800 underline underline-offset-2 hover:text-primary-600 dark:text-primary-50 dark:hover:text-primary-700"
-              to={`/edit?url=https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3&stroke=005f73`}
+              to="/edit"
+              search={{
+                url: "https://res.cloudinary.com/dhhjogfy6//video/upload/q_auto/v1575831765/audio/ghost.mp3",
+                stroke: "#005f73",
+              }}
             >
               sample
             </Link>

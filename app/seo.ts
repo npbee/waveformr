@@ -1,12 +1,10 @@
-import { HtmlLinkDescriptor, MetaDescriptor } from "@remix-run/node";
-
 const ogImage = "https://waveformr.com/og.png";
 
 export function getSeo(props: {
   title: string;
   description: string;
   pathname: string;
-}): Array<MetaDescriptor> {
+}) {
   const { title, description, pathname } = props;
   return [
     {
@@ -71,9 +69,7 @@ export function getSeo(props: {
   ];
 }
 
-export function getLinks(opts: {
-  pathname: string;
-}): Array<HtmlLinkDescriptor> {
+export function getLinks(opts: { pathname: string }) {
   return [
     {
       rel: "canonical",
