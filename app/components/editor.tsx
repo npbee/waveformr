@@ -1,4 +1,5 @@
 import { Collapsible } from "@base-ui/react/collapsible";
+import { PencilSimpleIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import { LogoLink } from "~/components/logo";
 import { StylePicker } from "~/components/style-picker";
@@ -39,7 +40,9 @@ export function Editor(props: EditorProps) {
         <div {...stylex.props(styles.tabs)}>
           <div {...stylex.props(styles.tab)}>
             <div {...stylex.props(styles.tabBody)}>
-              <Collapsible.Trigger render={<Button variant="outline" />}>
+              <Collapsible.Trigger
+                render={<Button variant="ghost" size="sm" iconStart={<PencilSimpleIcon weight="bold" />} />}
+              >
                 Controls
               </Collapsible.Trigger>
             </div>

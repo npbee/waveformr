@@ -26,7 +26,7 @@ export function LoadForm(props: { onLoad: (url: string) => void; xstyle?: StyleX
         placeholder="Paste a link to an MP3"
         {...stylex.props(styles.input)}
       />
-      <Button type="submit" variant="outline" xstyle={styles.button}>
+      <Button type="submit" variant="outline">
         Load
       </Button>
     </form>
@@ -59,11 +59,6 @@ const styles = stylex.create({
     "::placeholder": {
       color: color.textMuted,
     },
-  },
-  button: {
-    minBlockSize: 44,
-    paddingInline: 16,
-    borderRadius: 10,
   },
   visuallyHidden: {
     position: "absolute",

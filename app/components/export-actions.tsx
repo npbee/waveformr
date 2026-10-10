@@ -99,9 +99,6 @@ const styles = stylex.create({
   },
   button: {
     flex: "1 1 140px",
-    minBlockSize: 44,
-    paddingInline: 16,
-    borderRadius: 10,
     textDecorationLine: "none",
   },
 });
