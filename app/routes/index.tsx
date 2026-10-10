@@ -49,7 +49,7 @@ const styles = stylex.create({
   page: {
     display: "flex",
     flexDirection: "column",
-    maxInlineSize: 1240,
+    maxInlineSize: 1500,
     marginInline: "auto",
     paddingInline: space.gutter,
   },
@@ -62,10 +62,9 @@ const styles = stylex.create({
     flexWrap: "wrap",
     alignItems: "center",
     gap: space.section,
-    paddingBlock: "15%",
   },
   intro: {
-    flex: "1 1 360px",
+    flex: "1 1 200px",
     margin: 0,
     fontFamily: font.display,
     fontSize: text.lead,
