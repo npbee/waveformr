@@ -9,7 +9,7 @@ export function LogoLink(props: { xstyle?: StyleXStyles }) {
       aria-label="Navigate home"
       {...stylex.props(styles.link, props.xstyle)}
     >
-      <svg viewBox="0 0 406.53 60.12" width="100%">
+      <svg viewBox="0 0 413.31 57.26" width="100%">
         <use xlinkHref="#wordmark"></use>
       </svg>
     </a>
