@@ -16,11 +16,13 @@
     font-style: normal;
   }
 
+  /* Variable font, subset to Latin; the wordmark is Fraunces too. */
   @font-face {
-    font-family: Audiowide;
-    src: url("/fonts/Audiowide/Audiowide-Regular.ttf");
-    font-weight: 400;
+    font-family: Fraunces;
+    src: url("/fonts/Fraunces/Fraunces.woff2") format("woff2");
+    font-weight: 100 900;
     font-style: normal;
+    font-display: swap;
   }
 
   body {
@@ -29,6 +31,18 @@
 
   .dark body {
     @apply bg-gray-900;
+  }
+}
+
+@layer components {
+  /* Matches the wordmark's soft corners; WONK stays off so headings read
+     calmer than the logo. Weight utilities still override this. */
+  .font-display {
+    font-weight: 600;
+    font-variation-settings:
+      "SOFT" 100,
+      "WONK" 0;
+    letter-spacing: -0.02em;
   }
 }
 

@@ -16,6 +16,13 @@ export const Route = createRootRoute({
       { rel: "icon", href: "data:image/x-icon;base64,AA" },
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
+      {
+        rel: "preload",
+        href: "/fonts/Fraunces/Fraunces.woff2",
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "preconnect", href: "https://rsms.me/" },
       { rel: "stylesheet", href: "https://rsms.me/inter/inter.css" },
       { rel: "stylesheet", href: tailwindHref },

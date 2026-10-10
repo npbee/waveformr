@@ -20,7 +20,7 @@ export default {
         flip: "-1",
       },
       fontFamily: {
-        display: ["Audiowide"],
+        display: ["Fraunces", "Georgia", "serif"],
         displayMono: ["SpaceMono"],
         sans: ["Inter var", ...defaultTheme.fontFamily.sans],
       },
