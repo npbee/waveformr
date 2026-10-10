@@ -1,9 +1,9 @@
-import { useSearchParams } from "@remix-run/react";
+import { useLocation } from "@tanstack/react-router";
 import { Button } from "./button";
 import { Label } from "./label";
 
 export function URLForm() {
-  const [searchParams] = useSearchParams();
+  const searchParams = new URLSearchParams(useLocation().searchStr);
 
   return (
     <div className="flex flex-col gap-2">

@@ -1,13 +1,13 @@
-import { EditorLayout } from "~/routes/edit/layout";
+import { EditorLayout } from "./editor-layout";
 import { CopyButton } from "./copy-button";
 import copy from "clipboard-copy";
 import { ScrollArea } from "./scroll-area";
 import { RadioGroup } from "./radio-group";
 import { Slider } from "./slider";
 import { z } from "zod";
-import { renderSchema } from "~/routes/edit/route";
+import { renderSchema } from "~/routes/edit";
 import { ColorPicker } from "./color-picker";
-import { Form } from "@remix-run/react";
+import { GetForm } from "./get-form";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./dialog";
 import { URLForm } from "./url-form";
 import { useState } from "react";
@@ -139,8 +139,7 @@ function Subheader(props: {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <Form
-              method="GET"
+            <GetForm
               action="/edit"
               onChange={(evt) => {
                 // To avoid hitting the parent form
@@ -154,7 +153,7 @@ function Subheader(props: {
                 <DialogTitle>Edit URL</DialogTitle>
                 <URLForm />
               </div>
-            </Form>
+            </GetForm>
           </DialogContent>
         </Dialog>
       </div>

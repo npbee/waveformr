@@ -8,7 +8,7 @@ FROM base AS build
 COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm build && pnpm prune --prod
+RUN pnpm build
 
 FROM base
 ENV NODE_ENV=production
@@ -23,11 +23,10 @@ RUN apk --no-cache add \
 
 COPY --from=ghcr.io/medleybox/audiowaveform-alpine:master /bin/audiowaveform /bin/audiowaveform
 
-COPY --from=build /app/package.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/build ./build
-COPY --from=build /app/public ./public
+# Nitro bundles the server, its dependencies, and public assets here
+COPY --from=build /app/.output ./.output
 
 USER node
 EXPOSE 3000
-CMD ["node_modules/.bin/remix-serve", "build/index.js"]
+ENV PORT=3000
+CMD ["node", ".output/server/index.mjs"]

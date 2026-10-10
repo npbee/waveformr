@@ -1,7 +1,8 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "types": ["node", "vite/client"],
     "isolatedModules": true,
     "module": "ESNext",
     "esModuleInterop": true,
@@ -11,6 +12,7 @@
     "allowImportingTsExtensions": true,
     "target": "ES2022",
     "strict": true,
+    "skipLibCheck": true,
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
@@ -18,7 +20,7 @@
       "~/*": ["./app/*"]
     },
 
-    // Remix takes care of building everything in `remix build`.
+    // Vite does the building.
     "noEmit": true
   }
 }

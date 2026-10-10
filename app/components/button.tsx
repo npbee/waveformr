@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 import { clsx } from "clsx";
 import { cva, VariantProps } from "class-variance-authority";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 
 let btnOuter = cva(
   "border-2 border-[transparent] rounded inline-flex items-stretch group",
@@ -71,7 +71,8 @@ export let Button = forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 export function ButtonLink(
-  props: React.ComponentProps<typeof Link> & VariantProps<typeof btnOuter>,
+  props: Omit<React.ComponentProps<typeof Link>, "children"> &
+    VariantProps<typeof btnOuter> & { children?: React.ReactNode },
 ) {
   const { variant = "default", size = "default", ...rest } = props;
   return (

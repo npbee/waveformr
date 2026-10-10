@@ -1,6 +1,4 @@
-import { Link } from "@remix-run/react";
-
-export function FancyLink(props: React.ComponentProps<typeof Link>) {
+export function FancyLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return (
     <span className="inline-flex relative text-primary-700 group text-sm font-bold">
       <svg
@@ -17,7 +15,7 @@ export function FancyLink(props: React.ComponentProps<typeof Link>) {
       >
         <use href="#straight-sputter" />
       </svg>
-      <Link {...props} className="h-7 block z-10 cursor-pointer relative " />
+      <a {...props} className="h-7 block z-10 cursor-pointer relative " />
     </span>
   );
 }

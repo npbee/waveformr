@@ -1,6 +1,4 @@
-import { Link } from "@remix-run/react";
 import { Header } from "~/components/header";
-import { Icon } from "~/components/icons";
 
 interface LayoutProps extends React.HTMLAttributes<HTMLDivElement> {}
 

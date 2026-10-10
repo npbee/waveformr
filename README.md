@@ -7,7 +7,7 @@ Like this!
 ![audio waveform example](https://waveformr.com/render?url=https%3A%2F%2Fres.cloudinary.com%2Fdhhjogfy6%2Fvideo%2Fupload%2Fv1575833691%2Faudio%2Freflection.mp3&stroke=%230a9396&fill=%23001219ff&type=mirror&samples=200&stroke-width=2&stroke-linecap=round)
 
 Built with:
-- [Remix](https://remix.run/)
+- [TanStack Start](https://tanstack.com/start)
 - [Fly](https://fly.io/)
 
 ## Development

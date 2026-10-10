@@ -3,6 +3,8 @@
 .git
 .env
 .cache
-/build
-/public/build
+/.output
+/dist
+/.nitro
+/.tanstack
 /test
