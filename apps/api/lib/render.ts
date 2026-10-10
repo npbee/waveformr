@@ -1,7 +1,7 @@
-import { WaveformData } from "$lib/waveform_data.ts";
-import { linearPath } from "$lib/svg_path.ts";
-import { parseColor } from "$lib/parse_color.ts";
-import type { RenderParams } from "$lib/schemas.ts";
+import { WaveformData } from "#lib/waveform_data.ts";
+import { linearPath } from "#lib/svg_path.ts";
+import { parseColor } from "#lib/parse_color.ts";
+import type { RenderParams } from "#lib/schemas.ts";
 
 interface SvgProps {
   params: RenderParams;
@@ -20,9 +20,10 @@ export function svg(props: SvgProps) {
   let [fill, fillGradient] = useColor(props.fill ?? "#333333");
   let [stroke, strokeGradient] = useColor(props.stroke ?? "#333333");
 
-  let defs = fillGradient || strokeGradient
-    ? `<defs>${fillGradient}${strokeGradient}</defs>`
-    : "";
+  let defs =
+    fillGradient || strokeGradient
+      ? `<defs>${fillGradient}${strokeGradient}</defs>`
+      : "";
 
   return `<svg
     viewBox="0 0 ${params.width} ${params.height}"
@@ -52,9 +53,11 @@ function Gradient(
   colorStops: Array<{ color: string; stop: string }>,
 ) {
   let stops = colorStops
-    .map((stop) =>
-      `<stop offset="${stop.stop}" style="stop-color: ${stop.color}" ></stop>`
-    ).join("");
+    .map(
+      (stop) =>
+        `<stop offset="${stop.stop}" style="stop-color: ${stop.color}" ></stop>`,
+    )
+    .join("");
 
   return `<linearGradient id="${id}" x1="0" x2="0" y1="50%" y2="100%"
     >${stops}</linearGradient>`;

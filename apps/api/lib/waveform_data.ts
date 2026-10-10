@@ -1,7 +1,7 @@
 import BBCWaveformData, {
   type JsonWaveformData,
-  WaveformDataAudioBufferOptions,
-  WaveformDataAudioContextOptions,
+  type WaveformDataAudioBufferOptions,
+  type WaveformDataAudioContextOptions,
 } from "waveform-data";
 
 export type { JsonWaveformData };

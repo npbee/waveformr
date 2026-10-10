@@ -1,12 +1,14 @@
-import { Hono, MiddlewareHandler } from "hono";
-import * as Etag from "@std/http/etag";
-import { WaveformData } from "$lib/waveform_data.ts";
-import { analyzeUrl } from "$lib/analyze.ts";
-import * as Render from "$lib/render.ts";
-import * as Cache from "$lib/cache.ts";
-import * as schemas from "$lib/schemas.ts";
-import { logger } from "$lib/logger.ts";
-import { IRateLimiterOptions, RateLimiterMemory } from "rate-limiter-flexible";
+import { Hono, type MiddlewareHandler } from "hono";
+import { WaveformData } from "#lib/waveform_data.ts";
+import { analyzeUrl } from "#lib/analyze.ts";
+import * as Render from "#lib/render.ts";
+import * as Cache from "#lib/cache.ts";
+import * as schemas from "#lib/schemas.ts";
+import { logger } from "#lib/logger.ts";
+import {
+  type IRateLimiterOptions,
+  RateLimiterMemory,
+} from "rate-limiter-flexible";
 
 type Variables = {
   etag: string;
@@ -85,7 +87,7 @@ function paramsMiddleware(): MiddlewareHandler<{ Variables: Variables }> {
       return c.text("Text invalid", 401);
     }
     let params = parseResult.data;
-    let etag = await Cache.etag(Cache.jsonKey(params));
+    let etag = Cache.etag(Cache.jsonKey(params));
 
     c.set("etag", etag);
     c.set("params", params);
@@ -102,7 +104,7 @@ function etagMiddleware(): MiddlewareHandler<{ Variables: Variables }> {
     let ifNoneMatch = c.req.header("if-none-match");
     let etag = c.get("etag");
 
-    if (ifNoneMatch && !Etag.ifNoneMatch(ifNoneMatch, etag)) {
+    if (ifNoneMatch && Cache.etagMatches(ifNoneMatch, etag)) {
       let headers = new Headers();
       headers.set("Content-Type", "image/svg+xml");
       headers.set("ETag", etag);
@@ -125,7 +127,7 @@ function audioAnalysisCacheMiddleware(): MiddlewareHandler<{
 }> {
   return async (c, next) => {
     const params = c.get("params");
-    let cacheKey = await Cache.createAnalysisKey({
+    let cacheKey = Cache.createAnalysisKey({
       url: params.url,
       ext: params.ext,
     });
@@ -152,7 +154,7 @@ function rateLimiterMiddleware(
 ): MiddlewareHandler<{ Variables: Variables }> {
   const rateLimiter = new RateLimiterMemory(config);
   return async (c, next) => {
-    if (Deno.env.get("RATE_LIMIT") === "off") {
+    if (process.env.RATE_LIMIT === "off") {
       return next();
     }
 

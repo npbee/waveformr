@@ -26,12 +26,13 @@ function parseLinearGradient(color: string): LinearGradientColor | null {
     return null;
   }
   let sections = match.split(",");
-  let stops = sections.map((s) => s.trim())
+  let stops = sections
+    .map((s) => s.trim())
     .map((s, idx) => {
       let [color, stop] = s.split(" ");
 
       if (!stop) {
-        stop = idx === 0 ? "0%" : `${idx / (sections.length - 1) * 100}%`;
+        stop = idx === 0 ? "0%" : `${(idx / (sections.length - 1)) * 100}%`;
       }
 
       return {

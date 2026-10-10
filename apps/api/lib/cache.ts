@@ -1,13 +1,9 @@
-import * as schemas from "$lib/schemas.ts";
-import * as Etag from "@std/http/etag";
-import { assert } from "@std/assert";
+import { createHash } from "node:crypto";
+import type * as schemas from "#lib/schemas.ts";
 
 let waveformStorage = new Map<string, ArrayBuffer | null>();
 
-export function createAnalysisKey(params: {
-  url: string;
-  ext: schemas.Ext;
-}) {
+export function createAnalysisKey(params: { url: string; ext: schemas.Ext }) {
   const { url, ext } = params;
   return createKey({ url, ext });
 }
@@ -28,20 +24,24 @@ export function createKey(obj: Record<string, string | number>) {
   return hash(jsonKey(obj));
 }
 
-export async function etag(entity: string) {
-  let etag = await Etag.calculate(entity);
-  assert(etag);
-  return etag;
+export function etag(entity: string) {
+  return `"${createHash("sha1").update(entity).digest("base64url")}"`;
 }
 
-async function hash(message: string) {
-  const data = new TextEncoder().encode(message);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
+/**
+ * Whether an `If-None-Match` header matches the given etag, i.e. the client's
+ * copy is still fresh. Weak comparison per RFC 9110.
+ */
+export function etagMatches(ifNoneMatch: string, etag: string) {
+  if (ifNoneMatch.trim() === "*") return true;
+  let stripWeak = (tag: string) => tag.trim().replace(/^W\//, "");
+  return ifNoneMatch
+    .split(",")
+    .some((tag) => stripWeak(tag) === stripWeak(etag));
+}
+
+function hash(message: string) {
+  return createHash("sha256").update(message).digest("hex");
 }
 
 export function jsonKey(obj: Record<string, string | number>): string {
