@@ -25,10 +25,9 @@ function IndexRoute() {
       </header>
       <main {...stylex.props(styles.main)}>
         <p {...stylex.props(styles.intro)}>
-          <span {...stylex.props(styles.highlight)}>Waveformr</span> reads an
-          audio file and draws its waveform as an SVG. It allows for custom
-          colors and gradients. Copy the SVG code directly or use a link just
-          like an image. By{" "}
+          <span {...stylex.props(styles.highlight)}>Waveformr</span> reads an audio file and draws
+          its waveform as an SVG. It allows for custom colors and gradients. Copy the SVG code
+          directly or use a link just like an image. By{" "}
           <a href="https://github.com/npbee" {...stylex.props(styles.link)}>
             Nick Ball
           </a>
@@ -43,7 +42,6 @@ function IndexRoute() {
 
 const styles = stylex.create({
   page: {
-    minBlockSize: "100svh",
     display: "flex",
     flexDirection: "column",
     maxInlineSize: 1240,
@@ -59,7 +57,7 @@ const styles = stylex.create({
     flexWrap: "wrap",
     alignItems: "center",
     gap: space.section,
-    paddingBlock: space.block,
+    paddingBlock: "15%",
   },
   intro: {
     flex: "1 1 360px",
