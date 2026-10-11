@@ -64,7 +64,7 @@ const styles = stylex.create({
     gap: space.section,
   },
   intro: {
-    flex: "1 1 200px",
+    flex: "1 1 300px",
     margin: 0,
     fontFamily: font.display,
     fontSize: text.lead,
@@ -89,6 +89,6 @@ const styles = stylex.create({
     textUnderlineOffset: "0.15em",
   },
   editor: {
-    flex: "1.35 1 480px",
+    flex: "1.5 1 480px",
   },
 });
