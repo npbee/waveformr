@@ -50,6 +50,8 @@ export function InkPicker(props: {
   value: Ink | null;
   onValueChange: (value: Ink) => void;
   "aria-label"?: string;
+  /** For a visible label; takes the place of `aria-label`. */
+  "aria-labelledby"?: string;
   disabled?: boolean;
   size?: "default" | "sm";
   /** Which inks to offer; all of them by default. */
@@ -60,7 +62,8 @@ export function InkPicker(props: {
   let options = props.options ? inks.filter((ink) => props.options!.includes(ink.value)) : inks;
   return (
     <ToggleGroup
-      aria-label={props["aria-label"] ?? "Ink"}
+      aria-label={props["aria-labelledby"] ? undefined : (props["aria-label"] ?? "Ink")}
+      aria-labelledby={props["aria-labelledby"]}
       value={props.value}
       onValueChange={props.onValueChange}
       disabled={props.disabled}

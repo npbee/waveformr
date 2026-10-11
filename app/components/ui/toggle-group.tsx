@@ -12,7 +12,9 @@ export function ToggleGroup<T extends string>(props: {
   /** null when the current value matches none of the options. */
   value: T | null;
   onValueChange: (value: T) => void;
-  "aria-label": string;
+  /** One of these is required: the group needs a name. */
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
   disabled?: boolean;
   children: ReactNode;
   xstyle?: StyleXStyles;
@@ -26,6 +28,7 @@ export function ToggleGroup<T extends string>(props: {
         if (next !== undefined) props.onValueChange(next);
       }}
       aria-label={props["aria-label"]}
+      aria-labelledby={props["aria-labelledby"]}
       {...stylex.props(props.xstyle)}
     >
       {props.children}

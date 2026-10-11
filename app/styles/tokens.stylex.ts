@@ -32,10 +32,13 @@ export const color = stylex.defineVars({
   logoMark: "currentColor",
 });
 
-// Fluid sizes: rem + vw so they follow the reader's font size and zoom.
+// In rem so they follow the reader's font size and zoom. Page text is fluid
+// (rem + vw); interface text stays fixed next to fixed-size controls.
 export const text = stylex.defineVars({
   // 22px at a 360px screen to 30px at 1240px.
   lead: "clamp(1.375rem, 1.17rem + 0.91vw, 1.875rem)",
+  // 14px. Panel headings.
+  title: "0.875rem",
 });
 
 // Fluid between a 360px and a 1240px screen, same as `text`.
