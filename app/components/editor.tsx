@@ -1,8 +1,9 @@
+import { FadersHorizontalIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import { LogoLink } from "~/components/logo";
 import { Sidebar } from "~/components/ui/sidebar";
 import type { EditorConfig } from "~/routes/edit";
-import { color, space } from "~/styles/tokens.stylex";
+import { color } from "~/styles/tokens.stylex";
 
 interface EditorProps {
   svg?: string | null;
@@ -27,8 +28,10 @@ export function Editor(props: EditorProps) {
             <p {...stylex.props(styles.error)}>There was an error rendering this waveform.</p>
           ) : null}
         </div>
-        <LogoLink xstyle={styles.logo} />
-        <Sidebar.Trigger xstyle={styles.toggle}>Controls</Sidebar.Trigger>
+        <header {...stylex.props(styles.header)}>
+          <LogoLink xstyle={styles.logo} />
+          <Sidebar.Trigger icon={<FadersHorizontalIcon weight="bold" />} aria-label="Controls" />
+        </header>
       </main>
       <Sidebar.Content aria-label="Controls" />
     </Sidebar.Root>
@@ -43,21 +46,25 @@ const styles = stylex.create({
   stage: {
     minInlineSize: 0,
     display: "grid",
-    padding: space.gutter,
+    padding: 12,
   },
   artwork: {
     gridArea: "1 / 1",
     placeSelf: "safe center",
     inlineSize: "100%",
   },
-  logo: {
+  // Its own row so the logo and trigger share a center line whatever their
+  // heights.
+  header: {
     gridArea: "1 / 1",
-    placeSelf: "start",
-    inlineSize: "5.5rem",
+    alignSelf: "start",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
   },
-  toggle: {
-    gridArea: "1 / 1",
-    placeSelf: "start end",
+  logo: {
+    inlineSize: "5.5rem",
   },
   error: {
     color: color.dangerText,

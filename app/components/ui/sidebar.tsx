@@ -3,7 +3,7 @@ import { SidebarSimpleIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
 import type { ReactNode } from "react";
-import { Button } from "~/components/ui/button";
+import { IconButton } from "~/components/ui/icon-button";
 import { color } from "~/styles/tokens.stylex";
 
 /**
@@ -22,7 +22,9 @@ function Root(props: {
     <Collapsible.Root
       defaultOpen
       {...rest}
-      className={(state) => stylex.props(styles.root, state.open && styles.rootOpen, xstyle).className}
+      className={(state) =>
+        stylex.props(styles.root, state.open && styles.rootOpen, xstyle).className
+      }
       style={(state) => stylex.props(styles.root, state.open && styles.rootOpen, xstyle).style}
     >
       {children}
@@ -30,20 +32,19 @@ function Root(props: {
   );
 }
 
-function Trigger(props: { children: ReactNode; xstyle?: StyleXStyles }) {
+function Trigger(props: { icon?: ReactNode; "aria-label"?: string; xstyle?: StyleXStyles }) {
   return (
     <Collapsible.Trigger
       render={
-        <Button
+        <IconButton
           variant="ghost"
           size="sm"
-          iconStart={<SidebarSimpleIcon weight="bold" mirrored />}
+          icon={props.icon ?? <SidebarSimpleIcon weight="bold" mirrored />}
+          aria-label={props["aria-label"] ?? "Toggle sidebar"}
           xstyle={props.xstyle}
         />
       }
-    >
-      {props.children}
-    </Collapsible.Trigger>
+    />
   );
 }
 
