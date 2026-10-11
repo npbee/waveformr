@@ -3,7 +3,7 @@ import type { StyleXStyles } from "@stylexjs/stylex";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState, useSyncExternalStore } from "react";
 import { ExportActions } from "~/components/export-actions";
-import { getInk, type Ink, InkPicker } from "~/components/ink-picker";
+import { type Ink, InkPicker, inkParam, spotInks } from "~/components/ink-picker";
 import { LoadForm } from "~/components/load-form";
 import { PlayButton } from "~/components/play-button";
 import { PlaybackTime } from "~/components/playback-time";
@@ -29,7 +29,7 @@ export function MiniEditor(props: { xstyle?: StyleXStyles }) {
   let [waveformStyle, setWaveformStyle] = useState<WaveformStyle>("bars");
   let [ink, setInk] = useState<Ink>("ink");
   let origin = useOrigin();
-  let stroke = strokeParam(getInk(ink).hex);
+  let stroke = inkParam(ink);
   let audioUrl = origin ? new URL(track.audio, origin).href : null;
   let waveformUrl =
     origin && audioUrl ? renderUrl(origin, { url: audioUrl, type: waveformStyle, stroke }) : null;
@@ -58,7 +58,7 @@ export function MiniEditor(props: { xstyle?: StyleXStyles }) {
         </div>
         <div {...stylex.props(styles.pickers)}>
           <StylePicker value={waveformStyle} onValueChange={setWaveformStyle} />
-          <InkPicker value={ink} onValueChange={setInk} />
+          <InkPicker value={ink} onValueChange={setInk} options={spotInks} />
         </div>
         <div {...stylex.props(styles.actions)}>
           <LoadForm
@@ -101,10 +101,6 @@ function renderUrl(origin: string, params: { url: string; type: WaveformStyle; s
     "stroke-linecap": "round",
   }).toString();
   return url.href;
-}
-
-function strokeParam(hex: readonly string[]) {
-  return hex.length > 1 ? `linear-gradient(${hex.join(", ")})` : hex[0];
 }
 
 // null on the server and during hydration, so both render the same markup.

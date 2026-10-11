@@ -19,7 +19,15 @@ export const inks = [
     colors: [colors.orange9, colors.plum9],
     hex: ["da834c", "4d3457"],
   },
+  // White stays white in dark mode: it's the color the SVG will render.
+  { value: "white", label: "White", colors: ["oklch(1 0 none)"], hex: ["ffffff"] },
+  { value: "none", label: "None", colors: [], hex: ["transparent"] },
 ] as const;
+
+/** The colored inks, without white and none. */
+export const spotInks = inks
+  .map((ink) => ink.value)
+  .filter((ink) => ink !== "white" && ink !== "none");
 
 export type Ink = (typeof inks)[number]["value"];
 
@@ -27,24 +35,48 @@ export function getInk(ink: Ink) {
   return inks.find((i) => i.value === ink)!;
 }
 
+/** The ink as a /render color param. */
+export function inkParam(ink: Ink) {
+  let { hex } = getInk(ink);
+  return hex.length > 1 ? `linear-gradient(${hex.join(", ")})` : hex[0];
+}
+
+/** The ink a /render color param was made from, if any. */
+export function inkFromParam(param: string): Ink | null {
+  return inks.find((ink) => inkParam(ink.value) === param)?.value ?? null;
+}
+
 export function InkPicker(props: {
-  value: Ink;
+  value: Ink | null;
   onValueChange: (value: Ink) => void;
+  "aria-label"?: string;
+  disabled?: boolean;
+  size?: "default" | "sm";
+  /** Which inks to offer; all of them by default. */
+  options?: readonly Ink[];
   xstyle?: StyleXStyles;
 }) {
+  let small = props.size === "sm";
+  let options = props.options ? inks.filter((ink) => props.options!.includes(ink.value)) : inks;
   return (
     <ToggleGroup
-      aria-label="Ink"
+      aria-label={props["aria-label"] ?? "Ink"}
       value={props.value}
       onValueChange={props.onValueChange}
+      disabled={props.disabled}
       xstyle={[styles.root, props.xstyle]}
     >
-      {inks.map((ink) => (
+      {options.map((ink) => (
         <Toggle
           key={ink.value}
           value={ink.value}
           aria-label={`${ink.label} ink`}
-          xstyle={({ pressed }) => [styles.swatch, styles.ink(ink.colors), pressed && styles.pressed]}
+          xstyle={({ pressed }) => [
+            styles.swatch,
+            small && styles.swatchSm,
+            ink.value === "none" ? styles.none : styles.ink(ink.colors),
+            pressed && (small ? styles.pressedSm : styles.pressed),
+          ]}
         />
       ))}
     </ToggleGroup>
@@ -66,7 +98,14 @@ const styles = stylex.create({
     borderWidth: 0,
     borderRadius: "50%",
     boxShadow: "inset 0 0 0 1px oklch(0 0 0 / 0.12)",
-    cursor: "pointer",
+    cursor: {
+      default: "pointer",
+      ":disabled": "not-allowed",
+    },
+    opacity: {
+      default: 1,
+      ":disabled": 0.4,
+    },
     outline: {
       default: "none",
       ":focus-visible": `2px solid ${color.focusRing}`,
@@ -78,11 +117,30 @@ const styles = stylex.create({
       inset: -10,
     },
   },
+  // An 18px dot with a 28px hit area, for dense toolbars.
+  swatchSm: {
+    inlineSize: 18,
+    blockSize: 18,
+    margin: 5,
+    outlineOffset: 4,
+    "::after": {
+      content: "''",
+      position: "absolute",
+      inset: -5,
+    },
+  },
   ink: (colors: readonly string[]) => ({
     backgroundImage: `linear-gradient(${colors.length > 1 ? colors.join(", ") : `${colors[0]}, ${colors[0]}`})`,
   }),
+  // A diagonal slash, the usual sign for "no color".
+  none: {
+    backgroundImage: `linear-gradient(to top right, transparent calc(50% - 1px), ${color.dangerText} calc(50% - 1px), ${color.dangerText} calc(50% + 1px), transparent calc(50% + 1px))`,
+  },
   // A ring with a gap, so dark inks still read as selected.
   pressed: {
     boxShadow: `0 0 0 3px ${color.surface}, 0 0 0 5px ${color.text}`,
+  },
+  pressedSm: {
+    boxShadow: `0 0 0 2px ${color.surface}, 0 0 0 4px ${color.text}`,
   },
 });

@@ -9,15 +9,18 @@ import type { ReactNode } from "react";
  * between them.
  */
 export function ToggleGroup<T extends string>(props: {
-  value: T;
+  /** null when the current value matches none of the options. */
+  value: T | null;
   onValueChange: (value: T) => void;
   "aria-label": string;
+  disabled?: boolean;
   children: ReactNode;
   xstyle?: StyleXStyles;
 }) {
   return (
     <BaseToggleGroup<T>
-      value={[props.value]}
+      value={props.value === null ? [] : [props.value]}
+      disabled={props.disabled}
       // Pressing the selected option empties the group; keep it selected.
       onValueChange={([next]) => {
         if (next !== undefined) props.onValueChange(next);

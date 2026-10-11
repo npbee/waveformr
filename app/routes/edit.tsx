@@ -16,8 +16,9 @@ import * as schemas from "~/waveform/schemas";
 import { clientKey, renderWaveform } from "~/waveform/render_waveform.server";
 
 const defaults = {
-  stroke: "#001219ff",
-  fill: "#001219ff",
+  // The "ink" ink, so the editor's ink pickers start with it selected.
+  stroke: "212017",
+  fill: "212017",
   type: "mirror",
   samples: 200,
   "stroke-width": 2,

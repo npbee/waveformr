@@ -11,17 +11,17 @@ const stroke = 2;
 const curve = `M0 ${stroke / 2} C${w / 2} ${stroke / 2} ${w / 2} ${h - stroke / 2} ${w} ${h - stroke / 2}`;
 
 /**
- * The curved end side of a tab that rises out of a panel's top edge. Kept separate
+ * A curved side of a tab that rises out of a panel's top edge. Kept separate
  * from the tab body so the body can grow without stretching the curve.
  */
-export function Tail() {
+export function Tail(props: { side: "start" | "end" }) {
   return (
     <svg
       aria-hidden
       width={w}
       height={h}
       viewBox={`0 0 ${w} ${h}`}
-      {...stylex.props(styles.root)}
+      {...stylex.props(styles.root, props.side === "start" && styles.start)}
     >
       <path d={`${curve} L${w} ${h} L0 ${h} Z`} {...stylex.props(styles.fill)} />
       <path d={curve} {...stylex.props(styles.stroke)} />
@@ -34,6 +34,10 @@ const styles = stylex.create({
     display: "block",
     flexShrink: 0,
     overflow: "visible",
+  },
+  // Drawn for the end side; mirrored for the start.
+  start: {
+    transform: "scaleX(-1)",
   },
   fill: {
     fill: color.surface,
