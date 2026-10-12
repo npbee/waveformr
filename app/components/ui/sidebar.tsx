@@ -2,13 +2,15 @@ import { Collapsible } from "@base-ui/react/collapsible";
 import { SidebarSimpleIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import type { StyleXStyles } from "@stylexjs/stylex";
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { IconButton } from "~/components/ui/icon-button";
+import { Tooltip } from "~/components/ui/tooltip";
 import { color } from "~/styles/tokens.stylex";
 
 /**
  * Two-column grid: the main content, then the sidebar. Closing the sidebar
- * shrinks its column, so the main content grows into the space.
+ * shrinks its column, so the main content grows into the space. ⌘\ (Ctrl+\
+ * elsewhere) toggles it from anywhere on the page.
  */
 function Root(props: {
   children: ReactNode;
@@ -17,11 +19,29 @@ function Root(props: {
   onOpenChange?: (open: boolean) => void;
   xstyle?: StyleXStyles;
 }) {
-  let { children, xstyle, ...rest } = props;
+  let { children, xstyle } = props;
+  let [uncontrolledOpen, setUncontrolledOpen] = useState(props.defaultOpen ?? true);
+  let open = props.open ?? uncontrolledOpen;
+  let setOpen = (next: boolean) => {
+    setUncontrolledOpen(next);
+    props.onOpenChange?.(next);
+  };
+
+  useEffect(() => {
+    let onKeyDown = (evt: KeyboardEvent) => {
+      if (evt.key === "\\" && (evt.metaKey || evt.ctrlKey) && !evt.altKey && !evt.shiftKey) {
+        evt.preventDefault();
+        setOpen(!open);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  });
+
   return (
     <Collapsible.Root
-      defaultOpen
-      {...rest}
+      open={open}
+      onOpenChange={setOpen}
       className={(state) =>
         stylex.props(styles.root, state.open && styles.rootOpen, xstyle).className
       }
@@ -33,19 +53,28 @@ function Root(props: {
 }
 
 function Trigger(props: { icon?: ReactNode; "aria-label"?: string; xstyle?: StyleXStyles }) {
+  let label = props["aria-label"] ?? "Toggle sidebar";
   return (
-    <Collapsible.Trigger
-      render={
-        <IconButton
-          variant="ghost"
-          size="sm"
-          icon={props.icon ?? <SidebarSimpleIcon weight="bold" mirrored />}
-          aria-label={props["aria-label"] ?? "Toggle sidebar"}
-          xstyle={props.xstyle}
-        />
-      }
-    />
+    <Tooltip label={label} shortcut={[isMac() ? "⌘" : "Ctrl", "\\"]}>
+      <Collapsible.Trigger
+        render={
+          <IconButton
+            variant="ghost"
+            size="sm"
+            icon={props.icon ?? <SidebarSimpleIcon weight="bold" mirrored />}
+            aria-label={label}
+            aria-keyshortcuts="Meta+\\ Control+\\"
+            xstyle={props.xstyle}
+          />
+        }
+      />
+    </Tooltip>
   );
+}
+
+// Only read once the tooltip opens, which is always client-side.
+function isMac() {
+  return typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform);
 }
 
 /**
