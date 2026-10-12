@@ -15,6 +15,10 @@ const ACCENTS = {
   red: { hex: "#AF3736", chroma: 0.8 },
   plum: { hex: "#4F315B", chroma: 0.85 },
   teal: { hex: "#0a9396", chroma: 0.75 },
+  // Riso's Yellow, Blue and Green inks.
+  yellow: { hex: "#FFE800", chroma: 0.78 },
+  blue: { hex: "#0078BF", chroma: 0.78 },
+  green: { hex: "#00A95C", chroma: 0.78 },
 };
 
 // Olive-khaki paper; `creamy` boosts tint on the two lightest steps.

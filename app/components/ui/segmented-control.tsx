@@ -12,12 +12,15 @@ export function SegmentedControl<T extends string>(props: {
   options: readonly { value: T; label: string; icon?: ReactNode }[];
   value: T | null;
   onValueChange: (value: T) => void;
-  "aria-label": string;
+  /** One of these is required: the group needs a name. */
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
   xstyle?: StyleXStyles;
 }) {
   return (
     <ToggleGroup
       aria-label={props["aria-label"]}
+      aria-labelledby={props["aria-labelledby"]}
       value={props.value}
       onValueChange={props.onValueChange}
       xstyle={[styles.root, props.xstyle]}
@@ -46,7 +49,10 @@ const styles = stylex.create({
     borderColor: color.border,
     borderRadius: 8,
   },
+  // Segments split the strip's width evenly when it's stretched.
   segment: {
+    flexGrow: 1,
+    flexBasis: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

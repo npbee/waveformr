@@ -32,25 +32,24 @@ export function Slider(props: {
       {...stylex.props(styles.root, props.xstyle)}
     >
       <BaseSlider.Label {...stylex.props(styles.label)}>{props.label}</BaseSlider.Label>
+      <BaseSlider.Value {...stylex.props(styles.value)} />
       <BaseSlider.Control {...stylex.props(styles.control)}>
         <BaseSlider.Track {...stylex.props(styles.track)}>
           <BaseSlider.Indicator {...stylex.props(styles.indicator)} />
           <BaseSlider.Thumb {...stylex.props(styles.thumb)} />
         </BaseSlider.Track>
       </BaseSlider.Control>
-      <BaseSlider.Value {...stylex.props(styles.value)} />
     </BaseSlider.Root>
   );
 }
 
 const styles = stylex.create({
-  // Label, track and value in one row.
-  // Grows to fill its row; the track takes the extra space.
+  // Label and value share a row above a full-width track.
   root: {
-    flexGrow: 1,
-    display: "flex",
+    display: "grid",
+    gridTemplateColumns: "1fr auto",
     alignItems: "center",
-    gap: 8,
+    rowGap: 4,
   },
   label: {
     fontSize: 13,
@@ -58,15 +57,13 @@ const styles = stylex.create({
     color: color.textMuted,
   },
   value: {
-    minInlineSize: "3ch",
     fontSize: 13,
     fontVariantNumeric: "tabular-nums",
   },
   control: {
+    gridColumn: "1 / -1",
     display: "flex",
     alignItems: "center",
-    flexGrow: 1,
-    minInlineSize: 96,
     blockSize: 24,
     touchAction: "none",
     userSelect: "none",

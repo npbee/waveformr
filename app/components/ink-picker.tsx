@@ -9,25 +9,34 @@ import { color } from "~/styles/tokens.stylex";
 // rendered SVGs, which have no theme and can't read CSS variables.
 export const inks = [
   { value: "ink", label: "Ink", colors: [colors.khaki12], hex: ["212017"] },
-  { value: "orange", label: "Orange", colors: [colors.orange9], hex: ["da834c"] },
   { value: "red", label: "Red", colors: [colors.red9], hex: ["a34541"] },
-  { value: "plum", label: "Plum", colors: [colors.plum9], hex: ["4d3457"] },
+  { value: "orange", label: "Orange", colors: [colors.orange9], hex: ["da834c"] },
+  { value: "yellow", label: "Yellow", colors: [colors.yellow9], hex: ["f9e866"] },
+  { value: "green", label: "Green", colors: [colors.green9], hex: ["43a468"] },
   { value: "teal", label: "Teal", colors: [colors.teal9], hex: ["428f91"] },
+  { value: "blue", label: "Blue", colors: [colors.blue9], hex: ["3378af"] },
+  { value: "plum", label: "Plum", colors: [colors.plum9], hex: ["4d3457"] },
   {
     value: "sunset",
     label: "Sunset",
     colors: [colors.orange9, colors.plum9],
     hex: ["da834c", "4d3457"],
   },
+  {
+    value: "lagoon",
+    label: "Lagoon",
+    colors: [colors.green9, colors.blue9],
+    hex: ["43a468", "3378af"],
+  },
   // White stays white in dark mode: it's the color the SVG will render.
   { value: "white", label: "White", colors: ["oklch(1 0 none)"], hex: ["ffffff"] },
   { value: "none", label: "None", colors: [], hex: ["transparent"] },
 ] as const;
 
-/** The colored inks, without white and none. */
+/** The brand inks: no white, none, or the Riso yellow, blue and green ones. */
 export const spotInks = inks
   .map((ink) => ink.value)
-  .filter((ink) => ink !== "white" && ink !== "none");
+  .filter((ink) => !["white", "none", "yellow", "blue", "green", "lagoon"].includes(ink));
 
 export type Ink = (typeof inks)[number]["value"];
 
@@ -53,12 +62,17 @@ export function InkPicker(props: {
   /** For a visible label; takes the place of `aria-label`. */
   "aria-labelledby"?: string;
   disabled?: boolean;
-  size?: "default" | "sm";
+  /**
+   * `fill` swatches are rounded rectangles that grow to fill the cells of a
+   * grid set through `xstyle`.
+   */
+  size?: "default" | "sm" | "fill";
   /** Which inks to offer; all of them by default. */
   options?: readonly Ink[];
   xstyle?: StyleXStyles;
 }) {
   let small = props.size === "sm";
+  let fill = props.size === "fill";
   let options = props.options ? inks.filter((ink) => props.options!.includes(ink.value)) : inks;
   return (
     <ToggleGroup
@@ -77,8 +91,9 @@ export function InkPicker(props: {
           xstyle={({ pressed }) => [
             styles.swatch,
             small && styles.swatchSm,
+            fill && styles.swatchFill,
             ink.value === "none" ? styles.none : styles.ink(ink.colors),
-            pressed && (small ? styles.pressedSm : styles.pressed),
+            pressed && (fill ? styles.pressedFill : small ? styles.pressedSm : styles.pressed),
           ]}
         />
       ))}
@@ -132,6 +147,18 @@ const styles = stylex.create({
       inset: -5,
     },
   },
+  // The chip is its own hit area: it's already big enough.
+  swatchFill: {
+    inlineSize: "100%",
+    blockSize: 32,
+    margin: 0,
+    // Matches the SegmentedControl's strip, which is the same height.
+    borderRadius: 8,
+    outlineOffset: 4,
+    "::after": {
+      content: "none",
+    },
+  },
   ink: (colors: readonly string[]) => ({
     backgroundImage: `linear-gradient(${colors.length > 1 ? colors.join(", ") : `${colors[0]}, ${colors[0]}`})`,
   }),
@@ -145,5 +172,9 @@ const styles = stylex.create({
   },
   pressedSm: {
     boxShadow: `0 0 0 2px ${color.surface}, 0 0 0 4px ${color.text}`,
+  },
+  // Drawn inside the chip, since neighbors sit too close for an outer ring.
+  pressedFill: {
+    boxShadow: `inset 0 0 0 2px ${color.text}, inset 0 0 0 4px ${color.surface}`,
   },
 });

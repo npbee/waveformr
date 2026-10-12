@@ -1,4 +1,3 @@
-import { Fieldset } from "@base-ui/react/fieldset";
 import { FadersHorizontalIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import { useId, type ReactNode } from "react";
@@ -41,63 +40,66 @@ export function Editor(props: EditorProps) {
       </main>
       <Sidebar.Content aria-label="Controls" xstyle={styles.controls}>
         <h2 {...stylex.props(styles.controlsHeading)}>Controls</h2>
-        <Section label="Shape">
-          <SegmentedControl
-            aria-label="Style"
-            options={waveformStyles}
-            value={config.type}
-            onValueChange={(type) => onChange({ type })}
-          />
-          <Slider
-            label="Samples"
-            value={config.samples}
-            onValueChange={(samples) => onSlide({ samples })}
-            min={50}
-            max={500}
-            step={10}
-            xstyle={styles.slider}
-          />
-        </Section>
-        <Section label="Line">
-          <SegmentedControl
-            aria-label="Linecap"
-            options={linecaps}
-            value={config["stroke-linecap"]}
-            onValueChange={(value) => onChange({ "stroke-linecap": value })}
-          />
-          <Slider
-            label="Width"
-            value={config["stroke-width"]}
-            onValueChange={(value) => onSlide({ "stroke-width": value })}
-            min={1}
-            max={10}
-            xstyle={styles.slider}
-          />
-        </Section>
-        <Section label="Color">
-          <InkField label="Stroke color">
+        <Field label="Style">
+          {(labelId) => (
+            <SegmentedControl
+              aria-labelledby={labelId}
+              options={waveformStyles}
+              value={config.type}
+              onValueChange={(type) => onChange({ type })}
+            />
+          )}
+        </Field>
+        <Slider
+          label="Samples"
+          value={config.samples}
+          onValueChange={(samples) => onSlide({ samples })}
+          min={50}
+          max={500}
+          step={10}
+        />
+        <Field label="Linecap">
+          {(labelId) => (
+            <SegmentedControl
+              aria-labelledby={labelId}
+              options={linecaps}
+              value={config["stroke-linecap"]}
+              onValueChange={(value) => onChange({ "stroke-linecap": value })}
+            />
+          )}
+        </Field>
+        <Slider
+          label="Width"
+          value={config["stroke-width"]}
+          onValueChange={(value) => onSlide({ "stroke-width": value })}
+          min={1}
+          max={10}
+        />
+        <Field label="Stroke">
+          {(labelId) => (
+            <InkPicker
+              aria-labelledby={labelId}
+              size="fill"
+              value={inkFromParam(config.stroke)}
+              onValueChange={(ink) => onChange({ stroke: inkParam(ink) })}
+              xstyle={styles.inks}
+            />
+          )}
+        </Field>
+        {/* Only steps draws a filled shape. */}
+        {config.type === "steps" ? (
+          <Field label="Fill">
             {(labelId) => (
               <InkPicker
                 aria-labelledby={labelId}
-                size="sm"
-                value={inkFromParam(config.stroke)}
-                onValueChange={(ink) => onChange({ stroke: inkParam(ink) })}
-              />
-            )}
-          </InkField>
-          {/* Only steps draws a filled shape. */}
-          <InkField label="Fill color">
-            {(labelId) => (
-              <InkPicker
-                aria-labelledby={labelId}
-                size="sm"
+                size="fill"
                 value={inkFromParam(config.fill)}
                 onValueChange={(ink) => onChange({ fill: inkParam(ink) })}
-                disabled={config.type !== "steps"}
+                xstyle={styles.inks}
               />
             )}
-          </InkField>
-        </Section>
+          </Field>
+        ) : null}
       </Sidebar.Content>
     </Sidebar.Root>
   );
@@ -109,25 +111,16 @@ const linecaps = [
   { value: "square", label: "Square" },
 ] as const;
 
-/** A visible label above an ink picker, which takes its name from it. */
-function InkField(props: { label: string; children: (labelId: string) => ReactNode }) {
+/** A visible label above a control, which takes its name from it. */
+function Field(props: { label: string; children: (labelId: string) => ReactNode }) {
   let labelId = useId();
   return (
-    <div {...stylex.props(styles.inkField)}>
-      <span id={labelId} {...stylex.props(styles.inkLabel)}>
+    <div {...stylex.props(styles.field)}>
+      <span id={labelId} {...stylex.props(styles.fieldLabel)}>
         {props.label}
       </span>
       {props.children(labelId)}
     </div>
-  );
-}
-
-function Section(props: { label: string; children: ReactNode }) {
-  return (
-    <Fieldset.Root {...stylex.props(styles.section)}>
-      <Fieldset.Legend {...stylex.props(styles.sectionLabel)}>{props.label}</Fieldset.Legend>
-      {props.children}
-    </Fieldset.Root>
   );
 }
 
@@ -163,7 +156,7 @@ const styles = stylex.create({
   controls: {
     display: "flex",
     flexDirection: "column",
-    gap: 24,
+    gap: 20,
     paddingBlockStart: 12,
     paddingBlockEnd: 16,
     paddingInline: 16,
@@ -179,37 +172,23 @@ const styles = stylex.create({
     fontWeight: 500,
     color: color.textMuted,
   },
-  section: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "start",
-    gap: 12,
-    margin: 0,
-    padding: 0,
-    borderWidth: 0,
-  },
-  // Controls keep their natural width; sliders fill the row.
-  slider: {
-    alignSelf: "stretch",
-  },
-  inkField: {
+  field: {
     display: "flex",
     flexDirection: "column",
     gap: 4,
   },
   // Matches the Slider's label.
-  inkLabel: {
+  fieldLabel: {
     fontSize: 13,
     fontWeight: 600,
     color: color.textMuted,
   },
-  sectionLabel: {
-    padding: 0,
-    fontSize: 12,
-    fontWeight: 600,
-    textTransform: "uppercase",
-    letterSpacing: "0.04em",
-    color: color.textMuted,
+  // Two full rows of six chips, filling the width like the controls around
+  // them.
+  inks: {
+    display: "grid",
+    gridTemplateColumns: "repeat(6, 1fr)",
+    gap: 6,
   },
   error: {
     color: color.dangerText,
