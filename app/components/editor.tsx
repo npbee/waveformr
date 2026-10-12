@@ -12,6 +12,9 @@ import { Slider } from "~/components/ui/slider";
 import type { EditorConfig } from "~/routes/edit";
 import { color, text } from "~/styles/tokens.stylex";
 
+/** Holds whether the sidebar is open; the edit route reads it on the server. */
+export const sidebarCookie = "editor-sidebar-open";
+
 interface EditorProps {
   svg?: string | null;
   renderUrl?: string | null;
@@ -19,6 +22,7 @@ interface EditorProps {
   state: "idle" | "pending" | "error";
   title: string;
   svgSize?: string | null;
+  sidebarOpen: boolean;
   onChange: (patch: Partial<EditorConfig>) => void;
   onSlide: (patch: Partial<EditorConfig>) => void;
 }
@@ -27,7 +31,11 @@ interface EditorProps {
 export function Editor(props: EditorProps) {
   let { svg, renderUrl, svgSize, state, title, config, onChange, onSlide } = props;
   return (
-    <Sidebar.Root xstyle={styles.root}>
+    <Sidebar.Root
+      cookie={sidebarCookie}
+      defaultOpen={props.sidebarOpen}
+      xstyle={styles.root}
+    >
       <main {...stylex.props(styles.stage)}>
         <div {...stylex.props(styles.artwork)}>
           {svg ? <div dangerouslySetInnerHTML={{ __html: svg }} /> : null}

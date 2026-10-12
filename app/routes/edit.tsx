@@ -5,10 +5,10 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { getCookie, getRequest } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { getLinks, getSeo } from "~/seo";
-import { Editor } from "~/components/editor";
+import { Editor, sidebarCookie } from "~/components/editor";
 import { useDebouncedCallback } from "use-debounce";
 import { svgSize } from "~/utils.server";
 import * as schemas from "~/waveform/schemas";
@@ -56,6 +56,7 @@ const renderEditor = createServerFn({ method: "GET" })
     }
 
     const title = config.url.split("/").at(-1) ?? "...";
+    const sidebarOpen = getCookie(sidebarCookie) !== "false";
     const params = schemas.render.safeParse(
       Object.fromEntries(renderUrl.searchParams.entries()),
     );
@@ -69,6 +70,7 @@ const renderEditor = createServerFn({ method: "GET" })
           svg,
           renderUrl: renderUrl.toString(),
           title,
+          sidebarOpen,
           svgSize: await svgSize(svg),
         } as const;
       } catch (err) {
@@ -82,6 +84,7 @@ const renderEditor = createServerFn({ method: "GET" })
       svg: null,
       renderUrl: null,
       title,
+      sidebarOpen,
     } as const;
   });
 
@@ -122,6 +125,7 @@ function EditRoute() {
       state={editorState}
       title={data.title}
       svgSize={data.status === "ok" ? data.svgSize : null}
+      sidebarOpen={data.sidebarOpen}
       onChange={update}
       onSlide={debouncedUpdate}
     />

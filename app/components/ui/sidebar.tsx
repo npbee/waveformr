@@ -10,21 +10,25 @@ import { color } from "~/styles/tokens.stylex";
 /**
  * Two-column grid: the main content, then the sidebar. Closing the sidebar
  * shrinks its column, so the main content grows into the space. ⌘\ (Ctrl+\
- * elsewhere) toggles it from anywhere on the page.
+ * elsewhere) toggles it from anywhere on the page. With a `cookie` name, the
+ * open state is saved there; read it on the server and pass it as
+ * `defaultOpen` so the page renders that way from the start.
  */
 function Root(props: {
   children: ReactNode;
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  cookie?: string;
   xstyle?: StyleXStyles;
 }) {
-  let { children, xstyle } = props;
+  let { children, xstyle, cookie } = props;
   let [uncontrolledOpen, setUncontrolledOpen] = useState(props.defaultOpen ?? true);
   let open = props.open ?? uncontrolledOpen;
   let setOpen = (next: boolean) => {
     setUncontrolledOpen(next);
     props.onOpenChange?.(next);
+    if (cookie) document.cookie = `${cookie}=${next}; path=/; max-age=31536000; samesite=lax`;
   };
 
   useEffect(() => {
