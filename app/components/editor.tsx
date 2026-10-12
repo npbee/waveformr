@@ -1,9 +1,10 @@
-import { FadersHorizontalIcon } from "@phosphor-icons/react";
+import { CopyIcon, FadersHorizontalIcon, LinkIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
-import { useId, type ReactNode } from "react";
+import { useEffect, useId, useState, type ReactNode } from "react";
 import { InkPicker, inkFromParam, inkParam } from "~/components/ink-picker";
 import { LogoLink } from "~/components/logo";
 import { waveformStyles } from "~/components/style-picker";
+import { Button } from "~/components/ui/button";
 import { SegmentedControl } from "~/components/ui/segmented-control";
 import { Sidebar } from "~/components/ui/sidebar";
 import { Slider } from "~/components/ui/slider";
@@ -23,7 +24,7 @@ interface EditorProps {
 
 /** Canvas beside a collapsible sidebar of controls. */
 export function Editor(props: EditorProps) {
-  let { svg, state, config, onChange, onSlide } = props;
+  let { svg, renderUrl, state, config, onChange, onSlide } = props;
   return (
     <Sidebar.Root xstyle={styles.root}>
       <main {...stylex.props(styles.stage)}>
@@ -100,6 +101,14 @@ export function Editor(props: EditorProps) {
             )}
           </Field>
         ) : null}
+        <div {...stylex.props(styles.actions)}>
+          <CopyButton text={svg} icon={<CopyIcon weight="bold" />}>
+            Copy SVG
+          </CopyButton>
+          <CopyButton text={renderUrl} variant="outline" icon={<LinkIcon weight="bold" />}>
+            Copy URL
+          </CopyButton>
+        </div>
       </Sidebar.Content>
     </Sidebar.Root>
   );
@@ -110,6 +119,43 @@ const linecaps = [
   { value: "round", label: "Round" },
   { value: "square", label: "Square" },
 ] as const;
+
+/** Copies `text`, then briefly says whether it worked. */
+function CopyButton(props: {
+  text?: string | null;
+  variant?: "solid" | "outline";
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  let [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
+
+  useEffect(() => {
+    if (status === "idle") return;
+    let timeout = setTimeout(() => setStatus("idle"), 2000);
+    return () => clearTimeout(timeout);
+  }, [status]);
+
+  return (
+    <Button
+      variant={props.variant}
+      size="sm"
+      iconStart={props.icon}
+      disabled={!props.text}
+      onClick={() => {
+        if (!props.text) return;
+        navigator.clipboard.writeText(props.text).then(
+          () => setStatus("copied"),
+          () => setStatus("error"),
+        );
+      }}
+      xstyle={styles.action}
+    >
+      <span aria-live="polite">
+        {status === "copied" ? "Copied" : status === "error" ? "Couldn't copy" : props.children}
+      </span>
+    </Button>
+  );
+}
 
 /** A visible label above a control, which takes its name from it. */
 function Field(props: { label: string; children: (labelId: string) => ReactNode }) {
@@ -189,6 +235,15 @@ const styles = stylex.create({
     display: "grid",
     gridTemplateColumns: "repeat(6, 1fr)",
     gap: 6,
+  },
+  // Pinned to the bottom of the sidebar when the controls leave room.
+  actions: {
+    display: "flex",
+    gap: 8,
+    marginBlockStart: "auto",
+  },
+  action: {
+    flex: 1,
   },
   error: {
     color: color.dangerText,
