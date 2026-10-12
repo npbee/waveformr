@@ -1,6 +1,7 @@
 import { CopyIcon, FadersHorizontalIcon, LinkIcon } from "@phosphor-icons/react";
 import * as stylex from "@stylexjs/stylex";
 import { useEffect, useId, useState, type ReactNode } from "react";
+import { AudioPicker } from "~/components/audio-picker";
 import { InkPicker, inkFromParam, inkParam } from "~/components/ink-picker";
 import { LogoLink } from "~/components/logo";
 import { waveformStyles } from "~/components/style-picker";
@@ -24,7 +25,7 @@ interface EditorProps {
 
 /** Canvas beside a collapsible sidebar of controls. */
 export function Editor(props: EditorProps) {
-  let { svg, renderUrl, svgSize, state, config, onChange, onSlide } = props;
+  let { svg, renderUrl, svgSize, state, title, config, onChange, onSlide } = props;
   return (
     <Sidebar.Root xstyle={styles.root}>
       <main {...stylex.props(styles.stage)}>
@@ -36,7 +37,10 @@ export function Editor(props: EditorProps) {
         </div>
         <header {...stylex.props(styles.header)}>
           <LogoLink xstyle={styles.logo} />
-          <Sidebar.Trigger icon={<FadersHorizontalIcon weight="bold" />} aria-label="Controls" />
+          <div {...stylex.props(styles.headerEnd)}>
+            <AudioPicker title={title} onLoad={(url) => onChange({ url })} />
+            <Sidebar.Trigger icon={<FadersHorizontalIcon weight="bold" />} aria-label="Controls" />
+          </div>
         </header>
         {svgSize ? (
           <footer {...stylex.props(styles.footer)}>
@@ -225,6 +229,12 @@ const styles = stylex.create({
   sizeValue: {
     margin: 0,
     fontVariantNumeric: "tabular-nums",
+  },
+  headerEnd: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    minInlineSize: 0,
   },
   logo: {
     inlineSize: "5.5rem",
