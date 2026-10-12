@@ -7,10 +7,11 @@
   font-display: swap;
 }
 
+/* Variable (wght + opsz), subset to Latin. Optical size follows font size. */
 @font-face {
-  font-family: Geist;
-  src: url("/fonts/Geist/Geist.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Bricolage Grotesque";
+  src: url("/fonts/Bricolage_Grotesque/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }

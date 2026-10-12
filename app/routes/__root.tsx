@@ -28,7 +28,7 @@ export const Route = createRootRoute({
       },
       {
         rel: "preload",
-        href: "/fonts/Geist/Geist.woff2",
+        href: "/fonts/Bricolage_Grotesque/BricolageGrotesque.woff2",
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",
