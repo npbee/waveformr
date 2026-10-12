@@ -17,14 +17,14 @@ interface EditorProps {
   config: EditorConfig;
   state: "idle" | "pending" | "error";
   title: string;
-  svgSize: React.ReactNode;
+  svgSize?: string | null;
   onChange: (patch: Partial<EditorConfig>) => void;
   onSlide: (patch: Partial<EditorConfig>) => void;
 }
 
 /** Canvas beside a collapsible sidebar of controls. */
 export function Editor(props: EditorProps) {
-  let { svg, renderUrl, state, config, onChange, onSlide } = props;
+  let { svg, renderUrl, svgSize, state, config, onChange, onSlide } = props;
   return (
     <Sidebar.Root xstyle={styles.root}>
       <main {...stylex.props(styles.stage)}>
@@ -38,6 +38,14 @@ export function Editor(props: EditorProps) {
           <LogoLink xstyle={styles.logo} />
           <Sidebar.Trigger icon={<FadersHorizontalIcon weight="bold" />} aria-label="Controls" />
         </header>
+        {svgSize ? (
+          <footer {...stylex.props(styles.footer)}>
+            <dl {...stylex.props(styles.size)}>
+              <dt>Output size</dt>
+              <dd {...stylex.props(styles.sizeValue)}>{svgSize}</dd>
+            </dl>
+          </footer>
+        ) : null}
       </main>
       <Sidebar.Content aria-label="Controls" xstyle={styles.controls}>
         <h2 {...stylex.props(styles.controlsHeading)}>Controls</h2>
@@ -175,10 +183,13 @@ const styles = stylex.create({
     blockSize: "100dvh",
   },
   // Layers share one grid cell; later ones paint on top.
+  // Bottom padding matches the sidebar's, so the footer lines up with its
+  // buttons.
   stage: {
     minInlineSize: 0,
     display: "grid",
     padding: 12,
+    paddingBlockEnd: 16,
   },
   artwork: {
     gridArea: "1 / 1",
@@ -194,6 +205,26 @@ const styles = stylex.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
+  },
+  // Same height as the sidebar's small buttons, so they share a center line.
+  footer: {
+    gridArea: "1 / 1",
+    alignSelf: "end",
+    justifySelf: "end",
+    display: "flex",
+    alignItems: "center",
+    minBlockSize: 32,
+  },
+  size: {
+    display: "flex",
+    gap: 6,
+    margin: 0,
+    fontSize: 13,
+    color: color.textMuted,
+  },
+  sizeValue: {
+    margin: 0,
+    fontVariantNumeric: "tabular-nums",
   },
   logo: {
     inlineSize: "5.5rem",

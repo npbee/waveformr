@@ -11,7 +11,6 @@ import { getLinks, getSeo } from "~/seo";
 import { Editor } from "~/components/editor";
 import { useDebouncedCallback } from "use-debounce";
 import { svgSize } from "~/utils.server";
-import { SvgSize } from "~/components/file-size";
 import * as schemas from "~/waveform/schemas";
 import { clientKey, renderWaveform } from "~/waveform/render_waveform.server";
 
@@ -122,7 +121,7 @@ function EditRoute() {
       renderUrl={data.renderUrl}
       state={editorState}
       title={data.title}
-      svgSize={data.status === "ok" ? <SvgSize size={data.svgSize} /> : null}
+      svgSize={data.status === "ok" ? data.svgSize : null}
       onChange={update}
       onSlide={debouncedUpdate}
     />
